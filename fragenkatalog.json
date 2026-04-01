@@ -1,0 +1,31 @@
+{
+  "start": {
+    "text": "Welche Gebäudeart?",
+    "type": "select",
+    "options": [
+      { "value": "wohn", "label": "Wohngebäude", "next": "q2" },
+      { "value": "buero", "label": "Büro", "next": "q3" }
+    ]
+  },
+
+  "q2": {
+    "text" : "Wie viele Wohneinheiten?",
+    "type": "number",
+    "next": "alternative"
+  },
+
+  "q3": {
+    "text" : "Wie viele Arbeitsplätze?",
+    "type": "number",
+    "next": "alternative"
+  },
+
+  "alternative": {
+    "text": "Alternative Frage",
+    "type": "select",
+    "options": [
+      { "value": "option1", "label": "Option 1", "next": "end" },
+      { "value": "option2", "label": "Option 2", "next": "end" }
+    ]
+  }
+}
