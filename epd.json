@@ -1,0 +1,9 @@
+{
+    "epd1": {
+        "name" : "EPD 1",
+        "description": "Beschreibung des EPDs",
+        "attribute 1": "Attribute 1",
+        "attribute 2": "Attribute 2",
+        "attribute 3": "Attribute 3"
+    }
+}

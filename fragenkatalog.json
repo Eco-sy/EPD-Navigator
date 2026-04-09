@@ -1,31 +1,82 @@
 {
   "start": {
-    "text": "Welche Gebäudeart?",
-    "type": "select",
+    "text": "Zu welcher Branche gehört Ihr Produkt?",
     "options": [
-      { "value": "wohn", "label": "Wohngebäude", "next": "q2" },
-      { "value": "buero", "label": "Büro", "next": "q3" }
+      { "label": "Baubranche", "value": "baubranche", "nextQuestionID": "epdCount" },
+      { "label": "Andere Branche", "value": "andere_branche", "nextQuestionID": "otherIndustryBranch" }
     ]
   },
 
-  "q2": {
-    "text" : "Wie viele Wohneinheiten?",
-    "type": "number",
-    "next": "alternative"
-  },
-
-  "q3": {
-    "text" : "Wie viele Arbeitsplätze?",
-    "type": "number",
-    "next": "alternative"
-  },
-
-  "alternative": {
-    "text": "Alternative Frage",
-    "type": "select",
+  "epdCount": {
+    "text": "Wie viele EPDs benötigen Sie?",
     "options": [
-      { "value": "option1", "label": "Option 1", "next": "end" },
-      { "value": "option2", "label": "Option 2", "next": "end" }
-    ]
+      { "label": "1 EPD", "value": "1-epd" },
+      { "label": "2 - 5 EPDs", "value": "2-5-epds" },
+      { "label": "Mehr als 5 EPDs", "value": "5+-epds" }
+      ],
+    "nextQuestionID": "employeeCount"
+  },
+
+  "employeeCount": {
+    "text": "Wie viele Mitarbeiter hat Ihr Unternehmen?",
+    "options": [
+      { "label": "1 - 50", "value": "1-50-employees" },
+      { "label": "51 - 250", "value": "51-250-employees" },
+      { "label": "Mehr als 250", "value": "250+-employees" }
+      ],
+      "nextQuestionID": "revenue"
+  },
+
+  "revenue": {
+    "text": "Wie hoch ist Ihr Jahresumsatz?",
+    "options": [
+      { "label": "Unter 10 Millionen €", "value": "under-10m-revenue" },
+      { "label": "10 bis 50 Millionen €", "value": "10-50m-revenue" },
+      { "label": "Über 50 Millionen €", "value": "50m+-revenue" }
+    ],
+    "nextQuestionID": "balance"
+  },
+
+  "balance": {
+    "text": "Wie hoch ist Ihre Jahresbilanz?",
+    "options": [
+      { "label": "Unter 10 Millionen €", "value": "under-10m-balance" },
+      { "label": "10 bis 43 Millionen €", "value": "10-43m-balance" },
+      { "label": "Über 43 Millionen €", "value": "43m+-balance" }
+      ],
+    "nextQuestionID": "countrySelection"
+  },
+
+  "otherIndustryBranch": {
+    "text": "Welche Branche?",
+    "options": [
+      { "label": "Chemie Branche"  },
+      { "label": "Andere Branche" }
+    ],
+    "nextQuestionID": "NULL"
+  },
+
+  "countrySelection": {
+    "text": "In welchem Land wird Ihr Produkt hauptsächlich vertrieben?",
+    "options": [
+      { "label": "Deutschland", "value": "de" },
+      { "label": "Schweden", "value": "se" },
+      { "label": "Frankreich", "value": "fr" },
+      { "label": "USA", "value": "us" },
+      { "label": "Rest der Welt", "value": "restOfWorld" }
+    ],
+    "nextQuestionID": "NULL"
+  },
+
+  "frageID" : {
+    "text": "Beispiel Frage Text",
+    "type": "select/number/text",
+    "options": [
+      { "label": "Option 1", "value": "option1", "nextQuestionID": "Nächste Frage" },
+      { "label": "Option 2", "value": "option2", "nextQuestionID": "Alternative Frage" }
+    ],
+    "nextQuestionID": "Nächste Frage Default, wenn die Antwort egal ist"
   }
+  
 }
+
