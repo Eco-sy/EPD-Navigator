@@ -1,9 +1,12 @@
 {
-    "epd1": {
-        "name" : "EPD 1",
+    "ibu": {
+        "name" : "IBU e.V.",
         "description": "Beschreibung des EPDs",
-        "attribute 1": "Attribute 1",
-        "attribute 2": "Attribute 2",
-        "attribute 3": "Attribute 3"
+        "oneTimeCost": 2700,
+        "rework": 1500,
+        "sameProductGroupEPD": 500,
+        "additionalAnnex": 350,
+        "additionAnnexTable": 100
+        
     }
 }

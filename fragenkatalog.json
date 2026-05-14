@@ -1,71 +1,54 @@
 {
   "start": {
-    "text": "Zu welcher Branche gehört Ihr Produkt?",
+    "text": "Sind alle EPD-Stammdaten gepflegt?",
     "options": [
-      { "label": "Baubranche", "value": "baubranche", "nextQuestionID": "epdCount" },
-      { "label": "Andere Branche", "value": "andere_branche", "nextQuestionID": "otherIndustryBranch" }
+      { "label": "Ja", "nextQuestionID": "existingDATA" },
+      { "label": "Nein", "nextQuestionID": "maintainData" }
     ]
   },
 
-  "epdCount": {
-    "text": "Wie viele EPDs benötigen Sie?",
+  "existingDATA" : {
+    "text": "Sind EPDs bereits vorhanden?",
     "options": [
-      { "label": "1 EPD", "value": "1-epd" },
-      { "label": "2 - 5 EPDs", "value": "2-5-epds" },
-      { "label": "Mehr als 5 EPDs", "value": "5+-epds" }
-      ],
-    "nextQuestionID": "employeeCount"
+      { "label": "Ja", "nextQuestionID": "existingEPD" },
+      { "label": "Nein", "nextQuestionID": "newEPD"}
+    ]
   },
 
-  "employeeCount": {
-    "text": "Wie viele Mitarbeiter hat Ihr Unternehmen?",
+  "maintainData" : {
+    "text": "HINWEIS: Bitte pflegen Sie vor Beginn alle Stammdaten, um korrekte Ergebniswerte zu generieren. Möchten Sie jetzt die Stammdaten einpflegen?",
     "options": [
-      { "label": "1 - 50", "value": "1-50-employees" },
-      { "label": "51 - 250", "value": "51-250-employees" },
-      { "label": "Mehr als 250", "value": "250+-employees" }
-      ],
-      "nextQuestionID": "revenue"
+      { "label": "Ja", "nextQuestionID": "redirectToDataMaintence" },
+      { "label": "Nein", "nextQuestionID": "ENDE"}
+    ]
   },
 
-  "revenue": {
-    "text": "Wie hoch ist Ihr Jahresumsatz?",
+  "redirectToDataMaintence" : {
+    "text": "HIER DEN NUTZER ZUR STAMMDATENPFLEGE WEITERLEITEN!",
     "options": [
-      { "label": "Unter 10 Millionen €", "value": "under-10m-revenue" },
-      { "label": "10 bis 50 Millionen €", "value": "10-50m-revenue" },
-      { "label": "Über 50 Millionen €", "value": "50m+-revenue" }
-    ],
-    "nextQuestionID": "balance"
+      { "label": "OK", "nextQuestionID": "ENDE" }
+    ]
   },
 
-  "balance": {
-    "text": "Wie hoch ist Ihre Jahresbilanz?",
+  "existingEPD" : {
+    "text": "Möchten Sie Kosten für die Verlängerung von EPDs, neue EPDs oder beide berechnen?",
     "options": [
-      { "label": "Unter 10 Millionen €", "value": "under-10m-balance" },
-      { "label": "10 bis 43 Millionen €", "value": "10-43m-balance" },
-      { "label": "Über 43 Millionen €", "value": "43m+-balance" }
-      ],
-    "nextQuestionID": "countrySelection"
+      { "label": "Verlängerung", "nextQuestionID": "extendEPD" },
+      { "label": "Neue EPDs", "nextQuestionID": "newEPD" },
+      { "label": "Beides", "nextQuestionID": ["extendEPD", "newEPD"] }
+    ]
   },
 
-  "otherIndustryBranch": {
-    "text": "Welche Branche?",
-    "options": [
-      { "label": "Chemie Branche"  },
-      { "label": "Andere Branche" }
-    ],
-    "nextQuestionID": "NULL"
+  "extendEPD": {
+    "text": "Wie viele EPDs möchten Sie verlängern?",
+    "type": "number",
+    "nextQuestionID": "ENDE"
   },
 
-  "countrySelection": {
-    "text": "In welchem Land wird Ihr Produkt hauptsächlich vertrieben?",
-    "options": [
-      { "label": "Deutschland", "value": "de" },
-      { "label": "Schweden", "value": "se" },
-      { "label": "Frankreich", "value": "fr" },
-      { "label": "USA", "value": "us" },
-      { "label": "Rest der Welt", "value": "restOfWorld" }
-    ],
-    "nextQuestionID": "NULL"
+  "newEPD": {
+    "text": "Wie viele neue EPDs möchten Sie erstellen?",
+    "type": "number",
+    "nextQuestionID": "ENDE"
   },
 
   "frageID" : {

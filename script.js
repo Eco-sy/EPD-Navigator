@@ -1,16 +1,22 @@
 ﻿let questions = {};
 let answers = {};
 let currentQuestion = "start";
+let questionQueue = [];
 let questionnaireFinished = false;
 
 function getNextQuestionId(question, option) {
-    if (option && option.nextQuestionID) {
-        return option.nextQuestionID;
+    const nextId = option && option.nextQuestionID ? option.nextQuestionID : question && question.nextQuestionID ? question.nextQuestionID : null;
+
+    if (Array.isArray(nextId)) {
+        questionQueue = nextId.slice(1);
+        return nextId[0] || null;
     }
-    if (question && question.nextQuestionID) {
-        return question.nextQuestionID;
+
+    if (questionQueue.length > 0) {
+        return questionQueue.shift();
     }
-    return null;
+
+    return nextId;
 }
 
 function showQuestion() {
@@ -20,7 +26,7 @@ function showQuestion() {
     submitButton.disabled = true;
 
     const q = questions[currentQuestion];
-    if (!q || currentQuestion === null || currentQuestion === "NULL") {
+    if (!q || currentQuestion === null || currentQuestion === "ENDE") {
         questionnaireFinished = true;
         const doneMessage = document.createElement("div");
         doneMessage.innerHTML = "<p><strong>Fragebogen abgeschlossen.</strong></p>";
