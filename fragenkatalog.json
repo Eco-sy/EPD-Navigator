@@ -2,7 +2,7 @@
   "start": {
     "text": "Sind alle EPD-Stammdaten gepflegt?",
     "options": [
-      { "label": "Ja", "nextQuestionID": "existingDATA" },
+      { "label": "Ja", "nextQuestionID": "existingEPD" },
       { "label": "Nein", "nextQuestionID": "maintainData" }
     ]
   },

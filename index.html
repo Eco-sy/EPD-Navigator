@@ -203,6 +203,40 @@
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.14);
         }
 
+        .collapsible-toggle {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .collapsible-toggle:hover {
+            color: #1d4ed8;
+        }
+
+        .collapsible-icon {
+            font-size: 1.15rem;
+            color: #2563eb;
+        }
+
+        .collapsible-body {
+            margin-top: 14px;
+        }
+
+        .summary-total {
+            padding: 18px;
+            margin-top: 10px;
+        }
+
         .controls {
             margin-top: 20px;
             display: flex;
@@ -241,10 +275,11 @@
     <main class="card">
       <div id="question-container"></div>
       <div class="controls">
-          <button id="submit-button" onclick="submitAnswers()" disabled>Antworten absenden</button>
+          <button id="submit-button" onclick="submitAnswers()" disabled>Ergebnis speichern</button>
       </div>
     </main>
   </div>
+  <script src="ibu-calculator.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
