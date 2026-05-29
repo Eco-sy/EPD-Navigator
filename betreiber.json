@@ -1,0 +1,124 @@
+{
+    "ibu": {
+        "programmbetreiber": "Institut Bauen und Umwelt e.V. (IBU)",
+        "gueltigkeit_ab": "2025-09-01",
+        "waehrung": "EUR",
+        "verifizierung_und_bearbeitung": {
+            "standard_epd": {
+                "erstausstellung": 2700.00,
+                "ueberarbeitung_oder_aktualisierung": 1500.00
+            },
+            "individualisierte_oder_lca_tool_basierte_epd": {
+                "erstausstellung": 450.00,
+                "ueberarbeitung_oder_aktualisierung": 350.00
+            },
+            "gleichzeitige_einreichung_produktfamilie": {
+                "erste_epd": 2700.00,
+                "jede_weitere_epd": 500.00
+            },
+            "zusatzaufwaende": {
+                "einschaetzung_aktualisierungsaufwand": 500.00,
+                "anhang_einreichung_pro_stueck": 350.00,
+                "zusatz_ergebnistabelle_pro_anhang": 100.00
+            }
+        },
+        "jaehrliche_zeichenentgelte_staffelung": {
+            "hinweis": "Preise gelten pro EPD ab Ausstellungsdatum",
+            "1_epd": 960.00,
+            "2_epd": 480.00,
+            "3_epd": 240.00,
+            "4_epd": 180.00,
+            "ab_5_epd_je": 120.00,
+            "ab_21_epd_je": 0.00
+        },
+        "software_tools": {
+            "erstmalige_zulassung": {
+                "lca_tool": 5000.00,
+                "epd_tool": 7000.00
+            },
+            "verlaengerung_oder_ueberarbeitung": {
+                "lca_tool": 2500.00,
+                "epd_tool": 3500.00
+            },
+            "jaehrliche_stichprobenpruefung_epd_tool": 2000.00
+        },
+        "sonderrabatte": {
+            "zeichenentgelte_5_jahre_vorauszahlung_prozent": 10.0
+        }
+    },
+    "environdec": {
+        "programmbetreiber": "The International EPD® System (Environdec)",
+        "waehrung": "EUR",
+        "registrierungsgebuehren_ohne_tools_staffelung": {
+            "hinweis": "Abrechnung nach Anzahl der Registrierungen pro Kalenderjahr. Reset der Staffelung am 1. Januar.",
+            "1_epd": 1000.00,
+            "2_bis_4_epd_je": 500.00,
+            "5_bis_99_epd_je": 100.00,
+            "ab_100_epd_je": 50.00
+        },
+        "registrierungsgebuehren_mit_tools": {
+            "pre_verified_tool_via_api_pro_epd": 69.00
+        },
+        "jaehrliche_gebuehren_nach_unternehmensgroesse": {
+            "hinweis": "Pauschale pro Organisation/Account für 12 Monate. Deckt alle registrierten EPDs sowie redaktionelle Updates und Re-Verifizierungen ab.",
+            "micro_1_bis_10_mitarbeiter": 515.00,
+            "kmu_sme_11_bis_250_mitarbeiter": 1030.00,
+            "grossunternehmen_mne_ueber_250_mitarbeiter": 2575.00,
+            "branchenverbaende": 1030.00
+        },
+        "zusatzleistungen": {
+            "epd_besitzertransfer_pro_epd": 300.00,
+            "klimadeklaration_climate_declaration_staffelung": {
+                "hinweis": "Zusatzoption basierend auf einer bereits veröffentlichten EPD im selben Kalenderjahr",
+                "1_klimadeklaration": 100.00,
+                "2_bis_4_je": 50.00,
+                "5_bis_99_je": 10.00,
+                "ab_100_je": 5.00
+            },
+            "gegenseitige_anerkennung_dual_registration": {
+                "hinweis": "Einmalige Gebühr zur parallelen Registrierung bei Partner-Programmen",
+                "von_oder_zu_ibu_ev": 500.00,
+                "von_oder_zu_epd_danmark": 333.00,
+                "von_norwegian_epd_foundation": 300.00,
+                "zu_norwegian_epd_foundation": 285.00
+            }
+        }
+    },
+    "rosenheim": {
+        "programmbetreiber": "ift Rosenheim GmbH",
+        "waehrung": "EUR",
+        "epd_modelle": {
+            "muster_epd_uebertragung": {
+                "beschreibung": "Übertragung einer bestehenden Muster-EPD (z. B. für Fenster, Außentüren, Fassaden) auf ein konkretes Unternehmen mittels vereinfachtem Datenabfrage-Verfahren.",
+                "regulaerer_preis_standard": 2390.00,
+                "rabattierter_preis_fuer_verbandsmitglieder": 1390.00,
+                "gueltigkeit_jahre": 5,
+                "kooperierende_verbaende_fuer_rabatt": [
+                    "Verband Fenster + Fassade (VFF)",
+                    "RAL Gütegemeinschaft Fenster, Fassaden und Haustüren e.V.",
+                    "Bundesverband Pro Holzfenster e.V."
+                ]
+            },
+            "individuelle_firmen_epd": {
+                "beschreibung": "Erstellung und unabhängige Verifizierung einer spezifischen, firmenindividuellen EPD auf Basis einer vollständigen, eigenen Ökobilanz.",
+                "programm_und_registrierungsgebuehr_einmalig": 1200.00,
+                "externe_verifizierungsgebuehr_ca": 2500.00,
+                "hinweis": "Die Gesamtkosten inklusive Datenerhebung und Prüfung variieren je nach Komplexität des Bauteils und bewegen sich in der Regel zwischen 2.000,00 und 6.000,00 EUR."
+            },
+            "branchen_epd": {
+                "beschreibung": "Gemeinschafts-EPD für Industrieverbände oder spezifische Herstellergruppen (z. B. Flachglasbranche).",
+                "gebuehr": "Auf Anfrage / Berechnung nach individuellem Projektaufwand"
+            }
+        },
+        "digitale_services_und_schnittstellen": {
+            "nachhaltigkeits_produktpass": {
+                "status": "Verfügbar",
+                "beschreibung": "Bündelt EPD-Produktdaten und ergänzt diese um spezifische Kennwerte für Gebäudezertifizierungssysteme wie DGNB, QNG, LEED und BREEAM."
+            },
+            "oekobaudat_listung": {
+                "status": "Inklusive",
+                "beschreibung": "Automatische Weiterleitung und Listung in der ÖKOBAUDAT des Bundesministeriums nach erfolgreicher Verifizierung."
+            }
+        }
+    }
+}

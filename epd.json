@@ -1,12 +1,88 @@
 {
-    "ibu": {
-        "name" : "IBU e.V.",
-        "description": "Beschreibung des EPDs",
-        "oneTimeCost": 2700,
-        "rework": 1500,
-        "sameProductGroupEPD": 500,
-        "additionalAnnex": 350,
-        "additionAnnexTable": 100
-        
-    }
+	"ibuNonAssociate": {
+		"name" : "Institut Bauen und Umwelt e.V. (IBU)",
+		"description": "Beschreibung des Programmbetriebs IBU e.V. für Unternhemen die nicht in einem Verband sind",
+		"oneTimeFees" : {
+			"initialPublicationCost": 2700,
+			"revaluationCost": 2700,
+			"renewalCost": 1500,
+			"reworkCost": 1500,
+			"subsequentEPDCost": 500
+		},
+		"annualFees":{
+			"annualMembershipFee": {
+				"subscriptionGroupF1": 600,
+				"subscriptionGroupF2": 900,
+				"subscriptionGroupF3": 1200,
+				"subscriptionGroupF4": 1950,
+				"subscriptionGroupF5": 3300,
+				"subscriptionGroupF6": 4450,
+				"subscriptionGroupF7": 5400
+			},
+			"tieredDeclerationFees": [
+				{"from": 1, "to": 1, "fee": 2880},
+				{"from": 2, "to": 2, "fee": 1440},
+				{"from": 3, "to": 3, "fee": 720},
+				{"from": 4, "to": 4, "fee": 540},
+				{"from": 5, "to": null, "fee": 360}
+			]
+		}
+	},
+	"ibuAssociate": {
+		"name" : "Institut Bauen und Umwelt e.V. (IBU)",
+		"description": "Beschreibung des Programmbetriebs IBU e.V. die in einem Verband sind",
+		"oneTimeFees" : {
+			"initialPublicationCost": 2700,
+			"revaluationCost": 2700,
+			"renewalCost": 1500,
+			"reworkCost": 1500,
+			"subsequentEPDCost": 500
+		},
+		"annualFees":{
+			"annualMembershipFee": "Mitgliedkosten werden über den Verband abgerechnet",
+			"tieredDeclerationFees": [
+				{"from": 1, "to": 1, "fee": 960},
+				{"from": 2, "to": 2, "fee": 480},
+				{"from": 3, "to": 3, "fee": 240},
+				{"from": 4, "to": 4, "fee": 180},
+				{"from": 5, "to": 20, "fee": 120},
+				{"from": 21, "to": null, "fee": 0}
+			]
+
+		}
+	},
+	"environdec": {
+		"name" : "Environdec",
+		"description": "Beschreibung des Programmbetriebs Environdec",
+		"oneTimeFees" : {
+			"tieredDeclerationFees": [
+				{"from": 1, "to": 1, "fee": 1000},
+				{"from": 2, "to": 4, "fee": 500},
+				{"from": 5, "to": 99, "fee": 100},
+				{"from": 100, "to": null, "fee": 50}
+			]
+		},
+		"annualFees":{
+			"annualMembershipFee": {
+				"microBuisness": 515,
+				"smallMediumBuisness": 1030,
+				"multiNationaBuisness": 2575
+			}
+		}	
+	},
+	"rosenheim": {
+		"name" : "Rosenheim",
+		"description":"Beschreibung des Programmbetriebs Rosenheim",
+		"oneTimeFees": {
+			"initialPublicationCost": 7254,
+			"secondPublicationCost": 5203,
+			"thirdPublicationCost": 4203,
+			"subsequentEPDCost": 3165,
+			"verificationCostEither": 2756,
+			"verificationCostBoth": 3083
+		},
+		"additionalFees": {
+			"description": "Unter IFT Rosenheim können zusätzliche Kosten für die Überarbeitung von EPDs, die Erstellung von Anhängen oder die Einreichung von Ergebnistabellen anfallen. Diese Kosten sind abhängig vom Aufwand und werden individuell berechnet."
+		}
+	}
 }
