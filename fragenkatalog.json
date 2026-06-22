@@ -7,40 +7,33 @@
     ]
   },
 
-  "existingDATA" : {
+  "maintainData": {
+    "text": "Bitte pflegen Sie vor Beginn alle Stammdaten, um korrekte Ergebniswerte zu generieren. Möchten Sie jetzt die Stammdaten einpflegen?",
+    "options": [
+      { "label": "Ja, Stammdaten pflegen", "nextQuestionID": "ENDE" },
+      { "label": "Nein, Fragebogen beenden", "nextQuestionID": "ENDE" }
+    ]
+  },
+
+  "existingDATA": {
     "text": "Sind EPDs bereits vorhanden?",
     "options": [
       { "label": "Ja", "nextQuestionID": "existingEPD" },
-      { "label": "Nein", "nextQuestionID": "newEPD"}
+      { "label": "Nein", "nextQuestionID": "newEPD" }
     ]
   },
 
-  "maintainData" : {
-    "text": "HINWEIS: Bitte pflegen Sie vor Beginn alle Stammdaten, um korrekte Ergebniswerte zu generieren. Möchten Sie jetzt die Stammdaten einpflegen?",
+  "existingEPD": {
+    "text": "Möchten Sie Kosten für die Verlängerung bestehender EPDs, neue EPDs oder beides berechnen?",
     "options": [
-      { "label": "Ja", "nextQuestionID": "redirectToDataMaintence" },
-      { "label": "Nein", "nextQuestionID": "ENDE"}
-    ]
-  },
-
-  "redirectToDataMaintence" : {
-    "text": "HIER DEN NUTZER ZUR STAMMDATENPFLEGE WEITERLEITEN!",
-    "options": [
-      { "label": "OK", "nextQuestionID": "ENDE" }
-    ]
-  },
-
-  "existingEPD" : {
-    "text": "Möchten Sie Kosten für die Verlängerung von EPDs, neue EPDs oder beide berechnen?",
-    "options": [
-      { "label": "Verlängerung", "nextQuestionID": "extendEPD" },
-      { "label": "Neue EPDs", "nextQuestionID": "newEPD" },
-      { "label": "Beides", "nextQuestionID": ["extendEPD", "newEPD"] }
+      { "label": "Nur Verlängerung", "nextQuestionID": "extendEPD" },
+      { "label": "Nur neue EPDs",    "nextQuestionID": "newEPD" },
+      { "label": "Beides",           "nextQuestionID": ["extendEPD", "newEPD"] }
     ]
   },
 
   "extendEPD": {
-    "text": "Wie viele EPDs möchten Sie verlängern?",
+    "text": "Wie viele bestehende EPDs möchten Sie verlängern?",
     "type": "number",
     "nextQuestionID": "ENDE"
   },
@@ -48,18 +41,13 @@
   "newEPD": {
     "text": "Wie viele neue EPDs möchten Sie erstellen?",
     "type": "number",
-    "nextQuestionID": "ENDE"
+    "nextQuestionID": "familyEPD"
   },
 
-  "frageID" : {
-    "text": "Beispiel Frage Text",
-    "type": "select/number/text",
-    "options": [
-      { "label": "Option 1", "value": "option1", "nextQuestionID": "Nächste Frage" },
-      { "label": "Option 2", "value": "option2", "nextQuestionID": "Alternative Frage" }
-    ],
-    "nextQuestionID": "Nächste Frage Default, wenn die Antwort egal ist"
+  "familyEPD": {
+    "text": "Wie viele dieser neuen EPDs stammen aus der gleichen Produktfamilie (basierend auf demselben Hintergrundbericht, gleichzeitig eingereicht)?",
+    "hint": "Falls keine, geben Sie 0 ein.",
+    "type": "number",
+    "nextQuestionID": "ENDE"
   }
-  
 }
-

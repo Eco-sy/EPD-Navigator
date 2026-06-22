@@ -1,11 +1,3 @@
-<<<<<<< Updated upstream
-﻿let questions = {};
-let answers = {};
-let currentQuestion = "start";
-let questionQueue = [];
-let questionnaireFinished = false;
-
-=======
 /**
  * script.js – EPD Navigator
  * Fragebogen-Engine + IBU Gebührenberechnung
@@ -29,124 +21,104 @@ let questionnaireFinished = false;
 // ---------------------------------------------------------------------------
 // Fragebogen-Engine  (unverändert zu deiner ursprünglichen Logik)
 // ---------------------------------------------------------------------------
->>>>>>> Stashed changes
 function getNextQuestionId(question, option) {
-    const nextId = option && option.nextQuestionID ? option.nextQuestionID : question && question.nextQuestionID ? question.nextQuestionID : null;
-
-    if (Array.isArray(nextId)) {
-        questionQueue = nextId.slice(1);
-        return nextId[0] || null;
-    }
-
-    if (questionQueue.length > 0) {
-        return questionQueue.shift();
-    }
-
-    return nextId;
+  const nextId = option?.nextQuestionID ?? question?.nextQuestionID ?? null;
+  if (Array.isArray(nextId)) {
+    questionQueue = nextId.slice(1);
+    return nextId[0] ?? null;
+  }
+  if (questionQueue.length > 0) return questionQueue.shift();
+  return nextId;
 }
 
 function showQuestion() {
-    const container = document.getElementById("question-container");
-    const submitButton = document.getElementById("submit-button");
-    container.innerHTML = "";
-    submitButton.disabled = true;
+  const container    = document.getElementById("question-container");
+  const submitButton = document.getElementById("submit-button");
+  container.innerHTML = "";
+  submitButton.disabled = true;
 
-    const q = questions[currentQuestion];
-    if (!q || currentQuestion === null || currentQuestion === "ENDE") {
-        questionnaireFinished = true;
-        const doneMessage = document.createElement("div");
-        doneMessage.innerHTML = "<p><strong>Fragebogen abgeschlossen.</strong></p>";
+  const q = questions[currentQuestion];
+  if (!q || currentQuestion === null || currentQuestion === "ENDE") {
+    questionnaireFinished = true;
+    container.appendChild(renderResult());
+    submitButton.disabled = false;
+    return;
+  }
 
-        const summary = document.createElement("pre");
-        summary.innerText = JSON.stringify(answers, null, 2);
-        doneMessage.appendChild(summary);
+  const div   = document.createElement("div");
+  const label = document.createElement("p");
+  label.innerText = q.text || "Frage nicht gefunden";
+  div.appendChild(label);
 
-        container.appendChild(doneMessage);
-        submitButton.disabled = false;
-        return;
-    }
+  if (q.hint) {
+    const hint = document.createElement("p");
+    hint.style.cssText = "font-size:0.875rem; color:#64748b; font-weight:400; margin:0;";
+    hint.innerText = q.hint;
+    div.appendChild(hint);
+  }
 
-    const div = document.createElement("div");
+  const type = q.type || "select";
 
-    const label = document.createElement("p");
-    label.innerText = q.text || "Frage nicht gefunden";
-    div.appendChild(label);
+  if (type === "select") {
+    (q.options || []).forEach(opt => {
+      const btn = document.createElement("button");
+      btn.className = "answer-button";
+      btn.innerText = opt.label;
+      btn.onclick = () => {
+        answers[currentQuestion] = opt.value !== undefined ? opt.value : opt.label;
+        currentQuestion = getNextQuestionId(q, opt);
+        showQuestion();
+      };
+      div.appendChild(btn);
+    });
+  }
 
-    const type = q.type || "select";
+  if (type === "number" || type === "text") {
+    const inputRow = document.createElement("div");
+    inputRow.className = "input-row";
 
-<<<<<<< Updated upstream
-    if (type === "select") {
-        if (!Array.isArray(q.options)) {
-            div.appendChild(document.createTextNode("Keine Antwortmöglichkeiten verfügbar."));
-        } else {
-            q.options.forEach(opt => {
-                const btn = document.createElement("button");
-                btn.innerText = opt.label || opt.value || "Antwort";
-=======
     const input = document.createElement("input");
     input.type = type;
     if (type === "number") { input.min = "0"; input.value = "0"; }
     if (currentQuestion === "extendEPD") {input.max = customerData.existingValidEPDs;}
->>>>>>> Stashed changes
 
-                btn.onclick = () => {
-                    answers[currentQuestion] = opt.value !== undefined ? opt.value : opt.label;
-                    const nextId = getNextQuestionId(q, opt);
-                    currentQuestion = nextId;
-                    showQuestion();
-                };
+    const btn = document.createElement("button");
+    btn.innerText = "Weiter";
+    btn.onclick = () => {
+      if (input.value === "") { alert("Bitte eine Antwort eingeben."); return; }
+      answers[currentQuestion] = input.value;
+      currentQuestion = getNextQuestionId(q);
+      showQuestion();
+    };
+    input.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
 
-                div.appendChild(btn);
-            });
-        }
-    }
+    inputRow.appendChild(input);
+    inputRow.appendChild(btn);
+    div.appendChild(inputRow);
+  }
 
-    if (type === "number" || type === "text") {
-        const input = document.createElement("input");
-        input.type = type;
-        input.style.display = "block";
-        input.style.marginBottom = "8px";
-
-        const btn = document.createElement("button");
-        btn.innerText = "Weiter";
-
-        btn.onclick = () => {
-            if (input.value === "") {
-                alert("Bitte eine Antwort eingeben.");
-                return;
-            }
-            answers[currentQuestion] = input.value;
-            const nextId = getNextQuestionId(q);
-            currentQuestion = nextId;
-            showQuestion();
-        };
-
-        div.appendChild(input);
-        div.appendChild(btn);
-    }
-
-    container.appendChild(div);
+  container.appendChild(div);
 }
 
-async function loadQuestions() {
-    try {
-        const response = await fetch("./fragenkatalog.json");
-        if (!response.ok) {
-            throw new Error(`Fehler beim Laden von fragenkatalog.json: ${response.status}`);
-        }
-        questions = await response.json();
-    } catch (error) {
-        const container = document.getElementById("question-container");
-        container.innerHTML = `<p style="color:red;">${error.message}</p>`;
-        console.error(error);
-        return;
-    }
-
-    showQuestion();
+// ---------------------------------------------------------------------------
+// Fragebogen-Antworten → calculateIBU-Eingaben mappen
+//
+// Fragebogen liefert z.B.:
+//   { start:"Ja", existingDATA:"Ja", existingEPD:"Beides", extendEPD:"2",
+//     newEPD:"3", familyEPD:"1" }
+//
+// customerData kommt aus customer.json und enthält:
+//   { companyName, membershipGroup, existingValidEPDs }
+// ---------------------------------------------------------------------------
+function mapToCalculatorInput() {
+  return {
+    renewEPDs:         Number(answers.extendEPD) || 0,
+    newEPDs:           Number(answers.newEPD)    || 0,
+    newEPDsFromFamily: Number(answers.familyEPD) || 0,
+    reworkEPDs:        0,   // noch kein Fragebogen-Feld; bei Bedarf ergänzen
+  };
 }
 
-<<<<<<< Updated upstream
-=======
 // ---------------------------------------------------------------------------
 // Ergebnis-Seite rendern
 // ---------------------------------------------------------------------------
@@ -369,27 +341,24 @@ function costTable(rows, totalRow) {
 // ---------------------------------------------------------------------------
 // Absenden
 // ---------------------------------------------------------------------------
->>>>>>> Stashed changes
 function submitAnswers() {
-    if (!questionnaireFinished) {
-        alert("Bitte beantworten Sie zuerst alle Fragen.");
-        return;
-    }
-
-    const stored = JSON.parse(localStorage.getItem("fragebogenAntworten") || "[]");
-    stored.push({
-        timestamp: new Date().toISOString(),
-        answers,
-    });
-    localStorage.setItem("fragebogenAntworten", JSON.stringify(stored, null, 2));
-
-    console.log("Antworten:", answers);
-    alert("Antworten wurden gespeichert.");
+  if (!questionnaireFinished) {
+    alert("Bitte beantworten Sie zuerst alle Fragen.");
+    return;
+  }
+  const entry = {
+    timestamp:   new Date().toISOString(),
+    customerData,
+    answers,
+    calculation: calculateIBU(customerData, mapToCalculatorInput()),
+  };
+  const stored = JSON.parse(localStorage.getItem("fragebogenAntworten") || "[]");
+  stored.push(entry);
+  localStorage.setItem("fragebogenAntworten", JSON.stringify(stored, null, 2));
+  console.log("Gespeicherter Eintrag:", entry);
+  alert("Antworten und Gebührenberechnung wurden gespeichert.");
 }
 
-<<<<<<< Updated upstream
-window.addEventListener("DOMContentLoaded", loadQuestions);
-=======
 // ---------------------------------------------------------------------------
 // Laden – beide Quellen parallel fetchen
 // ---------------------------------------------------------------------------
@@ -415,4 +384,3 @@ async function loadData() {
 }
 
 window.addEventListener("DOMContentLoaded", loadData);
->>>>>>> Stashed changes
