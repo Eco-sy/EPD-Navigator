@@ -1,285 +1,202 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EPD Navigator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fragebogen Demo</title>
   <style>
-        :root {
-            color-scheme: light;
-            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f4f7fb;
-            color: #17212b;
-            line-height: 1.6;
-        }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        * {
-            box-sizing: border-box;
-        }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.16), transparent 35%),
-                        radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.14), transparent 30%),
-                        #eef4fb;
-        }
+    #app {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      padding: 2.5rem;
+      max-width: 520px;
+      width: 100%;
+    }
 
-        .page-shell {
-            width: min(100%, 860px);
-        }
+    h1 { font-size: 1.2rem; color: #444; margin-bottom: 1.8rem; font-weight: 600; }
 
-        header {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
+    /* ── Fragen-Wrapper ── */
+    .question-wrapper {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .28s ease, transform .28s ease;
+    }
+    .question-wrapper.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-        .brand {
-            display: grid;
-            gap: 12px;
-        }
+    .question-text {
+      font-size: 1.05rem;
+      color: #222;
+      line-height: 1.55;
+      margin-bottom: 1.4rem;
+    }
 
-        .brand h1 {
-            margin: 0;
-            font-size: clamp(2rem, 2.5vw, 2.5rem);
-            letter-spacing: -0.03em;
-        }
+    /* ── Options-Buttons ── */
+    .question-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+    }
 
-        .brand p {
-            margin: 0;
-            max-width: 620px;
-            color: #475569;
-        }
+    .option-btn {
+      padding: .55rem 1.2rem;
+      border: 2px solid #d0d7e2;
+      border-radius: 8px;
+      background: #fff;
+      color: #333;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: border-color .15s, background .15s, color .15s;
+    }
+    .option-btn:hover  { border-color: #5b8dee; background: #eef3fd; }
+    .option-btn.selected { border-color: #3a6fd8; background: #3a6fd8; color: #fff; }
 
-        .card {
-            background: #ffffff;
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            border-radius: 28px;
-            box-shadow: 0 28px 70px rgba(15, 23, 42, 0.08);
-            padding: 32px;
-        }
+    /* ── Eingabefelder ── */
+    .question-input-wrapper {
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+    }
 
-        #question-container > div {
-            display: grid;
-            gap: 18px;
-        }
+    .question-input {
+      flex: 1;
+      padding: .55rem .9rem;
+      border: 2px solid #d0d7e2;
+      border-radius: 8px;
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .question-input:focus { border-color: #5b8dee; }
+    .question-input.input-error { border-color: #e05c5c; }
 
-        #question-container p {
-            margin: 0;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #0f172a;
-        }
+    .confirm-btn {
+      padding: .55rem 1.1rem;
+      border: none;
+      border-radius: 8px;
+      background: #3a6fd8;
+      color: #fff;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .confirm-btn:hover { background: #2d58b0; }
 
-        #question-container pre {
-            margin: 0;
-            padding: 18px;
-            border-radius: 16px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            overflow-x: auto;
-            color: #334155;
-        }
+    /* ── Ende ── */
+    .end-screen h2 { font-size: 1.1rem; color: #2a8a4a; margin-bottom: 1rem; }
 
-        .summary-page {
-            display: grid;
-            gap: 20px;
-        }
+    .answers-summary {
+      background: #f6f8fb;
+      border: 1px solid #dde3ee;
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: .82rem;
+      color: #444;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
 
-        .summary-header p {
-            margin: 0;
-        }
+    .question-error { color: #e05c5c; font-size: .9rem; }
 
-        .summary-header p:first-child {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .summary-header p:last-child {
-            color: #475569;
-        }
-
-        .summary-list {
-            display: grid;
-            gap: 14px;
-        }
-
-        .summary-item {
-            padding: 18px;
-            border-radius: 20px;
-            background: #f8fafc;
-            border: 1px solid rgba(148, 163, 184, 0.24);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
-        }
-
-        .summary-question {
-            margin: 0 0 8px 0;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .summary-answer {
-            background: #ffffff;
-            border-radius: 14px;
-            border: 1px solid #e2e8f0;
-            padding: 14px 16px;
-            color: #334155;
-            min-height: 36px;
-            display: flex;
-            align-items: center;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-
-        button,
-        input[type="text"],
-        input[type="number"] {
-            font: inherit;
-        }
-
-        button {
-            border: none;
-            border-radius: 14px;
-            padding: 14px 18px;
-            cursor: pointer;
-            transition: transform 0.17s ease, box-shadow 0.17s ease, background-color 0.17s ease;
-        }
-
-        button:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 18px 30px rgba(59, 130, 246, 0.16);
-        }
-
-        button:disabled {
-            cursor: not-allowed;
-            opacity: 0.55;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .answer-button {
-            background: #2563eb;
-            color: #ffffff;
-            min-width: 140px;
-            margin: 4px 0;
-            text-align: left;
-        }
-
-        .answer-button.secondary {
-            background: #e2e8f0;
-            color: #0f172a;
-        }
-
-        .input-row {
-            display: grid;
-            gap: 12px;
-            width: 100%;
-            max-width: 420px;
-        }
-
-        input[type="text"],
-        input[type="number"] {
-            width: 100%;
-            border: 1px solid #cbd5e1;
-            padding: 14px 16px;
-            border-radius: 14px;
-            background: #f8fafc;
-            color: #0f172a;
-        }
-
-        input[type="text"]:focus,
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.14);
-        }
-
-        .collapsible-toggle {
-            width: 100%;
-            background: transparent;
-            border: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            color: #0f172a;
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .collapsible-toggle:hover {
-            color: #1d4ed8;
-        }
-
-        .collapsible-icon {
-            font-size: 1.15rem;
-            color: #2563eb;
-        }
-
-        .collapsible-body {
-            margin-top: 14px;
-        }
-
-        .summary-total {
-            padding: 18px;
-            margin-top: 10px;
-        }
-
-        .controls {
-            margin-top: 20px;
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        #submit-button {
-            background: #10b981;
-            color: white;
-            min-width: 160px;
-        }
-
-        @media (max-width: 640px) {
-            .card {
-                padding: 24px;
-            }
-
-            .controls {
-                justify-content: center;
-            }
-
-            #submit-button {
-                width: 100%;
-            }
-        }
+    #restart-btn {
+      margin-top: 1.4rem;
+      padding: .5rem 1.2rem;
+      border: 2px solid #3a6fd8;
+      border-radius: 8px;
+      background: transparent;
+      color: #3a6fd8;
+      font-size: .9rem;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    #restart-btn:hover { background: #3a6fd8; color: #fff; }
   </style>
 </head>
 <body>
-  <div class="page-shell">
-    <header>
-        <div class="brand">
-            <h1>EPD Navigator</h1>
-            <p>Beantworte den Fragebogen Schritt für Schritt. Wähle aus klaren Optionen oder gib Werte ein, um zur nächsten Frage zu gelangen.</p>
-        </div>
-    </header>
-    <main class="card">
-      <div id="question-container"></div>
-      <div class="controls">
-          <button id="submit-button" onclick="submitAnswers()" disabled>Ergebnis speichern</button>
-      </div>
-    </main>
-  </div>
-  <script src="ibu-calculator.js"></script>
-  <script src="script.js"></script>
+
+<div id="app">
+  <h1>EPD-Kostenkalkulator</h1>
+  <div id="question-container"></div>
+  <button id="restart-btn" style="display:none">↺ Neu starten</button>
+</div>
+
+<!-- ── Fragen-JSON ──────────────────────────────────────────────────────── -->
+<script>
+  fetch("questions.json")
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      const engine = new QuestionEngine(
+        data,
+        (id, question) => renderer.render(id, question),
+        (answers) => {
+          renderer.renderEnd(answers);
+          restartBtn.style.display = "inline-block";
+        }
+      );
+      // handleAnswer braucht jetzt Zugriff auf engine → nach innen verschieben
+      function handleAnswer(qID, answer, nextID) {
+        engine.answer(qID, answer, nextID);
+      }
+      engine.start();
+    })
+    .catch(err => {
+      container.textContent = "Fehler beim Laden der Fragen: " + err.message;
+    });
+</script>
+<!-- ── Module ──────────────────────────────────────────────────────────── -->
+<script src="questionEngine.js"></script>
+<script src="questionRenderer.js"></script>
+
+<!-- ── Initialisierung ─────────────────────────────────────────────────── -->
+<script>
+  const container  = document.getElementById("question-container");
+  const restartBtn = document.getElementById("restart-btn");
+
+  // Renderer erstellen
+  const renderer = new QuestionRenderer(container, handleAnswer);
+
+  // Engine erstellen
+  const engine = new QuestionEngine(
+    QUESTIONS_JSON,
+    (id, question) => renderer.render(id, question),   // onQuestion → Renderer
+    (answers)       => {                                // onEnd
+      renderer.renderEnd(answers);
+      restartBtn.style.display = "inline-block";
+    }
+  );
+
+  // Antwort vom Renderer zurück an den Engine
+  function handleAnswer(questionID, answer, nextQuestionID) {
+    engine.answer(questionID, answer, nextQuestionID);
+  }
+
+  // Starten
+  engine.start();
+
+  // Neustart-Button
+  restartBtn.addEventListener("click", () => {
+    restartBtn.style.display = "none";
+    engine.reset();
+    engine.start();
+  });
+</script>
 </body>
 </html>
