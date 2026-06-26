@@ -1,25 +1,76 @@
 {
   "start": {
-    "text": "Sind alle EPD-Stammdaten gepflegt?",
+    "text": "Wie lautet der Name Ihres Unternehmens?",
+    "type": "text",
+    "nextQuestionID": "membershipType"
+  },
+
+  "membershipType": {
+    "text": "Sind Sie Mitglied in einem Verband, der IBU-Mitglied ist?",
     "options": [
-      { "label": "Ja", "nextQuestionID": "existingDATA" },
-      { "label": "Nein", "nextQuestionID": "maintainData" }
+      { "label": "Ja, Verbandsmitglied",   "value": "associate",     "nextQuestionID": "environdecMembershipType" },
+      { "label": "Nein, kein Verbandsmitglied", "value": "non-associate", "nextQuestionID": "membershipGroup" }
     ]
   },
 
-  "maintainData": {
-    "text": "Bitte pflegen Sie vor Beginn alle Stammdaten, um korrekte Ergebniswerte zu generieren. Möchten Sie jetzt die Stammdaten einpflegen?",
+  "membershipGroup": {
+    "text": "In welche IBU-Mitgliedsbeitragsgruppe fällt Ihr Unternehmen?",
     "options": [
-      { "label": "Ja, Stammdaten pflegen", "nextQuestionID": "ENDE" },
-      { "label": "Nein, Fragebogen beenden", "nextQuestionID": "ENDE" }
+      { "label": "F1 – bis 1 Mio. € Umsatz pro Jahr",    "value": "1", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F2 – bis 3 Mio. € Umsatz pro Jahr",    "value": "2", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F3 – bis 10 Mio. € Umsatz pro Jahr",   "value": "3", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F4 – bis 30 Mio. € Umsatz pro Jahr",   "value": "4", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F5 – bis 100 Mio. € Umsatz pro Jahr",  "value": "5", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F6 – bis 300 Mio. € Umsatz pro Jahr",  "value": "6", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F7 – über 300 Mio. € Umsatz pro Jahr", "value": "7", "nextQuestionID": "environdecMembershipType" }
     ]
   },
 
-  "existingDATA": {
-    "text": "Sind EPDs bereits vorhanden?",
+  "environdecMembershipType": {
+    "text": "Welche Unternehmensgröße trifft für Environdec zu?",
     "options": [
-      { "label": "Ja", "nextQuestionID": "existingEPD" },
-      { "label": "Nein", "nextQuestionID": "newEPD" }
+      { "label": "Micro Business (bis 10 MA, bis 2 Mio. € Umsatz)",         "value": "micro",         "nextQuestionID": "existingValidEPDs" },
+      { "label": "Small & Medium Business (bis 250 MA, bis 50 Mio. € Umsatz)", "value": "sme",        "nextQuestionID": "existingValidEPDs" },
+      { "label": "Multinational Business (über 250 MA oder über 50 Mio. € Umsatz)", "value": "multinational", "nextQuestionID": "existingValidEPDs" }
+    ]
+  },
+
+  "existingValidEPDs": {
+    "text": "Wie viele gültige EPDs besitzt Ihr Unternehmen aktuell?",
+    "type": "number",
+    "nextQuestionID": "epdHubModel"
+  },
+
+    "epdHubModel": {
+    "text": "Welches EPD Hub-Modell passt zu Ihrem Vorhaben?",
+    "options": [
+      {
+        "label": "EPD Pack – bis 100 EPDs, einzelne Projekte",
+        "value": "pack",
+        "nextQuestionID": "epdHubComplexity"
+      },
+      {
+        "label": "Scaling Pack – ab 100 EPDs via pre-verified Tools",
+        "value": "scaling",
+        "nextQuestionID": "epdHubComplexity"
+      }
+    ]
+  },
+
+  "epdHubComplexity": {
+    "text": "Handelt es sich um Simple oder Complex Products?",
+    "hint": "Simple: Standardprodukte mit einer Funktion. Complex: Produkte mit mehreren Komponenten oder Varianten. Details: epdhub.com/about-epd-hub/pricing",
+    "options": [
+      {
+        "label": "Simple Product",
+        "value": "simple",
+        "nextQuestionID": "existingEPD"
+      },
+      {
+        "label": "Complex Product",
+        "value": "complex",
+        "nextQuestionID": "existingEPD"
+      }
     ]
   },
 

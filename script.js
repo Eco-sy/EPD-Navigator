@@ -12,9 +12,9 @@
 // Zustand
 // ---------------------------------------------------------------------------
 let questions             = {};
-let customerData          = {};   // wird aus customer.json geladen
+// let customerData          = {};   // wird aus customer.json geladen
 let answers               = {};
-let currentQuestion       = "start";
+let currentQuestion       = "membershipType";
 let questionQueue         = [];
 let questionnaireFinished = false;
 
@@ -33,15 +33,15 @@ function getNextQuestionId(question, option) {
 
 function showQuestion() {
   const container    = document.getElementById("question-container");
-  const submitButton = document.getElementById("submit-button");
+  // const submitButton = document.getElementById("submit-button");
   container.innerHTML = "";
-  submitButton.disabled = true;
+  // submitButton.disabled = true;
 
   const q = questions[currentQuestion];
   if (!q || currentQuestion === null || currentQuestion === "ENDE") {
     questionnaireFinished = true;
     container.appendChild(renderResult());
-    submitButton.disabled = false;
+    // submitButton.disabled = false;
     return;
   }
 
@@ -80,7 +80,8 @@ function showQuestion() {
     const input = document.createElement("input");
     input.type = type;
     if (type === "number") { input.min = "0"; input.value = "0"; }
-    if (currentQuestion === "extendEPD") {input.max = customerData.existingValidEPDs;}
+    // if (currentQuestion === "extendEPD") {input.max = customerData.existingValidEPDs;}
+    if (currentQuestion === "extendEPD") {input.max = Number(answers.existingValidEPDs) || 0;}
 
     const btn = document.createElement("button");
     btn.innerText = "Weiter";
@@ -116,6 +117,20 @@ function mapToCalculatorInput() {
     newEPDs:           Number(answers.newEPD)    || 0,
     newEPDsFromFamily: Number(answers.familyEPD) || 0,
     reworkEPDs:        0,   // noch kein Fragebogen-Feld; bei Bedarf ergänzen
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Stammdaten aus Fragebogen-Antworten ableiten
+// ---------------------------------------------------------------------------
+function buildCustomerData() {
+  return {
+    // companyName:              answers.start                    || "Unbekannt",
+    companyName:              "",
+    membershipType:           answers.membershipType           || "non-associate",
+    membershipGroup:          Number(answers.membershipGroup)  || null,
+    environdecMembershipType: answers.environdecMembershipType || "sme",
+    existingValidEPDs:        Number(answers.existingValidEPDs)|| 0,
   };
 }
 
@@ -163,6 +178,7 @@ function renderResult() {
   }
 
   // ── Gebührenberechnung ──────────────────────────────────────────────────
+  const customerData = buildCustomerData();
   let result;
   try {
     result = calculateIBU(customerData, calcInput);
@@ -310,6 +326,76 @@ costSection.innerHTML = `
     </div>`;
 
   wrapper.appendChild(costSectionEnv);
+
+  // ── EPD Hub ───────────────────────────────────────────────────────────────
+  let resultHub;
+  try {
+    resultHub = calculateEPDHub(customerData, {
+      epdHubModel:      answers.epdHubModel,
+      epdHubComplexity: answers.epdHubComplexity,
+      newEPDs:          calcInput.newEPDs,
+    });
+  } catch (err) {
+    const errMsg = document.createElement("p");
+    errMsg.style.cssText = "color:red; margin-top:12px;";
+    errMsg.innerText = "EPD Hub – Fehler bei der Berechnung: " + err.message;
+    wrapper.appendChild(errMsg);
+    return wrapper;
+  }
+ 
+  const costSectionHub = document.createElement("details");
+  costSectionHub.className = "provider-box";
+  costSectionHub.open = false;
+  costSectionHub.innerHTML = `
+    <summary class="provider-summary">
+      <span>
+        <span class="provider-summary-title">EPD Hub</span><br>
+        <span class="provider-summary-sub">
+          ${resultHub.package.label}
+        </span>
+      </span>
+      <span class="provider-summary-total">${fmt(resultHub.totalFirstYear)}</span>
+    </summary>
+    <div class="provider-content">
+      <p style="color:#94a3b8; margin:0 0 20px; font-size:0.8rem;">
+        Netto zzgl. MwSt. · Paketpreis inkl. Verifizierung & Publishing
+      </p>
+ 
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:20px;">
+        ${metricCard("Paketpreis",     fmt(resultHub.package.price),        resultHub.package.label)}
+        ${metricCard("Ø pro EPD",      fmt(resultHub.package.pricePerEPD),  "bei " + resultHub.inputs.packageSize + " EPDs im Paket")}
+        ${metricCard("Neue EPDs",      resultHub.inputs.newEPDs,            "Angefragte Menge")}
+        ${metricCard("Jährliche Kosten", "—",                               "Kein Mitgliedsbeitrag")}
+      </div>
+ 
+      <div class="summary-item" style="margin-bottom:14px;">
+        <p class="summary-question" style="margin-bottom:8px;">Paketdetails</p>
+        ${costTable([
+          ["Modell",          resultHub.inputs.model === "pack" ? "EPD Pack" : "Scaling Pack"],
+          ["Produkttyp",      resultHub.inputs.complexity === "simple" ? "Simple Product" : "Complex Product"],
+          ["Angefragte EPDs", resultHub.inputs.newEPDs],
+          ["Paketstufe",      "bis " + resultHub.inputs.packageSize + " EPDs"],
+        ], ["Paketpreis gesamt", fmt(resultHub.package.price)])}
+      </div>
+ 
+      <div class="summary-item" style="background:#f0fdf4; border:1px solid #bbf7d0; margin-bottom:14px;">
+        <p style="margin:0; font-size:0.8rem; color:#15803d;">${resultHub.package.note}</p>
+      </div>
+ 
+      <div class="summary-item" style="border:2px solid #2563eb;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
+          <span style="font-weight:700; font-size:1rem; color:#0f172a;">Gesamtpreis (netto)</span>
+          <span style="font-weight:700; font-size:1.4rem; color:#2563eb;">${fmt(resultHub.totalFirstYear)}</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:6px; color:#64748b; font-size:0.875rem;">
+          <span>inkl. MwSt.</span>
+          <span>Steuersatz abhängig vom Land</span>
+        </div>
+      </div>
+    </div>`;
+ 
+  wrapper.appendChild(costSectionHub);
+
   return wrapper;
 }
 
@@ -346,6 +432,7 @@ function submitAnswers() {
     alert("Bitte beantworten Sie zuerst alle Fragen.");
     return;
   }
+  const customerData = buildCustomerData();
   const entry = {
     timestamp:   new Date().toISOString(),
     customerData,
@@ -364,15 +451,18 @@ function submitAnswers() {
 // ---------------------------------------------------------------------------
 async function loadData() {
   try {
-    const [questionsRes, customerRes] = await Promise.all([
-      fetch("./fragenkatalog.json"),
-      fetch("./customer.json"),
-    ]);
-    if (!questionsRes.ok) throw new Error(`fragenkatalog.json: ${questionsRes.status}`);
-    if (!customerRes.ok)  throw new Error(`customer.json: ${customerRes.status}`);
+    // const [questionsRes, customerRes] = await Promise.all([
+    //   fetch("./fragenkatalog.json"),
+    //   fetch("./customer.json"),
+    // ]);
+    // if (!questionsRes.ok) throw new Error(`fragenkatalog.json: ${questionsRes.status}`);
+    // if (!customerRes.ok)  throw new Error(`customer.json: ${customerRes.status}`);
 
-    questions    = await questionsRes.json();
-    customerData = await customerRes.json();
+    // questions    = await questionsRes.json();
+    // customerData = await customerRes.json();
+    const res = await fetch("./fragenkatalog.json");
+    if (!res.ok) throw new Error(`fragenkatalog.json: ${res.status}`);
+    questions = await res.json();
 
   } catch (error) {
     document.getElementById("question-container").innerHTML =
