@@ -96,6 +96,14 @@ function calculateEPDHub(customerData, answers) {
   const packagePrice = tier[complexity];
   const pricePerEPD  = Math.round(packagePrice / tier.upTo);
 
+  const projection = Array.from({ length: 5 }, (_, idx) => ({
+    year:       idx + 1,
+    oneTime:    idx === 0 ? packagePrice : 0,
+    annual:     0,
+    total:      idx === 0 ? packagePrice : 0,
+    cumulative: packagePrice, // bleibt konstant, keine Folgekosten
+  }));
+
   return {
     provider:     'EPD Hub',
     companyName:  customerData.companyName,
@@ -109,5 +117,6 @@ function calculateEPDHub(customerData, answers) {
       note:        'Inkl. bis zu 3 Verifikationsrunden, Publishing und digitalem Workflow. Kein Mitgliedsbeitrag.',
     },
     totalFirstYear: packagePrice,
+    projection,
   };
 }

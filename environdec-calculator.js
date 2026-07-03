@@ -119,6 +119,16 @@ function calculateEnvirondec(customerData, answers) {
   const totalValidEPDs   = existingEPDs + newEPDs;
   const totalAnnualCosts = membershipFee;
 
+  const projection = Array.from({ length: 5 }, (_, idx) => ({
+    year:  idx + 1,
+    oneTime: idx === 0 ? totalOneTimeCosts : 0,
+    annual:  totalAnnualCosts,
+    total:   (idx === 0 ? totalOneTimeCosts : 0) + totalAnnualCosts,
+  }));
+  projection.forEach((row, idx) => {
+    row.cumulative = projection.slice(0, idx + 1).reduce((s, r) => s + r.total, 0);
+  });
+
   return {
     provider:     'Environdec',
     companyName:  customerData.companyName,
@@ -151,5 +161,6 @@ function calculateEnvirondec(customerData, answers) {
       total: totalAnnualCosts,
     },
     totalFirstYear: totalOneTimeCosts + totalAnnualCosts,
+    projection,
   };
 }

@@ -179,6 +179,7 @@ function renderResult() {
 
   // ── Gebührenberechnung ──────────────────────────────────────────────────
   const customerData = buildCustomerData();
+  // ── IBU ────────────────────────────────────────────────────────────
   let result;
   try {
     result = calculateIBU(customerData, calcInput);
@@ -240,6 +241,11 @@ costSection.innerHTML = `
           ),
         ], ["Summe jährlich", fmt(result.annual.total)])}
       </div>
+
+      <div class="summary-item" style="margin-bottom:14px;">
+        <p class="summary-question" style="margin-bottom:12px;">5-Jahres-Projektion</p>
+        ${projectionTable(result.projection)}
+      </div>      
 
       <div class="summary-item" style="border:2px solid #2563eb;">
         <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
@@ -312,6 +318,11 @@ costSection.innerHTML = `
           [resultEnv.annual.membershipFee.label, fmt(resultEnv.annual.membershipFee.total)],
         ], ["Summe jährlich", fmt(resultEnv.annual.total)])}
       </div>
+      
+      <div class="summary-item" style="margin-bottom:14px;">
+        <p class="summary-question" style="margin-bottom:12px;">5-Jahres-Projektion</p>
+        ${projectionTable(resultEnv.projection)}
+      </div>      
 
       <div class="summary-item" style="border:2px solid #2563eb;">
         <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
@@ -330,10 +341,11 @@ costSection.innerHTML = `
   // ── EPD Hub ───────────────────────────────────────────────────────────────
   let resultHub;
   try {
+    const epdHubCount = calcInput.newEPDs > 0 ? calcInput.newEPDs : calcInput.renewEPDs;
     resultHub = calculateEPDHub(customerData, {
       epdHubModel:      answers.epdHubModel,
       epdHubComplexity: answers.epdHubComplexity,
-      newEPDs:          calcInput.newEPDs,
+      newEPDs:          epdHubCount,
     });
   } catch (err) {
     const errMsg = document.createElement("p");
@@ -381,7 +393,12 @@ costSection.innerHTML = `
       <div class="summary-item" style="background:#f0fdf4; border:1px solid #bbf7d0; margin-bottom:14px;">
         <p style="margin:0; font-size:0.8rem; color:#15803d;">${resultHub.package.note}</p>
       </div>
- 
+
+      <div class="summary-item" style="margin-bottom:14px;">
+        <p class="summary-question" style="margin-bottom:12px;">5-Jahres-Projektion</p>
+        ${projectionTable(resultHub.projection)}
+      </div>      
+
       <div class="summary-item" style="border:2px solid #2563eb;">
         <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
           <span style="font-weight:700; font-size:1rem; color:#0f172a;">Gesamtpreis (netto)</span>
@@ -421,6 +438,39 @@ function costTable(rows, totalRow) {
         <td style="padding:8px 0 0; font-weight:700; color:#0f172a;">${totalRow[0]}</td>
         <td style="padding:8px 0 0; text-align:right; font-weight:700; color:#0f172a;">${totalRow[1]}</td>
       </tr>
+    </table>`;
+}
+
+function projectionTable(projection) {
+  const fmt = n => n === 0 ? "—"
+    : new Intl.NumberFormat("de-DE", { style:"currency", currency:"EUR", maximumFractionDigits:0 }).format(n);
+
+  const headerStyle = "padding:6px 8px; text-align:right; font-size:0.75rem; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:0.04em;";
+  const cellStyle   = "padding:6px 8px; text-align:right; font-size:0.85rem; color:#334155;";
+  const totalStyle  = "padding:6px 8px; text-align:right; font-size:0.85rem; font-weight:700; color:#0f172a;";
+  const cumStyle    = "padding:6px 8px; text-align:right; font-size:0.85rem; font-weight:700; color:#2563eb;";
+
+  const rows = projection.map(row => `
+    <tr style="border-top:1px solid #f1f5f9;">
+      <td style="padding:6px 8px; font-size:0.85rem; color:#475569;">Jahr ${row.year}</td>
+      <td style="${cellStyle}">${fmt(row.oneTime)}</td>
+      <td style="${cellStyle}">${fmt(row.annual)}</td>
+      <td style="${totalStyle}">${fmt(row.total)}</td>
+      <td style="${cumStyle}">${fmt(row.cumulative)}</td>
+    </tr>`).join("");
+
+  return `
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <th style="${headerStyle} text-align:left;"></th>
+          <th style="${headerStyle}">Einmalig</th>
+          <th style="${headerStyle}">Jährlich</th>
+          <th style="${headerStyle}">Gesamt</th>
+          <th style="${headerStyle}">Kumuliert</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
     </table>`;
 }
 

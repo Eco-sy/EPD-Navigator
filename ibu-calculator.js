@@ -9,8 +9,13 @@
  */
 
 // ---------------------------------------------------------------------------
-// Einmalige Gebühren – identisch für beide Mitgliedstypen (§ 1.1)
+// Konstanten
 // ---------------------------------------------------------------------------
+
+// Jahresbeiträge nach Firmengrößengruppe F1–F7 (nur für Direktmitglieder, § 2.1)
+const MEMBERSHIP_FEES = { 1:600, 2:900, 3:1200, 4:1950, 5:3300, 6:4450, 7:5400 };
+
+// Einmalige Gebühren – identisch für beide Mitgliedstypen (§ 1.1)
 const ONE_TIME_FEES = {
   newEPD:     2700,
   familyEPD:  500,
@@ -18,23 +23,9 @@ const ONE_TIME_FEES = {
   renewalEPD: 1500,
 };
 
-// ---------------------------------------------------------------------------
-// Tarif: Nicht-Verbandsmitglied (§ 2.1.d – 3-facher Satz)
-// ---------------------------------------------------------------------------
-const NON_ASSOCIATE_MEMBERSHIP_FEES = { 1:600, 2:900, 3:1200, 4:1950, 5:3300, 6:4450, 7:5400 };
-
-const NON_ASSOCIATE_SIGN_FEE_TIERS = [
-  { from:1, to:1,    fee:2880 },
-  { from:2, to:2,    fee:1440 },
-  { from:3, to:3,    fee:720  },
-  { from:4, to:4,    fee:540  },
-  { from:5, to:null, fee:360  },
-];
-
-// ---------------------------------------------------------------------------
-// Tarif: Verbandsmitglied (§ 2.1.a – regulärer Satz, Mitgliedsbeitrag über Verband)
-// ---------------------------------------------------------------------------
-const ASSOCIATE_SIGN_FEE_TIERS = [
+// Zeichenentgelt-Staffel – gilt für ordentliche UND assoziierte Mitglieder (§ 2.1.a)
+// Nicht-Mitglieder zahlen den 3-fachen Satz (§ 2.1.d)
+const SIGN_FEE_TIERS = [
   { from:1,  to:1,    fee:960 },
   { from:2,  to:2,    fee:480 },
   { from:3,  to:3,    fee:240 },
@@ -124,29 +115,41 @@ function calculateIBU(customerData, answers) {
   const totalOneTimeCosts = Object.values(verificationCosts).reduce((s, c) => s + c.total, 0);
 
   // --- Jährliche Kosten (abhängig vom Mitgliedstyp) ---
-  const totalValidEPDs = existingEPDs + newEPDs + reworkEPDs;
+  // Überarbeitete EPDs (reworkEPDs) sind Teil der bestehenden EPDs und werden
+  // daher NICHT zusätzlich gezählt. Verlängerungen (renewEPDs) ändern die
+  // Gesamtzahl ebenfalls nicht – sie erhalten lediglich bestehende EPDs.
+  const totalValidEPDs = existingEPDs + newEPDs;
 
   let membershipFee;
   let membershipFeeLabel;
-  let signFeeTiers;
 
   if (membershipType === "non-associate") {
     const group = Number(customerData.membershipGroup);
-    if (!NON_ASSOCIATE_MEMBERSHIP_FEES[group]) {
+    if (!MEMBERSHIP_FEES[group]) {
       throw new Error(`Ungültige Mitgliedschaftsgruppe: ${group}. Erlaubt: 1–7.`);
     }
-    membershipFee      = NON_ASSOCIATE_MEMBERSHIP_FEES[group];
+    membershipFee      = MEMBERSHIP_FEES[group];
     membershipFeeLabel = `Mitgliedsbeitrag IBU (Gruppe F${group})`;
-    signFeeTiers       = NON_ASSOCIATE_SIGN_FEE_TIERS;
   } else {
-    // associate: Mitgliedsbeitrag läuft über den Verband, nicht direkt an IBU
+    // associate: Mitgliedsbeitrag läuft über den Verband
     membershipFee      = 0;
     membershipFeeLabel = 'Mitgliedsbeitrag (über Verband abgerechnet)';
-    signFeeTiers       = ASSOCIATE_SIGN_FEE_TIERS;
   }
 
-  const signFees         = calcSignFees(signFeeTiers, totalValidEPDs);
+  const signFees         = calcSignFees(SIGN_FEE_TIERS, totalValidEPDs);
   const totalAnnualCosts = membershipFee + signFees.total;
+
+  const projection = Array.from({ length: 5 }, (_, idx) => ({
+    year:        idx + 1,
+    oneTime:     idx === 0 ? totalOneTimeCosts : 0,
+    annual:      totalAnnualCosts,
+    total:       (idx === 0 ? totalOneTimeCosts : 0) + totalAnnualCosts,
+    cumulative:  (idx === 0 ? totalOneTimeCosts : 0) + totalAnnualCosts * (idx + 1),
+  }));
+  // Kumulative Summe korrekt aufbauen
+  projection.forEach((row, idx) => {
+    row.cumulative = projection.slice(0, idx + 1).reduce((s, r) => s + r.total, 0);
+  });
 
   return {
     provider:     'IBU',
@@ -168,5 +171,6 @@ function calculateIBU(customerData, answers) {
       total: totalAnnualCosts,
     },
     totalFirstYear: totalOneTimeCosts + totalAnnualCosts,
+    projection,
   };
 }
