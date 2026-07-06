@@ -200,19 +200,19 @@ costSection.innerHTML = `
     <span class="provider-summary-total">${fmt(result.totalFirstYear)}</span>
   </summary>
   <div class="provider-content">
-    <p style="color:#94a3b8; margin:0 0 20px; font-size:0.8rem;">
+    <p class="provider-meta">
       Netto zzgl. 19 % MwSt. · Gebührenordnung ab 01.09.2025
     </p>
 
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:20px;">
+      <div class="metric-grid">
         ${metricCard("Einmalige Kosten",  fmt(result.oneTime.total),  "Verifizierung & Bearbeitung")}
         ${metricCard("Jährliche Kosten",  fmt(result.annual.total),   "Mitglied + Zeichenentgelte")}
         ${metricCard("Gesamt Jahr 1",     fmt(result.totalFirstYear), "Einmalig + erste Jahresgebühren")}
         ${metricCard("EPDs nach Vorgang", i.totalValidEPDsAfter,      "Gültige Deklarationen")}
       </div>
 
-      <div class="summary-item" style="margin-bottom:14px;">
-        <p class="summary-question" style="margin-bottom:12px;">Einmalige Kosten (Verifizierung)</p>
+      <div class="summary-item cost-section">
+        <p class="cost-section-title">Einmalige Kosten (Verifizierung)</p>
         ${costTable(
           Object.values(result.oneTime.items)
             .filter(x => x.count > 0)
@@ -221,8 +221,8 @@ costSection.innerHTML = `
         )}
       </div>
 
-      <div class="summary-item" style="margin-bottom:14px;">
-        <p class="summary-question" style="margin-bottom:12px;">Jährliche Kosten</p>
+      <div class="summary-item cost-section">
+        <p class="cost-section-title">Jährliche Kosten</p>
         ${costTable([
           [
             result.annual.items.membershipFee.label,
@@ -234,17 +234,17 @@ costSection.innerHTML = `
         ], ["Summe jährlich", fmt(result.annual.total)])}
       </div>
 
-      <div class="summary-item" style="margin-bottom:14px;">
-        <p class="summary-question" style="margin-bottom:12px;">5-Jahres-Projektion</p>
+      <div class="summary-item cost-section">
+        <p class="cost-section-title">5-Jahres-Projektion</p>
         ${projectionTable(result.projection)}
       </div>      
 
-      <div class="summary-item" style="border:2px solid #2563eb;">
-        <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
-          <span style="font-weight:700; font-size:1rem; color:#0f172a;">Gesamt Jahr 1 (netto)</span>
-          <span style="font-weight:700; font-size:1.4rem; color:#2563eb;">${fmt(result.totalFirstYear)}</span>
+      <div class="summary-item total-box">
+        <div class="total-box-row">
+          <span class="total-box-label">Gesamt Jahr 1 (netto)</span>
+          <span class="total-box-amount">${fmt(result.totalFirstYear)}</span>
         </div>
-        <div style="display:flex; justify-content:space-between; margin-top:6px; color:#64748b; font-size:0.875rem;">
+        <div class="total-box-vat">
           <span>inkl. 19 % MwSt.</span>
           <span>${fmt(result.totalFirstYear * 1.19)}</span>
         </div>
@@ -281,19 +281,19 @@ costSection.innerHTML = `
       <span class="provider-summary-total">${fmt(resultEnv.totalFirstYear)}</span>
     </summary>
     <div class="provider-content">
-      <p style="color:#94a3b8; margin:0 0 20px; font-size:0.8rem;">
+      <p class="provider-meta">
         Netto zzgl. MwSt.
       </p>
 
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:20px;">
+      <div class="metric-grid">
         ${metricCard("Einmalige Kosten",  fmt(resultEnv.oneTime.total),  "Verifizierung (gestaffelt)")}
         ${metricCard("Jährliche Kosten",  fmt(resultEnv.annual.total),   "Jahresmitgliedschaft")}
         ${metricCard("Gesamt Jahr 1",     fmt(resultEnv.totalFirstYear), "Einmalig + erste Jahresgebühren")}
         ${metricCard("EPDs nach Vorgang", iEnv.totalValidEPDsAfter,      "Gültige Deklarationen")}
       </div>
 
-      <div class="summary-item" style="margin-bottom:14px;">
-        <p class="summary-question" style="margin-bottom:12px;">Einmalige Kosten (Verifizierung)</p>
+      <div class="summary-item cost-section">
+        <p class="cost-section-title">Einmalige Kosten (Verifizierung)</p>
         ${costTable([
           ...resultEnv.oneTime.newEPDs.breakdown.map(({ position, fee }) =>
             [`Neue EPD (Position ${position})`, fmt(fee)]
@@ -304,24 +304,24 @@ costSection.innerHTML = `
         ], ["Summe einmalig", fmt(resultEnv.oneTime.total)])}
       </div>
 
-      <div class="summary-item" style="margin-bottom:14px;">
-        <p class="summary-question" style="margin-bottom:12px;">Jährliche Kosten</p>
+      <div class="summary-item cost-section">
+        <p class="cost-section-title">Jährliche Kosten</p>
         ${costTable([
           [resultEnv.annual.membershipFee.label, fmt(resultEnv.annual.membershipFee.total)],
         ], ["Summe jährlich", fmt(resultEnv.annual.total)])}
       </div>
       
-      <div class="summary-item" style="margin-bottom:14px;">
-        <p class="summary-question" style="margin-bottom:12px;">5-Jahres-Projektion</p>
+      <div class="summary-item cost-section">
+        <p class="cost-section-title">5-Jahres-Projektion</p>
         ${projectionTable(resultEnv.projection)}
       </div>      
 
-      <div class="summary-item" style="border:2px solid #2563eb;">
-        <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
-          <span style="font-weight:700; font-size:1rem; color:#0f172a;">Gesamt Jahr 1 (netto)</span>
-          <span style="font-weight:700; font-size:1.4rem; color:#2563eb;">${fmt(resultEnv.totalFirstYear)}</span>
+      <div class="summary-item total-box">
+        <div class="total-box-row">
+          <span class="total-box-label">Gesamt Jahr 1 (netto)</span>
+          <span class="total-box-amount">${fmt(resultEnv.totalFirstYear)}</span>
         </div>
-        <div style="display:flex; justify-content:space-between; margin-top:6px; color:#64748b; font-size:0.875rem;">
+        <div class="total-box-vat">
           <span>inkl. MwSt.</span>
           <span>Steuersatz abhängig vom Land</span>
         </div>
@@ -360,42 +360,41 @@ costSection.innerHTML = `
       <span class="provider-summary-total">${fmt(resultHub.totalFirstYear)}</span>
     </summary>
     <div class="provider-content">
-      <p style="color:#94a3b8; margin:0 0 20px; font-size:0.8rem;">
+      <p class="provider-meta">
         Netto zzgl. MwSt. · Paketpreis inkl. Verifizierung & Publishing
       </p>
  
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:20px;">
-        ${metricCard("Paketpreis",     fmt(resultHub.package.price),        resultHub.package.label)}
-        ${metricCard("Ø pro EPD",      fmt(resultHub.package.pricePerEPD),  "bei " + resultHub.inputs.packageSize + " EPDs im Paket")}
-        ${metricCard("Neue EPDs",      resultHub.inputs.newEPDs,            "Angefragte Menge")}
-        ${metricCard("Jährliche Kosten", "—",                               "Kein Mitgliedsbeitrag")}
+      <div class="metric-grid">
+        ${metricCard("Paketpreis",       fmt(resultHub.package.price),       resultHub.package.label)}
+        ${metricCard("Ø pro EPD",        fmt(resultHub.package.pricePerEPD), "bei " + resultHub.inputs.packageStep + " EPDs im Paket")}
+        ${metricCard("Neue EPDs",        resultHub.inputs.newEPDs,           "Angefragte Menge")}
+        ${metricCard("Jährliche Kosten", "—",                                "Kein Mitgliedsbeitrag")}
       </div>
  
-      <div class="summary-item" style="margin-bottom:14px;">
-        <p class="summary-question" style="margin-bottom:8px;">Paketdetails</p>
+      <div class="summary-item cost-section">
+        <p class="cost-section-title">Paketdetails</p>
         ${costTable([
-          ["Modell",          resultHub.inputs.model === "pack" ? "EPD Pack" : "Scaling Pack"],
           ["Produkttyp",      resultHub.inputs.complexity === "simple" ? "Simple Product" : "Complex Product"],
           ["Angefragte EPDs", resultHub.inputs.newEPDs],
-          ["Paketstufe",      "bis " + resultHub.inputs.packageSize + " EPDs"],
+          ["Paketstufe",      "bis " + resultHub.inputs.packageStep + " EPDs"],
         ], ["Paketpreis gesamt", fmt(resultHub.package.price)])}
       </div>
  
-      <div class="summary-item" style="background:#f0fdf4; border:1px solid #bbf7d0; margin-bottom:14px;">
-        <p style="margin:0; font-size:0.8rem; color:#15803d;">${resultHub.package.note}</p>
+      <div class="summary-item note-box">
+        <p>${resultHub.package.note}</p>
       </div>
 
-      <div class="summary-item" style="margin-bottom:14px;">
-        <p class="summary-question" style="margin-bottom:12px;">5-Jahres-Projektion</p>
+      <div class="summary-item cost-section">
+        <p class="cost-section-title">5-Jahres-Projektion</p>
         ${projectionTable(resultHub.projection)}
       </div>      
 
-      <div class="summary-item" style="border:2px solid #2563eb;">
-        <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
-          <span style="font-weight:700; font-size:1rem; color:#0f172a;">Gesamtpreis (netto)</span>
-          <span style="font-weight:700; font-size:1.4rem; color:#2563eb;">${fmt(resultHub.totalFirstYear)}</span>
+      <div class="summary-item total-box">
+        <div class="total-box-row">
+          <span class="total-box-label">Gesamtpreis (netto)</span>
+          <span class="total-box-amount">${fmt(resultHub.totalFirstYear)}</span>
         </div>
-        <div style="display:flex; justify-content:space-between; margin-top:6px; color:#64748b; font-size:0.875rem;">
+        <div class="total-box-vat">
           <span>inkl. MwSt.</span>
           <span>Steuersatz abhängig vom Land</span>
         </div>
@@ -403,31 +402,30 @@ costSection.innerHTML = `
     </div>`;
  
   wrapper.appendChild(costSectionHub);
-
   return wrapper;
 }
 
 function metricCard(label, value, sub) {
   return `
-    <div class="summary-item" style="text-align:center;">
-      <p style="margin:0 0 4px; font-size:0.75rem; color:#64748b; text-transform:uppercase; letter-spacing:0.05em;">${label}</p>
-      <p style="margin:0 0 2px; font-size:1.25rem; font-weight:700; color:#0f172a;">${value}</p>
-      <p style="margin:0; font-size:0.75rem; color:#94a3b8;">${sub}</p>
+    <div class="summary-item metric-card">
+      <p class="metric-card-label">${label}</p>
+      <p class="metric-card-value">${value}</p>
+      <p class="metric-card-sub">${sub}</p>
     </div>`;
 }
 
 function costTable(rows, totalRow) {
   const rowsHtml = rows.map(([l, v]) => `
     <tr>
-      <td style="padding:5px 0; color:#475569; font-size:0.875rem;">${l}</td>
-      <td style="padding:5px 0; text-align:right; font-size:0.875rem;">${v}</td>
+      <td>${l}</td>
+      <td>${v}</td>
     </tr>`).join("");
   return `
-    <table style="width:100%; border-collapse:collapse;">
+    <table class="cost-table">
       ${rowsHtml}
-      <tr style="border-top:1px solid #e2e8f0;">
-        <td style="padding:8px 0 0; font-weight:700; color:#0f172a;">${totalRow[0]}</td>
-        <td style="padding:8px 0 0; text-align:right; font-weight:700; color:#0f172a;">${totalRow[1]}</td>
+      <tr class="cost-table-total">
+        <td>${totalRow[0]}</td>
+        <td>${totalRow[1]}</td>
       </tr>
     </table>`;
 }
@@ -436,29 +434,24 @@ function projectionTable(projection) {
   const fmt = n => n === 0 ? "—"
     : new Intl.NumberFormat("de-DE", { style:"currency", currency:"EUR", maximumFractionDigits:0 }).format(n);
 
-  const headerStyle = "padding:6px 8px; text-align:right; font-size:0.75rem; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:0.04em;";
-  const cellStyle   = "padding:6px 8px; text-align:right; font-size:0.85rem; color:#334155;";
-  const totalStyle  = "padding:6px 8px; text-align:right; font-size:0.85rem; font-weight:700; color:#0f172a;";
-  const cumStyle    = "padding:6px 8px; text-align:right; font-size:0.85rem; font-weight:700; color:#2563eb;";
-
   const rows = projection.map(row => `
-    <tr style="border-top:1px solid #f1f5f9;">
-      <td style="padding:6px 8px; font-size:0.85rem; color:#475569;">Jahr ${row.year}</td>
-      <td style="${cellStyle}">${fmt(row.oneTime)}</td>
-      <td style="${cellStyle}">${fmt(row.annual)}</td>
-      <td style="${totalStyle}">${fmt(row.total)}</td>
-      <td style="${cumStyle}">${fmt(row.cumulative)}</td>
+    <tr>
+      <td>Jahr ${row.year}</td>
+      <td>${fmt(row.oneTime)}</td>
+      <td>${fmt(row.annual)}</td>
+      <td class="col-total">${fmt(row.total)}</td>
+      <td class="col-cumulative">${fmt(row.cumulative)}</td>
     </tr>`).join("");
 
   return `
-    <table style="width:100%; border-collapse:collapse;">
+    <table class="projection-table">
       <thead>
-        <tr style="border-bottom:1px solid #e2e8f0;">
-          <th style="${headerStyle} text-align:left;"></th>
-          <th style="${headerStyle}">Einmalig</th>
-          <th style="${headerStyle}">Jährlich</th>
-          <th style="${headerStyle}">Gesamt</th>
-          <th style="${headerStyle}">Kumuliert</th>
+        <tr>
+          <th></th>
+          <th>Einmalig</th>
+          <th>Jährlich</th>
+          <th>Gesamt</th>
+          <th>Kumuliert</th>
         </tr>
       </thead>
       <tbody>${rows}</tbody>
