@@ -3,52 +3,49 @@
  * EPD Hub Gebührenrechner
  * Quelle: https://www.epdhub.com/about-epd-hub/pricing
  *
- * Zwei Modelle:
- *   "pack"    → EPD Packs (bis 100 EPDs, einzelne Projekte)
- *   "scaling" → Scaling Packs / Process Certification (ab 100 EPDs, via pre-verified Tools)
+ * Preise sind fixe Gesamtpreise pro exakter EPD-Anzahl (kein Stufenmodell).
+ * Für Mengen über 20 EPDs: Scaling Packs auf Anfrage (sales@epdhub.com).
+ *
+ * Zählregeln (EPD Hub):
+ *   - Standard EPD          = 1 EPD
+ *   - Ähnliche EPD (gleiche Zeit) = 0,5 EPD
+ *   - Averaged/Scaling EPD  = 2 EPDs
+ *   - Jede 5. EPD gratis (Buy 4, get 1 free)
  *
  * Produktkomplexität:
  *   "simple"  → Simple product
  *   "complex" → Complex product
- *
- * Preise sind Paketpreise (Gesamtpreis für die gewählte Paketstufe),
- * kein separater Mitgliedsbeitrag, keine Zeichenentgelte, keine Publishing-Gebühr.
  */
 
 // ---------------------------------------------------------------------------
-// Preistabellen
+// Preistabelle – exakte Preise pro EPD-Anzahl
 // ---------------------------------------------------------------------------
+const EPD_PRICES = {
+   1: { simple:  1995, complex:  2850 },
+   2: { simple:  2800, complex:  3600 },
+   3: { simple:  3600, complex:  4800 },
+   4: { simple:  4400, complex:  6200 },
+   5: { simple:  5000, complex:  7500 },
+   6: { simple:  5940, complex:  8700 },
+   7: { simple:  6860, complex:  9800 },
+   8: { simple:  7800, complex: 11000 },
+   9: { simple:  8730, complex: 12150 },
+  10: { simple:  9600, complex: 13000 },
+  15: { simple: 14100, complex: 18750 },
+  20: { simple: 18600, complex: 24000 },
+};
 
-// EPD Packs – bis 100 EPDs
-const EPD_PACK_TIERS = [
-  { upTo:   1, simple:   1995, complex:   2850 },
-  { upTo:   5, simple:   5000, complex:   7500 },
-  { upTo:  10, simple:   9600, complex:  13000 },
-  { upTo:  20, simple:  18600, complex:  24000 },
-  { upTo:  50, simple:  45000, complex:  55000 },
-  { upTo: 100, simple:  80000, complex:  99000 },
-];
-
-// Scaling Packs – ab 100 EPDs via pre-verified Tools
-const SCALING_PACK_TIERS = [
-  { upTo:   100, simple:  33000, complex:  49500 },
-  { upTo:   250, simple:  66000, complex:  99500 },
-  { upTo:   500, simple:  99000, complex: 149000 },
-  { upTo:  1000, simple: 132000, complex: 197000 },
-  { upTo:  2500, simple: 165000, complex: 249000 },
-  { upTo:  5000, simple: 265000, complex: 399000 },
-  { upTo: 10000, simple: 450000, complex: 699000 },
-];
+const EPD_PRICE_STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20];
+const EPD_PRICE_MAX   = 20;
 
 // ---------------------------------------------------------------------------
-// Hilfsfunktion
+// Hilfsfunktion – nächste verfügbare Paketstufe finden
 // ---------------------------------------------------------------------------
-
-function findTier(tiers, count) {
-  for (let i = 0; i < tiers.length; i++) {
-    if (count <= tiers[i].upTo) return { tier: tiers[i], index: i };
+function findPriceEntry(count) {
+  for (const step of EPD_PRICE_STEPS) {
+    if (count <= step) return { step, prices: EPD_PRICES[step] };
   }
-  return null;
+  return null; // über 20 EPDs → auf Anfrage
 }
 
 // ---------------------------------------------------------------------------
@@ -56,62 +53,54 @@ function findTier(tiers, count) {
 // ---------------------------------------------------------------------------
 
 /**
- * Berechnet die EPD Hub-Kosten.
- *
  * @param {Object} customerData
  *   @param {string} customerData.companyName
  *
  * @param {Object} answers
- *   @param {"pack"|"scaling"} answers.epdHubModel
  *   @param {"simple"|"complex"} answers.epdHubComplexity
  *   @param {number} answers.newEPDs
  */
 function calculateEPDHub(customerData, answers) {
-  const model      = answers.epdHubModel;
   const complexity = answers.epdHubComplexity;
   const newEPDs    = Math.max(0, Number(answers.newEPDs) || 0);
 
-  if (model !== "pack" && model !== "scaling") {
-    throw new Error(`Ungültiges Modell: "${model}". Erlaubt: "pack" | "scaling".`);
-  }
   if (complexity !== "simple" && complexity !== "complex") {
     throw new Error(`Ungültige Komplexität: "${complexity}". Erlaubt: "simple" | "complex".`);
   }
   if (newEPDs === 0) {
     throw new Error("Anzahl EPDs muss größer als 0 sein.");
   }
-
-  const tiers  = model === "pack" ? EPD_PACK_TIERS : SCALING_PACK_TIERS;
-  const result = findTier(tiers, newEPDs);
-
-  if (!result) {
-    const max = tiers[tiers.length - 1].upTo;
+  if (newEPDs > EPD_PRICE_MAX) {
     throw new Error(
-      `Anzahl EPDs (${newEPDs}) übersteigt das maximale Paket (${max} EPDs). ` +
-      `Bitte EPD Hub direkt kontaktieren.`
+      `Für mehr als ${EPD_PRICE_MAX} EPDs bietet EPD Hub Scaling Packs auf Anfrage an. ` +
+      `Bitte kontaktieren Sie sales@epdhub.com für ein individuelles Angebot.`
     );
   }
 
-  const { tier } = result;
-  const packagePrice = tier[complexity];
-  const pricePerEPD  = Math.round(packagePrice / tier.upTo);
+  const entry        = findPriceEntry(newEPDs);
+  const packagePrice = entry.prices[complexity];
+  const pricePerEPD  = Math.round(packagePrice / entry.step);
 
   const projection = Array.from({ length: 5 }, (_, idx) => ({
     year:       idx + 1,
     oneTime:    idx === 0 ? packagePrice : 0,
     annual:     0,
     total:      idx === 0 ? packagePrice : 0,
-    cumulative: packagePrice, // bleibt konstant, keine Folgekosten
+    cumulative: packagePrice,
   }));
 
   return {
     provider:     'EPD Hub',
     companyName:  customerData.companyName,
     calculatedAt: new Date().toISOString(),
-    inputs: { model, complexity, newEPDs, packageSize: tier.upTo },
+    inputs: {
+      complexity,
+      newEPDs,
+      packageStep: entry.step,
+    },
     package: {
-      label:       `${model === "pack" ? "EPD Pack" : "Scaling Pack"} – bis ${tier.upTo} EPDs (${complexity === "simple" ? "Simple" : "Complex"} Product)`,
-      size:        tier.upTo,
+      label:       `EPD Pack – ${entry.step} EPDs (${complexity === "simple" ? "Simple" : "Complex"} Product)`,
+      step:        entry.step,
       price:       packagePrice,
       pricePerEPD,
       note:        'Inkl. bis zu 3 Verifikationsrunden, Publishing und digitalem Workflow. Kein Mitgliedsbeitrag.',

@@ -14,7 +14,7 @@
 let questions             = {};
 // let customerData          = {};   // wird aus customer.json geladen
 let answers               = {};
-let currentQuestion       = "membershipType";
+let currentQuestion       = "start";
 let questionQueue         = [];
 let questionnaireFinished = false;
 
@@ -80,8 +80,7 @@ function showQuestion() {
     const input = document.createElement("input");
     input.type = type;
     if (type === "number") { input.min = "0"; input.value = "0"; }
-    // if (currentQuestion === "extendEPD") {input.max = customerData.existingValidEPDs;}
-    if (currentQuestion === "extendEPD") {input.max = Number(answers.existingValidEPDs) || 0;}
+    if (currentQuestion === "renewCount") { input.max = Number(answers.existingValidEPDs) || 0; }
 
     const btn = document.createElement("button");
     btn.innerText = "Weiter";
@@ -102,35 +101,28 @@ function showQuestion() {
 }
 
 // ---------------------------------------------------------------------------
-// Fragebogen-Antworten → calculateIBU-Eingaben mappen
-//
-// Fragebogen liefert z.B.:
-//   { start:"Ja", existingDATA:"Ja", existingEPD:"Beides", extendEPD:"2",
-//     newEPD:"3", familyEPD:"1" }
-//
-// customerData kommt aus customer.json und enthält:
-//   { companyName, membershipGroup, existingValidEPDs }
-// ---------------------------------------------------------------------------
-function mapToCalculatorInput() {
-  return {
-    renewEPDs:         Number(answers.extendEPD) || 0,
-    newEPDs:           Number(answers.newEPD)    || 0,
-    newEPDsFromFamily: Number(answers.familyEPD) || 0,
-    reworkEPDs:        0,   // noch kein Fragebogen-Feld; bei Bedarf ergänzen
-  };
-}
-
-// ---------------------------------------------------------------------------
 // Stammdaten aus Fragebogen-Antworten ableiten
 // ---------------------------------------------------------------------------
 function buildCustomerData() {
   return {
-    // companyName:              answers.start                    || "Unbekannt",
     companyName:              "",
-    membershipType:           answers.membershipType           || "non-associate",
-    membershipGroup:          Number(answers.membershipGroup)  || null,
-    environdecMembershipType: answers.environdecMembershipType || "sme",
-    existingValidEPDs:        Number(answers.existingValidEPDs)|| 0,
+    membershipType:           answers.ibuMembershipType           || "non-associate",
+    membershipGroup:          Number(answers.ibuMembershipGroup)  || null,
+    environdecMembershipType: answers.environdecMembershipType    || "sme",
+    existingValidEPDs:        Number(answers.existingValidEPDs)   || Number(answers.renewCount) || 0,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Fragebogen-Antworten → calculateIBU/calculateEnvirondec-Eingaben mappen
+// ---------------------------------------------------------------------------
+function mapToCalculatorInput() {
+  return {
+    renewEPDs:         Number(answers.renewCount)   || 0,
+    newEPDs:           Number(answers.newEPDCount)  || 0,
+    newEPDsFromFamily: Number(answers.familyEPD)    || 0,
+    reworkEPDs:        0,
+    epdHubComplexity:  answers.epdHubComplexity,
   };
 }
 
@@ -343,7 +335,6 @@ costSection.innerHTML = `
   try {
     const epdHubCount = calcInput.newEPDs > 0 ? calcInput.newEPDs : calcInput.renewEPDs;
     resultHub = calculateEPDHub(customerData, {
-      epdHubModel:      answers.epdHubModel,
       epdHubComplexity: answers.epdHubComplexity,
       newEPDs:          epdHubCount,
     });

@@ -1,59 +1,77 @@
 {
   "start": {
-    "text": "Wie lautet der Name Ihres Unternehmens?",
-    "type": "text",
-    "nextQuestionID": "membershipType"
-  },
-
-  "membershipType": {
-    "text": "Sind Sie Mitglied in einem Verband, der IBU-Mitglied ist?",
+    "text": "Was möchten Sie tun?",
     "options": [
-      { "label": "Ja, Verbandsmitglied",   "value": "associate",     "nextQuestionID": "environdecMembershipType" },
-      { "label": "Nein, kein Verbandsmitglied", "value": "non-associate", "nextQuestionID": "membershipGroup" }
+      { "label": "Neue EPDs veröffentlichen",          "value": "new",    "nextQuestionID": "newEPDCount" },
+      { "label": "Bestehende EPDs verlängern",         "value": "renew",  "nextQuestionID": "renewLocation" },
+      { "label": "Beides",                             "value": "both",   "nextQuestionID": ["newEPDCount", "renewLocation"] }
     ]
   },
 
-  "membershipGroup": {
-    "text": "In welche IBU-Mitgliedsbeitragsgruppe fällt Ihr Unternehmen?",
+  "newEPDCount": {
+    "text": "Wie viele neue EPDs möchten Sie veröffentlichen?",
+    "type": "number",
+    "nextQuestionID": "familyEPD"
+  },
+
+  "familyEPD": {
+    "text": "Wie viele dieser EPDs stammen aus der gleichen Produktfamilie (gleicher Hintergrundbericht, gleichzeitig eingereicht)?",
+    "hint": "Falls keine, geben Sie 0 ein.",
+    "type": "number",
+    "nextQuestionID": "ibuMembershipType"
+  },
+
+  "renewLocation": {
+    "text": "Bei welchem Anbieter liegen Ihre bestehenden EPDs?",
     "options": [
-      { "label": "F1 – bis 1 Mio. € Umsatz pro Jahr",    "value": "1", "nextQuestionID": "environdecMembershipType" },
-      { "label": "F2 – bis 3 Mio. € Umsatz pro Jahr",    "value": "2", "nextQuestionID": "environdecMembershipType" },
-      { "label": "F3 – bis 10 Mio. € Umsatz pro Jahr",   "value": "3", "nextQuestionID": "environdecMembershipType" },
-      { "label": "F4 – bis 30 Mio. € Umsatz pro Jahr",   "value": "4", "nextQuestionID": "environdecMembershipType" },
-      { "label": "F5 – bis 100 Mio. € Umsatz pro Jahr",  "value": "5", "nextQuestionID": "environdecMembershipType" },
-      { "label": "F6 – bis 300 Mio. € Umsatz pro Jahr",  "value": "6", "nextQuestionID": "environdecMembershipType" },
-      { "label": "F7 – über 300 Mio. € Umsatz pro Jahr", "value": "7", "nextQuestionID": "environdecMembershipType" }
+      { "label": "IBU",                  "value": "ibu",          "nextQuestionID": "renewCount" },
+      { "label": "Environdec",           "value": "environdec",   "nextQuestionID": "renewCount" },
+      { "label": "EPD Hub",              "value": "epdhub",       "nextQuestionID": "renewCount" },
+      { "label": "Mehrere Anbieter",     "value": "multiple",     "nextQuestionID": "renewCount" }
+    ]
+  },
+
+  "renewCount": {
+    "text": "Wie viele EPDs möchten Sie verlängern?",
+    "type": "number",
+    "nextQuestionID": "existingValidEPDs"
+  },
+
+  "existingValidEPDs": {
+    "text": "Wie viele gültige EPDs besitzt Ihr Unternehmen insgesamt aktuell?",
+    "type": "number",
+    "nextQuestionID": "ibuMembershipType"
+  },
+
+  "ibuMembershipType": {
+    "text": "Sind Sie für IBU Verbandsmitglied oder Direktmitglied?",
+    "hint": "Verbandsmitglieder sind über einen IBU-Mitgliedsverband angebunden. Der Mitgliedsbeitrag wird dann über den Verband abgerechnet.",
+    "options": [
+      { "label": "Verbandsmitglied",  "value": "associate",     "nextQuestionID": "environdecMembershipType" },
+      { "label": "Direktmitglied",    "value": "non-associate",  "nextQuestionID": "ibuMembershipGroup" }
+    ]
+  },
+
+  "ibuMembershipGroup": {
+    "text": "In welche IBU-Beitragsgruppe fällt Ihr Unternehmen?",
+    "hint": "Die Gruppe richtet sich nach dem Jahresumsatz Ihres Unternehmens.",
+    "options": [
+      { "label": "F1 – bis 1 Mio. € Umsatz",          "value": "1", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F2 – bis 3 Mio. € Umsatz",          "value": "2", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F3 – bis 10 Mio. € Umsatz",         "value": "3", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F4 – bis 30 Mio. € Umsatz",         "value": "4", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F5 – bis 100 Mio. € Umsatz",        "value": "5", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F6 – bis 300 Mio. € Umsatz",        "value": "6", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F7 – über 300 Mio. € Umsatz",       "value": "7", "nextQuestionID": "environdecMembershipType" }
     ]
   },
 
   "environdecMembershipType": {
-    "text": "Welche Unternehmensgröße trifft für Environdec zu?",
+    "text": "Welche Unternehmensgröße gilt für Environdec?",
     "options": [
-      { "label": "Micro Business (bis 10 MA, bis 2 Mio. € Umsatz)",         "value": "micro",         "nextQuestionID": "existingValidEPDs" },
-      { "label": "Small & Medium Business (bis 250 MA, bis 50 Mio. € Umsatz)", "value": "sme",        "nextQuestionID": "existingValidEPDs" },
-      { "label": "Multinational Business (über 250 MA oder über 50 Mio. € Umsatz)", "value": "multinational", "nextQuestionID": "existingValidEPDs" }
-    ]
-  },
-
-  "existingValidEPDs": {
-    "text": "Wie viele gültige EPDs besitzt Ihr Unternehmen aktuell?",
-    "type": "number",
-    "nextQuestionID": "epdHubModel"
-  },
-
-    "epdHubModel": {
-    "text": "Welches EPD Hub-Modell passt zu Ihrem Vorhaben?",
-    "options": [
-      {
-        "label": "EPD Pack – bis 100 EPDs, einzelne Projekte",
-        "value": "pack",
-        "nextQuestionID": "epdHubComplexity"
-      },
-      {
-        "label": "Scaling Pack – ab 100 EPDs via pre-verified Tools",
-        "value": "scaling",
-        "nextQuestionID": "epdHubComplexity"
-      }
+      { "label": "Micro Business (bis 10 MA, bis 2 Mio. € Umsatz)",               "value": "micro",         "nextQuestionID": "epdHubComplexity" },
+      { "label": "Small & Medium Business (bis 250 MA, bis 50 Mio. € Umsatz)",    "value": "sme",           "nextQuestionID": "epdHubComplexity" },
+      { "label": "Multinational Business (über 250 MA oder über 50 Mio. € Umsatz)", "value": "multinational", "nextQuestionID": "epdHubComplexity" }
     ]
   },
 
@@ -61,44 +79,8 @@
     "text": "Handelt es sich um Simple oder Complex Products?",
     "hint": "Simple: Standardprodukte mit einer Funktion. Complex: Produkte mit mehreren Komponenten oder Varianten. Details: epdhub.com/about-epd-hub/pricing",
     "options": [
-      {
-        "label": "Simple Product",
-        "value": "simple",
-        "nextQuestionID": "existingEPD"
-      },
-      {
-        "label": "Complex Product",
-        "value": "complex",
-        "nextQuestionID": "existingEPD"
-      }
+      { "label": "Simple Product",  "value": "simple",  "nextQuestionID": "ENDE" },
+      { "label": "Complex Product", "value": "complex", "nextQuestionID": "ENDE" }
     ]
-  },
-
-  "existingEPD": {
-    "text": "Möchten Sie Kosten für die Verlängerung bestehender EPDs, neue EPDs oder beides berechnen?",
-    "options": [
-      { "label": "Nur Verlängerung", "nextQuestionID": "extendEPD" },
-      { "label": "Nur neue EPDs",    "nextQuestionID": "newEPD" },
-      { "label": "Beides",           "nextQuestionID": ["extendEPD", "newEPD"] }
-    ]
-  },
-
-  "extendEPD": {
-    "text": "Wie viele bestehende EPDs möchten Sie verlängern?",
-    "type": "number",
-    "nextQuestionID": "ENDE"
-  },
-
-  "newEPD": {
-    "text": "Wie viele neue EPDs möchten Sie erstellen?",
-    "type": "number",
-    "nextQuestionID": "familyEPD"
-  },
-
-  "familyEPD": {
-    "text": "Wie viele dieser neuen EPDs stammen aus der gleichen Produktfamilie (basierend auf demselben Hintergrundbericht, gleichzeitig eingereicht)?",
-    "hint": "Falls keine, geben Sie 0 ein.",
-    "type": "number",
-    "nextQuestionID": "ENDE"
   }
 }
