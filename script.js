@@ -17,6 +17,7 @@ let answers               = {};
 let currentQuestion       = "start";
 let questionQueue         = [];
 let questionnaireFinished = false;
+let questionHistory = [];
 
 // ---------------------------------------------------------------------------
 // Fragebogen-Engine  (unverändert zu deiner ursprünglichen Logik)
@@ -31,13 +32,22 @@ function getNextQuestionId(question, option) {
   return nextId;
 }
 
+function restartQuestionnaire() {
+  answers = {};
+  currentQuestion = "start";
+  questionQueue = [];
+  questionnaireFinished = false;
+  questionHistory = [];
+  showStartScreen();
+}
+
 function showStartScreen() {
   const container = document.getElementById("question-container");
   container.innerHTML = "";
 
   const div = document.createElement("div");
   div.innerHTML = `
-    <p>Willkommen beim EPD Gebührenkalkulator</p>
+    <p>Willkommen beim EPD Kostenvergleich</p>
     <p style="font-weight:400; font-size:0.95rem; color:#64748b;">
       Beantworten Sie einige kurze Fragen und erhalten Sie eine individuelle
       Gebührenaufstellung für die Veröffentlichung oder Verlängerung Ihrer EPDs –
@@ -46,6 +56,7 @@ function showStartScreen() {
     <button class="answer-button" id="start-btn">Jetzt starten →</button>
   `;
   div.querySelector("#start-btn").addEventListener("click", showQuestion);
+
   container.appendChild(div);
 }
 
@@ -83,6 +94,7 @@ function showQuestion() {
       btn.className = "answer-button";
       btn.innerText = opt.label;
       btn.onclick = () => {
+        questionHistory.push(currentQuestion);
         answers[currentQuestion] = opt.value !== undefined ? opt.value : opt.label;
         currentQuestion = getNextQuestionId(q, opt);
         showQuestion();
@@ -98,12 +110,17 @@ function showQuestion() {
     const input = document.createElement("input");
     input.type = type;
     if (type === "number") { input.min = "0"; input.value = "0"; }
-    if (currentQuestion === "renewCount") { input.max = Number(answers.existingValidEPDs) || 0; }
+    if (currentQuestion === "renewCount") { input.max = Number(answers.existingValidEPDs); }
+
+    if (currentQuestion === "familyEPD") {    
+      input.max = String(Math.max(0, (Number(answers.newEPDCount) || 0))); 
+    }
 
     const btn = document.createElement("button");
     btn.innerText = "Weiter";
     btn.onclick = () => {
       if (input.value === "") { alert("Bitte eine Antwort eingeben."); return; }
+      questionHistory.push(currentQuestion);
       answers[currentQuestion] = input.value;
       currentQuestion = getNextQuestionId(q);
       showQuestion();
@@ -114,7 +131,16 @@ function showQuestion() {
     inputRow.appendChild(btn);
     div.appendChild(inputRow);
   }
-
+  const backBtn = document.createElement("button");
+  backBtn.className = "back-button";
+  backBtn.innerText = "← Zurück";
+  backBtn.disabled = questionHistory.length === 0;
+  backBtn.onclick = () => {
+    if (questionHistory.length === 0) return;
+    currentQuestion = questionHistory.pop();
+    showQuestion();
+  };
+  div.appendChild(backBtn);
   container.appendChild(div);
 }
 
@@ -142,6 +168,51 @@ function mapToCalculatorInput() {
     reworkEPDs:        0,
     epdHubComplexity:  answers.epdHubComplexity,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Screenshot erstellen
+// ---------------------------------------------------------------------------
+function downloadResultScreenshot() {
+  const target = document.querySelector(".summary-page");
+  if (!target) return;
+
+  const btn = document.getElementById("download-screenshot-btn");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Wird erstellt…";
+  }
+
+  if (typeof html2canvas === "undefined") {
+    alert("Screenshot-Funktion ist momentan nicht verfügbar.");
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "Screenshot herunterladen";
+    }
+    return;
+  }
+
+  html2canvas(target, {
+    backgroundColor: "#ffffff",
+    scale: 2,
+    useCORS: true
+  })
+    .then(canvas => {
+      const link = document.createElement("a");
+      link.download = "epd-ergebnis.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    })
+    .catch(err => {
+      console.error("Screenshot fehlgeschlagen:", err);
+      alert("Der Screenshot konnte nicht erstellt werden.");
+    })
+    .finally(() => {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Screenshot herunterladen";
+      }
+    });
 }
 
 // ---------------------------------------------------------------------------
@@ -420,6 +491,24 @@ costSection.innerHTML = `
     </div>`;
  
   wrapper.appendChild(costSectionHub);
+
+  const actionRow = document.createElement("div");
+  actionRow.className = "result-actions";
+
+  const screenshotBtn = document.createElement("button");
+  screenshotBtn.id = "download-screenshot-btn";
+  screenshotBtn.className = "back-button";
+  screenshotBtn.innerText = "Screenshot herunterladen";
+  screenshotBtn.onclick = downloadResultScreenshot;
+  actionRow.appendChild(screenshotBtn);
+
+  const restartBtn = document.createElement("button");
+  restartBtn.className = "back-button";
+  restartBtn.innerText = "Neustart";
+  restartBtn.onclick = restartQuestionnaire;
+  actionRow.appendChild(restartBtn);
+
+  wrapper.appendChild(actionRow);
   return wrapper;
 }
 

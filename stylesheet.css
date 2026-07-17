@@ -178,6 +178,32 @@ Version: 1.2
       color: #281A39;
     }
 
+    .back-button {
+      background: #281A39;
+      color: #e2e8f0;
+      min-width: 100px;
+      max-width: 100px;
+      padding: 10px 14px;
+      margin-top: 18px;
+    }
+
+    .result-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .result-actions .back-button {
+      max-width: none;
+      min-width: 180px;
+      margin-top: 0;
+    }
+
+    .result-actions .back-button:disabled {
+      opacity: 0.7;
+    }
+
     .input-row {
       display: grid;
       gap: 12px;
