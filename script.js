@@ -31,6 +31,24 @@ function getNextQuestionId(question, option) {
   return nextId;
 }
 
+function showStartScreen() {
+  const container = document.getElementById("question-container");
+  container.innerHTML = "";
+
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <p>Willkommen beim EPD Gebührenkalkulator</p>
+    <p style="font-weight:400; font-size:0.95rem; color:#64748b;">
+      Beantworten Sie einige kurze Fragen und erhalten Sie eine individuelle
+      Gebührenaufstellung für die Veröffentlichung oder Verlängerung Ihrer EPDs –
+      für IBU, Environdec und EPD Hub im Vergleich.
+    </p>
+    <button class="answer-button" id="start-btn">Jetzt starten →</button>
+  `;
+  div.querySelector("#start-btn").addEventListener("click", showQuestion);
+  container.appendChild(div);
+}
+
 function showQuestion() {
   const container    = document.getElementById("question-container");
   // const submitButton = document.getElementById("submit-button");
@@ -504,7 +522,7 @@ async function loadData() {
     console.error(error);
     return;
   }
-  showQuestion();
+  showStartScreen();
 }
 
 window.addEventListener("DOMContentLoaded", loadData);
