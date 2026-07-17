@@ -155,24 +155,24 @@ function renderResult() {
   wrapper.className = "summary-page";
 
   // ── Antwortzusammenfassung ──────────────────────────────────────────────
-  const summaryHeader = document.createElement("div");
-  summaryHeader.className = "summary-header";
-  summaryHeader.innerHTML = `
-    <p>Fragebogen abgeschlossen</p>
-    <p>Ihre Antworten im Überblick.</p>`;
-  wrapper.appendChild(summaryHeader);
+  // const summaryHeader = document.createElement("div");
+  // summaryHeader.className = "summary-header";
+  // summaryHeader.innerHTML = `
+  //   <p>Fragebogen abgeschlossen</p>
+  //   <p>Ihre Antworten im Überblick.</p>`;
+  // wrapper.appendChild(summaryHeader);
 
-  const summaryList = document.createElement("div");
-  summaryList.className = "summary-list";
-  Object.entries(answers).forEach(([qId, val]) => {
-    const item = document.createElement("div");
-    item.className = "summary-item";
-    item.innerHTML = `
-      <p class="summary-question">${questions[qId]?.text || qId}</p>
-      <div class="summary-answer">${String(val)}</div>`;
-    summaryList.appendChild(item);
-  });
-  wrapper.appendChild(summaryList);
+  // const summaryList = document.createElement("div");
+  // summaryList.className = "summary-list";
+  // Object.entries(answers).forEach(([qId, val]) => {
+  //   const item = document.createElement("div");
+  //   item.className = "summary-item";
+  //   item.innerHTML = `
+  //     <p class="summary-question">${questions[qId]?.text || qId}</p>
+  //     <div class="summary-answer">${String(val)}</div>`;
+  //   summaryList.appendChild(item);
+  // });
+  // wrapper.appendChild(summaryList);
 
   // ── Prüfen ob Berechnung sinnvoll ist ──────────────────────────────────
   // Berechnung nur wenn mindestens eine EPD-Angabe gemacht wurde
