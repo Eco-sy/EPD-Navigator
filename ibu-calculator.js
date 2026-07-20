@@ -82,12 +82,13 @@ function calculateIBU(customerData, answers) {
     throw new Error(`Ungültiger membershipType: "${membershipType}". Erlaubt: "associate" | "non-associate".`);
   }
 
-  const existingEPDs      = Math.max(0, Number(customerData.existingValidEPDs) || 0);
-  const renewEPDs         = Math.max(0, Number(answers.renewEPDs)         || 0);
-  const newEPDs           = Math.max(0, Number(answers.newEPDs)           || 0);
-  const newEPDsFromFamily = Math.max(0, Math.min(Number(answers.newEPDsFromFamily) || 0, Math.max(0, newEPDs - 1)));
+  const existingEPDs      = Math.max(0, Number(customerData.existingValidEPDs) || 0); //Anzahl schon existierender EPDs
+  const renewEPDs         = Math.max(0, Number(answers.renewEPDs)         || 0); //Anzahl zu erneuernden EPDS
+  const newEPDs           = Math.max(0, Number(answers.newEPDs)           || 0); //Anzahl aller neuen EPDs
+  const numFamilies       = Math.max(0, Math.min(Number(answers.newEPDsFromFamily) || 1, 37)); //Anzahl der versch. Produktfamilien
+  const newEPDsFromFamily = newEPDs - numFamilies//Anzahl alles EPDs unter folgekosten
   const reworkEPDs        = Math.max(0, Number(answers.reworkEPDs)        || 0);
-  const normalNewEPDs     = newEPDs - newEPDsFromFamily;
+  const normalNewEPDs     = numFamilies //Anzahl EPDs mit Erstaustellungsgebühren (Im Endeffekt die Anzahl aller versch. Familien)
 
   // --- Plausibilitätsprüfung ---
   // Verlängerungen und Überarbeitungen können sich nur auf bereits bestehende,
@@ -108,7 +109,7 @@ function calculateIBU(customerData, answers) {
   // --- Einmalige Kosten (identisch für beide Typen) ---
   const verificationCosts = {
     newEPDs:    { count: normalNewEPDs,     unitCost: ONE_TIME_FEES.newEPD,     total: normalNewEPDs     * ONE_TIME_FEES.newEPD,     label: 'Erstausstellung neue EPDs' },
-    familyEPDs: { count: newEPDsFromFamily, unitCost: ONE_TIME_FEES.familyEPD,  total: newEPDsFromFamily * ONE_TIME_FEES.familyEPD,  label: 'Weitere EPDs gleiche Produktfamilie' },
+    familyEPDs: { count: newEPDsFromFamily, unitCost: ONE_TIME_FEES.familyEPD,  total: newEPDsFromFamily       * ONE_TIME_FEES.familyEPD,  label: 'Weitere EPDs gleiche Produktfamilie' },
     reworkEPDs: { count: reworkEPDs,        unitCost: ONE_TIME_FEES.reworkEPD,  total: reworkEPDs        * ONE_TIME_FEES.reworkEPD,  label: 'Überarbeitung / Aktualisierung' },
     renewEPDs:  { count: renewEPDs,         unitCost: ONE_TIME_FEES.renewalEPD, total: renewEPDs         * ONE_TIME_FEES.renewalEPD, label: 'Verlängerung bestehender EPDs' },
   };

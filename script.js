@@ -112,8 +112,10 @@ function showQuestion() {
     if (type === "number") { input.min = "0"; input.value = "0"; }
     if (currentQuestion === "renewCount") { input.max = Number(answers.existingValidEPDs); }
 
-    if (currentQuestion === "familyEPD") {    
-      input.max = String(Math.max(0, (Number(answers.newEPDCount) || 0))); 
+    if (currentQuestion === "familyEPD") {
+      const parsedCount = Number(answers.newEPDCount);
+      const maxAllowed = Math.min(37, Math.max(1, Number.isFinite(parsedCount) ? parsedCount : 37));
+      input.max = String(maxAllowed);
     }
 
     const btn = document.createElement("button");
@@ -286,7 +288,7 @@ costSection.innerHTML = `
         · ${i.membershipType === 'associate' ? 'Verbandsmitglied' : 'Kein Verbandsmitglied'}
       </span>
     </span>
-    <span class="provider-summary-total">${fmt(result.totalFirstYear)}</span>
+    <span class="provider-summary-total"><span style="color:#f9003a;">${fmt(result.oneTime.total)}</span> + ${fmt(result.projection[result.projection.length - 1].cumulative - result.oneTime.total)} *</span>
   </summary>
   <div class="provider-content">
     <p class="provider-meta">
@@ -367,7 +369,7 @@ costSection.innerHTML = `
           ${resultEnv.companyName} · ${membershipTypeLabels[iEnv.membershipType]}
         </span>
       </span>
-      <span class="provider-summary-total">${fmt(resultEnv.totalFirstYear)}</span>
+      <span class="provider-summary-total">${fmt(resultEnv.projection[result.projection.length - 1].cumulative)}</span>
     </summary>
     <div class="provider-content">
       <p class="provider-meta">
@@ -446,7 +448,7 @@ costSection.innerHTML = `
           ${resultHub.package.label}
         </span>
       </span>
-      <span class="provider-summary-total">${fmt(resultHub.totalFirstYear)}</span>
+      <span class="provider-summary-total">${fmt(resultHub.projection[result.projection.length - 1].cumulative)}</span>
     </summary>
     <div class="provider-content">
       <p class="provider-meta">

@@ -3,8 +3,8 @@
     "text": "Was möchten Sie tun?",
     "options": [
       { "label": "Neue EPDs veröffentlichen",          "value": "new",    "nextQuestionID": "newEPDCount" },
-      { "label": "Bestehende EPDs verlängern",         "value": "renew",  "nextQuestionID": "renewLocation" },
-      { "label": "Beides",                             "value": "both",   "nextQuestionID": ["newEPDCount", "renewLocation"] }
+      { "label": "Bestehende EPDs verlängern",         "value": "renew",  "nextQuestionID": "renewCount" },
+      { "label": "Beides",                             "value": "both",   "nextQuestionID": ["newEPDCount", "renewCount"] }
     ]
   },
 
@@ -15,8 +15,8 @@
   },
 
   "familyEPD": {
-    "text": "Wie viele dieser EPDs stammen aus der gleichen Produktfamilie (gleicher Hintergrundbericht, gleichzeitig eingereicht)?",
-    "hint": "Falls keine, geben Sie 0 ein.",
+    "text": "Aus wie vielen Produktfamilien stammen die EPDs?",
+    "hint": "Für mehr Informationen zu Produktfamilien, schauen sie in unseren Leitfaden!",
     "type": "number",
     "nextQuestionID": "ibuMembershipType"
   },
