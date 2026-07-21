@@ -20,7 +20,7 @@ let questionnaireFinished = false;
 let questionHistory = [];
 
 // ---------------------------------------------------------------------------
-// Fragebogen-Engine  (unverändert zu deiner ursprünglichen Logik)
+// Fragebogen-Engine
 // ---------------------------------------------------------------------------
 function getNextQuestionId(question, option) {
   const nextId = option?.nextQuestionID ?? question?.nextQuestionID ?? null;
@@ -51,7 +51,7 @@ function showStartScreen() {
     <p style="font-weight:400; font-size:0.95rem; color:#64748b;">
       Beantworten Sie einige kurze Fragen und erhalten Sie eine individuelle
       Gebührenaufstellung für die Veröffentlichung oder Verlängerung Ihrer EPDs –
-      für IBU, Environdec und EPD Hub im Vergleich.
+      für IBU, EPD International und EPD Hub im Vergleich.
     </p>
     <button class="answer-button" id="start-btn">Jetzt starten →</button>
   `;
@@ -160,7 +160,7 @@ function buildCustomerData() {
 }
 
 // ---------------------------------------------------------------------------
-// Fragebogen-Antworten → calculateIBU/calculateEnvirondec-Eingaben mappen
+// Fragebogen-Antworten → calculateIBU/calculateEnvirondec/EPD International-Eingaben mappen
 // ---------------------------------------------------------------------------
 function mapToCalculatorInput() {
   return {
@@ -257,7 +257,7 @@ function renderResult() {
     note.style.cssText = "color:#64748b; font-size:0.9rem; margin-top:16px;";
     note.innerText = "Keine Gebührenberechnung – es wurden keine EPDs angegeben.";
     wrapper.appendChild(note);
-    return wrapper;
+    // return wrapper;
   }
 
   // ── Gebührenberechnung ──────────────────────────────────────────────────
@@ -273,76 +273,76 @@ function renderResult() {
     wrapper.appendChild(errMsg);
     return wrapper;
   }
+  if(result){
+    const i = result.inputs;
+    const costSection = document.createElement("details");
+    costSection.className = "provider-box";
+    costSection.open = false; // erste/einzige Box standardmäßig zugeklappt
+    costSection.innerHTML = `
+      <summary class="provider-summary">
+        <span>
+          <span class="provider-summary-title">IBU EPD-Programm</span><br>
+          <span class="provider-summary-sub">
+            ${result.companyName}${i.membershipGroup ? ` · Mitgliedsgruppe F${i.membershipGroup}` : ''}
+            · ${i.membershipType === 'associate' ? 'Verbandsmitglied' : 'Kein Verbandsmitglied'}
+          </span>
+        </span>
+        <span class="provider-summary-total"><span style="color:#ff00ff;">${fmt(result.oneTime.total)}</span> + ${fmt(result.projection[result.projection.length - 1].cumulative - result.oneTime.total)} *</span>
+      </summary>
+      <div class="provider-content">
+        <p class="provider-meta">
+          Netto zzgl. 19 % MwSt. · Gebührenordnung ab 01.09.2025
+        </p>
 
-  const i = result.inputs;
+          <div class="metric-grid">
+            ${metricCard("Einmalige Kosten",  fmt(result.oneTime.total),  "Verifizierung & Bearbeitung")}
+            ${metricCard("Jährliche Kosten",  fmt(result.annual.total),   "Mitglied + Zeichenentgelte")}
+            ${metricCard("Gesamt Jahr 1",     fmt(result.totalFirstYear), "Einmalig + erste Jahresgebühren")}
+            ${metricCard("EPDs nach Vorgang", i.totalValidEPDsAfter,      "Gültige Deklarationen")}
+          </div>
 
-const costSection = document.createElement("details");
-costSection.className = "provider-box";
-costSection.open = false; // erste/einzige Box standardmäßig zugeklappt
-costSection.innerHTML = `
-  <summary class="provider-summary">
-    <span>
-      <span class="provider-summary-title">IBU EPD-Programm</span><br>
-      <span class="provider-summary-sub">
-        ${result.companyName}${i.membershipGroup ? ` · Mitgliedsgruppe F${i.membershipGroup}` : ''}
-        · ${i.membershipType === 'associate' ? 'Verbandsmitglied' : 'Kein Verbandsmitglied'}
-      </span>
-    </span>
-    <span class="provider-summary-total"><span style="color:#f9003a;">${fmt(result.oneTime.total)}</span> + ${fmt(result.projection[result.projection.length - 1].cumulative - result.oneTime.total)} *</span>
-  </summary>
-  <div class="provider-content">
-    <p class="provider-meta">
-      Netto zzgl. 19 % MwSt. · Gebührenordnung ab 01.09.2025
-    </p>
+          <div class="summary-item cost-section">
+            <p class="cost-section-title">Einmalige Kosten (Verifizierung)</p>
+            ${costTable(
+              Object.values(result.oneTime.items)
+                .filter(x => x.count > 0)
+                .map(x => [`${x.label} (${x.count} × ${fmt(x.unitCost)})`, fmt(x.total)]),
+              ["Summe einmalig", fmt(result.oneTime.total)]
+            )}
+          </div>
 
-      <div class="metric-grid">
-        ${metricCard("Einmalige Kosten",  fmt(result.oneTime.total),  "Verifizierung & Bearbeitung")}
-        ${metricCard("Jährliche Kosten",  fmt(result.annual.total),   "Mitglied + Zeichenentgelte")}
-        ${metricCard("Gesamt Jahr 1",     fmt(result.totalFirstYear), "Einmalig + erste Jahresgebühren")}
-        ${metricCard("EPDs nach Vorgang", i.totalValidEPDsAfter,      "Gültige Deklarationen")}
-      </div>
+          <div class="summary-item cost-section">
+            <p class="cost-section-title">Jährliche Kosten</p>
+            ${costTable([
+              [
+                result.annual.items.membershipFee.label,
+                result.annual.items.membershipFee.billedExternally ? '—' : fmt(result.annual.items.membershipFee.total)
+              ],
+              ...result.annual.items.signFees.breakdown.map(({ position, fee }) =>
+                [`Zeichenentgelt EPD ${position}`, fmt(fee) + " / Jahr"]
+              ),
+            ], ["Summe jährlich", fmt(result.annual.total)])}
+          </div>
 
-      <div class="summary-item cost-section">
-        <p class="cost-section-title">Einmalige Kosten (Verifizierung)</p>
-        ${costTable(
-          Object.values(result.oneTime.items)
-            .filter(x => x.count > 0)
-            .map(x => [`${x.label} (${x.count} × ${fmt(x.unitCost)})`, fmt(x.total)]),
-          ["Summe einmalig", fmt(result.oneTime.total)]
-        )}
-      </div>
+          <div class="summary-item cost-section">
+            <p class="cost-section-title">5-Jahres-Projektion</p>
+            ${projectionTable(result.projection)}
+          </div>      
 
-      <div class="summary-item cost-section">
-        <p class="cost-section-title">Jährliche Kosten</p>
-        ${costTable([
-          [
-            result.annual.items.membershipFee.label,
-            result.annual.items.membershipFee.billedExternally ? '—' : fmt(result.annual.items.membershipFee.total)
-          ],
-          ...result.annual.items.signFees.breakdown.map(({ position, fee }) =>
-            [`Zeichenentgelt EPD ${position}`, fmt(fee) + " / Jahr"]
-          ),
-        ], ["Summe jährlich", fmt(result.annual.total)])}
-      </div>
+          <div class="summary-item total-box">
+            <div class="total-box-row">
+              <span class="total-box-label">Gesamt Jahr 1 (netto)</span>
+              <span class="total-box-amount">${fmt(result.totalFirstYear)}</span>
+            </div>
+            <div class="total-box-vat">
+              <span>inkl. 19 % MwSt.</span>
+              <span>${fmt(result.totalFirstYear * 1.19)}</span>
+            </div>
+          </div>
+        </div>`;
+    wrapper.appendChild(costSection);
+  }
 
-      <div class="summary-item cost-section">
-        <p class="cost-section-title">5-Jahres-Projektion</p>
-        ${projectionTable(result.projection)}
-      </div>      
-
-      <div class="summary-item total-box">
-        <div class="total-box-row">
-          <span class="total-box-label">Gesamt Jahr 1 (netto)</span>
-          <span class="total-box-amount">${fmt(result.totalFirstYear)}</span>
-        </div>
-        <div class="total-box-vat">
-          <span>inkl. 19 % MwSt.</span>
-          <span>${fmt(result.totalFirstYear * 1.19)}</span>
-        </div>
-      </div>
-    </div>`;
-
-  wrapper.appendChild(costSection);
   // ── Environdec ────────────────────────────────────────────────────────────
   let resultEnv;
   try {
@@ -350,77 +350,78 @@ costSection.innerHTML = `
   } catch (err) {
     const errMsg = document.createElement("p");
     errMsg.style.cssText = "color:red; margin-top:12px;";
-    errMsg.innerText = "Environdec – Fehler bei der Berechnung: " + err.message;
+    errMsg.innerText = "EPD International – Fehler bei der Berechnung: " + err.message;
     wrapper.appendChild(errMsg);
-    return wrapper;
+    // return wrapper;
   }
 
-  const iEnv = resultEnv.inputs;
-  const membershipTypeLabels = { micro: 'Micro Business', sme: 'Small & Medium Business', multinational: 'Multinational Business' };
+  if(resultEnv){
+    const iEnv = resultEnv.inputs;
+    const membershipTypeLabels = { micro: 'Micro Business', sme: 'Small & Medium Business', multinational: 'Multinational Business' };
 
-  const costSectionEnv = document.createElement("details");
-  costSectionEnv.className = "provider-box";
-  costSectionEnv.open = false; // zweite Box standardmäßig zugeklappt
-  costSectionEnv.innerHTML = `
-    <summary class="provider-summary">
-      <span>
-        <span class="provider-summary-title">Environdec</span><br>
-        <span class="provider-summary-sub">
-          ${resultEnv.companyName} · ${membershipTypeLabels[iEnv.membershipType]}
+    const costSectionEnv = document.createElement("details");
+    costSectionEnv.className = "provider-box";
+    costSectionEnv.open = false; // zweite Box standardmäßig zugeklappt
+    costSectionEnv.innerHTML = `
+      <summary class="provider-summary">
+        <span>
+          <span class="provider-summary-title">EPD International</span><br>
+          <span class="provider-summary-sub">
+            ${resultEnv.companyName} · ${membershipTypeLabels[iEnv.membershipType]}
+          </span>
         </span>
-      </span>
-      <span class="provider-summary-total">${fmt(resultEnv.projection[result.projection.length - 1].cumulative)}</span>
-    </summary>
-    <div class="provider-content">
-      <p class="provider-meta">
-        Netto zzgl. MwSt.
-      </p>
+        <span class="provider-summary-total">${fmt(resultEnv.projection[result.projection.length - 1].cumulative)}</span>
+      </summary>
+      <div class="provider-content">
+        <p class="provider-meta">
+          Netto zzgl. MwSt.
+        </p>
 
-      <div class="metric-grid">
-        ${metricCard("Einmalige Kosten",  fmt(resultEnv.oneTime.total),  "Verifizierung (gestaffelt)")}
-        ${metricCard("Jährliche Kosten",  fmt(resultEnv.annual.total),   "Jahresmitgliedschaft")}
-        ${metricCard("Gesamt Jahr 1",     fmt(resultEnv.totalFirstYear), "Einmalig + erste Jahresgebühren")}
-        ${metricCard("EPDs nach Vorgang", iEnv.totalValidEPDsAfter,      "Gültige Deklarationen")}
-      </div>
-
-      <div class="summary-item cost-section">
-        <p class="cost-section-title">Einmalige Kosten (Verifizierung)</p>
-        ${costTable([
-          ...resultEnv.oneTime.newEPDs.breakdown.map(({ position, fee }) =>
-            [`Neue EPD (Position ${position})`, fmt(fee)]
-          ),
-          ...resultEnv.oneTime.renewEPDs.breakdown.map(({ position, fee }) =>
-            [`Verlängerung (Position ${position})`, fmt(fee)]
-          ),
-        ], ["Summe einmalig", fmt(resultEnv.oneTime.total)])}
-      </div>
-
-      <div class="summary-item cost-section">
-        <p class="cost-section-title">Jährliche Kosten</p>
-        ${costTable([
-          [resultEnv.annual.membershipFee.label, fmt(resultEnv.annual.membershipFee.total)],
-        ], ["Summe jährlich", fmt(resultEnv.annual.total)])}
-      </div>
-      
-      <div class="summary-item cost-section">
-        <p class="cost-section-title">5-Jahres-Projektion</p>
-        ${projectionTable(resultEnv.projection)}
-      </div>      
-
-      <div class="summary-item total-box">
-        <div class="total-box-row">
-          <span class="total-box-label">Gesamt Jahr 1 (netto)</span>
-          <span class="total-box-amount">${fmt(resultEnv.totalFirstYear)}</span>
+        <div class="metric-grid">
+          ${metricCard("Einmalige Kosten",  fmt(resultEnv.oneTime.total),  "Verifizierung (gestaffelt)")}
+          ${metricCard("Jährliche Kosten",  fmt(resultEnv.annual.total),   "Jahresmitgliedschaft")}
+          ${metricCard("Gesamt Jahr 1",     fmt(resultEnv.totalFirstYear), "Einmalig + erste Jahresgebühren")}
+          ${metricCard("EPDs nach Vorgang", iEnv.totalValidEPDsAfter,      "Gültige Deklarationen")}
         </div>
-        <div class="total-box-vat">
-          <span>inkl. MwSt.</span>
-          <span>Steuersatz abhängig vom Land</span>
+
+        <div class="summary-item cost-section">
+          <p class="cost-section-title">Einmalige Kosten (Verifizierung)</p>
+          ${costTable([
+            ...resultEnv.oneTime.newEPDs.breakdown.map(({ position, fee }) =>
+              [`Neue EPD (Position ${position})`, fmt(fee)]
+            ),
+            ...resultEnv.oneTime.renewEPDs.breakdown.map(({ position, fee }) =>
+              [`Verlängerung (Position ${position})`, fmt(fee)]
+            ),
+          ], ["Summe einmalig", fmt(resultEnv.oneTime.total)])}
         </div>
-      </div>
-    </div>`;
 
-  wrapper.appendChild(costSectionEnv);
+        <div class="summary-item cost-section">
+          <p class="cost-section-title">Jährliche Kosten</p>
+          ${costTable([
+            [resultEnv.annual.membershipFee.label, fmt(resultEnv.annual.membershipFee.total)],
+          ], ["Summe jährlich", fmt(resultEnv.annual.total)])}
+        </div>
+        
+        <div class="summary-item cost-section">
+          <p class="cost-section-title">5-Jahres-Projektion</p>
+          ${projectionTable(resultEnv.projection)}
+        </div>      
 
+        <div class="summary-item total-box">
+          <div class="total-box-row">
+            <span class="total-box-label">Gesamt Jahr 1 (netto)</span>
+            <span class="total-box-amount">${fmt(resultEnv.totalFirstYear)}</span>
+          </div>
+          <div class="total-box-vat">
+            <span>inkl. MwSt.</span>
+            <span>Steuersatz abhängig vom Land</span>
+          </div>
+        </div>
+      </div>`;
+
+    wrapper.appendChild(costSectionEnv);
+  }
   // ── EPD Hub ───────────────────────────────────────────────────────────────
   let resultHub;
   try {
@@ -434,65 +435,67 @@ costSection.innerHTML = `
     errMsg.style.cssText = "color:red; margin-top:12px;";
     errMsg.innerText = "EPD Hub – Fehler bei der Berechnung: " + err.message;
     wrapper.appendChild(errMsg);
-    return wrapper;
+    // return wrapper;
   }
  
-  const costSectionHub = document.createElement("details");
-  costSectionHub.className = "provider-box";
-  costSectionHub.open = false;
-  costSectionHub.innerHTML = `
-    <summary class="provider-summary">
-      <span>
-        <span class="provider-summary-title">EPD Hub</span><br>
-        <span class="provider-summary-sub">
-          ${resultHub.package.label}
+  if (resultHub){
+    const costSectionHub = document.createElement("details");
+    costSectionHub.className = "provider-box";
+    costSectionHub.open = false;
+    costSectionHub.innerHTML = `
+      <summary class="provider-summary">
+        <span>
+          <span class="provider-summary-title">EPD Hub</span><br>
+          <span class="provider-summary-sub">
+            ${resultHub.package.label}
+          </span>
         </span>
-      </span>
-      <span class="provider-summary-total">${fmt(resultHub.projection[result.projection.length - 1].cumulative)}</span>
-    </summary>
-    <div class="provider-content">
-      <p class="provider-meta">
-        Netto zzgl. MwSt. · Paketpreis inkl. Verifizierung & Publishing
-      </p>
- 
-      <div class="metric-grid">
-        ${metricCard("Paketpreis",       fmt(resultHub.package.price),       resultHub.package.label)}
-        ${metricCard("Ø pro EPD",        fmt(resultHub.package.pricePerEPD), "bei " + resultHub.inputs.packageStep + " EPDs im Paket")}
-        ${metricCard("Neue EPDs",        resultHub.inputs.newEPDs,           "Angefragte Menge")}
-        ${metricCard("Jährliche Kosten", "—",                                "Kein Mitgliedsbeitrag")}
-      </div>
- 
-      <div class="summary-item cost-section">
-        <p class="cost-section-title">Paketdetails</p>
-        ${costTable([
-          ["Produkttyp",      resultHub.inputs.complexity === "simple" ? "Simple Product" : "Complex Product"],
-          ["Angefragte EPDs", resultHub.inputs.newEPDs],
-          ["Paketstufe",      "bis " + resultHub.inputs.packageStep + " EPDs"],
-        ], ["Paketpreis gesamt", fmt(resultHub.package.price)])}
-      </div>
- 
-      <div class="summary-item note-box">
-        <p>${resultHub.package.note}</p>
-      </div>
-
-      <div class="summary-item cost-section">
-        <p class="cost-section-title">5-Jahres-Projektion</p>
-        ${projectionTable(resultHub.projection)}
-      </div>      
-
-      <div class="summary-item total-box">
-        <div class="total-box-row">
-          <span class="total-box-label">Gesamtpreis (netto)</span>
-          <span class="total-box-amount">${fmt(resultHub.totalFirstYear)}</span>
+        <span class="provider-summary-total">${fmt(resultHub.projection[result.projection.length - 1].cumulative)}</span>
+      </summary>
+      <div class="provider-content">
+        <p class="provider-meta">
+          Netto zzgl. MwSt. · Paketpreis inkl. Verifizierung & Publishing
+        </p>
+  
+        <div class="metric-grid">
+          ${metricCard("Paketpreis",       fmt(resultHub.package.price),       resultHub.package.label)}
+          ${metricCard("Ø pro EPD",        fmt(resultHub.package.pricePerEPD), "bei " + resultHub.inputs.packageStep + " EPDs im Paket")}
+          ${metricCard("Neue EPDs",        resultHub.inputs.newEPDs,           "Angefragte Menge")}
+          ${metricCard("Jährliche Kosten", "—",                                "Kein Mitgliedsbeitrag")}
         </div>
-        <div class="total-box-vat">
-          <span>inkl. MwSt.</span>
-          <span>Steuersatz abhängig vom Land</span>
+  
+        <div class="summary-item cost-section">
+          <p class="cost-section-title">Paketdetails</p>
+          ${costTable([
+            ["Produkttyp",      resultHub.inputs.complexity === "simple" ? "Simple Product" : "Complex Product"],
+            ["Angefragte EPDs", resultHub.inputs.newEPDs],
+            ["Paketstufe",      "bis " + resultHub.inputs.packageStep + " EPDs"],
+          ], ["Paketpreis gesamt", fmt(resultHub.package.price)])}
         </div>
-      </div>
-    </div>`;
- 
-  wrapper.appendChild(costSectionHub);
+  
+        <div class="summary-item note-box">
+          <p>${resultHub.package.note}</p>
+        </div>
+
+        <div class="summary-item cost-section">
+          <p class="cost-section-title">5-Jahres-Projektion</p>
+          ${projectionTable(resultHub.projection)}
+        </div>      
+
+        <div class="summary-item total-box">
+          <div class="total-box-row">
+            <span class="total-box-label">Gesamtpreis (netto)</span>
+            <span class="total-box-amount">${fmt(resultHub.totalFirstYear)}</span>
+          </div>
+          <div class="total-box-vat">
+            <span>inkl. MwSt.</span>
+            <span>Steuersatz abhängig vom Land</span>
+          </div>
+        </div>
+      </div>`;
+  
+    wrapper.appendChild(costSectionHub);
+  }
 
   const actionRow = document.createElement("div");
   actionRow.className = "result-actions";
