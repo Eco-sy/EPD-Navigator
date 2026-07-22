@@ -73,9 +73,9 @@ Version: 1.2
 
     #question-container p {
       margin: 0;
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: #281A39;
+      /* font-size: 1rem; */
+      /* font-weight: 600; */
+      /* color: #281A39; */
     }
 
     #question-container pre {
@@ -338,7 +338,7 @@ Version: 1.2
     .metric-card .metric-card-label {
       margin: 0 0 6px;
       font-size: 0.65rem;
-      color: #cbd5e1;
+      color: #281A39;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       font-weight: 600;
@@ -346,9 +346,9 @@ Version: 1.2
 
     .metric-card .metric-card-value {
       margin: 0 0 4px;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 700;
-      color: #0f172a;
+      color: #2563eb;
     }
 
     .metric-card .metric-card-sub {

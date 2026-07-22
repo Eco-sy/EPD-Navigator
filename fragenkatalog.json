@@ -1,6 +1,8 @@
 {
   "start": {
     "text": "Was möchten Sie tun?",
+    "skipValue": "new",
+    "skipNext": "newEPDCount",
     "options": [
       { "label": "Neue EPDs veröffentlichen",          "value": "new",    "nextQuestionID": "newEPDCount" },
       { "label": "Bestehende EPDs verlängern",         "value": "renew",  "nextQuestionID": "renewCount" },
@@ -10,12 +12,16 @@
 
   "newEPDCount": {
     "text": "Wie viele neue EPDs möchten Sie veröffentlichen?",
+    "skipValue": "1",
+    "skipNext": "familyEPD",
     "type": "number",
     "nextQuestionID": "familyEPD"
   },
 
   "familyEPD": {
     "text": "Aus wie vielen Produktfamilien stammen die EPDs?",
+    "skipValue": "1",
+    "skipNext": "ibuMembershipType",
     "hint": "Für mehr Informationen zu Produktfamilien, schauen sie in unseren Leitfaden!",
     "type": "number",
     "nextQuestionID": "ibuMembershipType"
@@ -33,18 +39,24 @@
 
   "renewCount": {
     "text": "Wie viele EPDs möchten Sie verlängern?",
+    "skipValue": "1",
+    "skipNext": "existingValidEPDs",
     "type": "number",
     "nextQuestionID": "existingValidEPDs"
   },
 
   "existingValidEPDs": {
     "text": "Wie viele gültige EPDs besitzt Ihr Unternehmen insgesamt aktuell?",
+    "skipValue": "1",
+    "skipNext": "ibuMembershipType",
     "type": "number",
     "nextQuestionID": "ibuMembershipType"
   },
 
   "ibuMembershipType": {
     "text": "Sind Sie für IBU Verbandsmitglied oder Direktmitglied?",
+    "skipValue": "associate",
+    "skipNext": "environdecMembershipType",
     "hint": "Verbandsmitglieder sind über einen IBU-Mitgliedsverband angebunden. Der Mitgliedsbeitrag wird dann über den Verband abgerechnet.",
     "options": [
       { "label": "Verbandsmitglied",  "value": "associate",     "nextQuestionID": "environdecMembershipType" },
@@ -54,6 +66,8 @@
 
   "ibuMembershipGroup": {
     "text": "In welche IBU-Beitragsgruppe fällt Ihr Unternehmen?",
+    "skipValue": "1",
+    "skipNext": "environdecMembershipType",
     "hint": "Die Gruppe richtet sich nach dem Jahresumsatz Ihres Unternehmens.",
     "options": [
       { "label": "F1 – bis 1 Mio. € Umsatz",          "value": "1", "nextQuestionID": "environdecMembershipType" },
@@ -68,6 +82,8 @@
 
   "environdecMembershipType": {
     "text": "Welche Unternehmensgröße gilt für Environdec?",
+    "skipValue": "micro",
+    "skipNext": "epdHubComplexity",
     "options": [
       { "label": "Micro Business (bis 10 MA, bis 2 Mio. € Umsatz)",               "value": "micro",         "nextQuestionID": "epdHubComplexity" },
       { "label": "Small & Medium Business (bis 250 MA, bis 50 Mio. € Umsatz)",    "value": "sme",           "nextQuestionID": "epdHubComplexity" },
@@ -77,6 +93,8 @@
 
   "epdHubComplexity": {
     "text": "Handelt es sich um Simple oder Complex Products?",
+    "skipValue": "simple",
+    "skipNext": "ENDE",
     "hint": "Simple: Standardprodukte mit einer Funktion. Complex: Produkte mit mehreren Komponenten oder Varianten. Details: epdhub.com/about-epd-hub/pricing",
     "options": [
       { "label": "Simple Product",  "value": "simple",  "nextQuestionID": "ENDE" },

@@ -142,6 +142,20 @@ function showQuestion() {
     currentQuestion = questionHistory.pop();
     showQuestion();
   };
+
+  const skipBtn = document.createElement("button");
+  skipBtn.className = "back-button";
+  skipBtn.innerText = "Frage Überspringen";
+  // skipBtn.disabled = questionHistory.length === 0;
+  skipBtn.onclick = () => {
+    answers[currentQuestion] = q.skipValue;
+    questionHistory.push(currentQuestion);
+    currentQuestion = q.skipNext ?? q.nextQuestionID ?? null;
+    console.log(answers);
+    showQuestion();
+  };
+
+  div.appendChild(skipBtn); 
   div.appendChild(backBtn);
   container.appendChild(div);
 }
@@ -295,7 +309,7 @@ function renderResult() {
         </p>
 
           <div class="metric-grid">
-            ${metricCard("Einmalige Kosten",  fmt(result.oneTime.total),  "Verifizierung & Bearbeitung")}
+            ${metricCard("Einmalige Kosten",  `<span style="color:#ff00ff;">${fmt(result.oneTime.total)}</span>`,  "Verifizierung & Bearbeitung")}
             ${metricCard("Jährliche Kosten",  fmt(result.annual.total),   "Mitglied + Zeichenentgelte")}
             ${metricCard("Gesamt Jahr 1",     fmt(result.totalFirstYear), "Einmalig + erste Jahresgebühren")}
             ${metricCard("EPDs nach Vorgang", i.totalValidEPDsAfter,      "Gültige Deklarationen")}
