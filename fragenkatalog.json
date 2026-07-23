@@ -54,13 +54,13 @@
   },
 
   "ibuMembershipType": {
-    "text": "Sind Sie für IBU Verbandsmitglied oder Direktmitglied?",
+    "text": "Sind Sie Mitglied eines Verbands, welcher Mitglied bei IBU ist?",
     "skipValue": "associate",
     "skipNext": "environdecMembershipType",
     "hint": "Verbandsmitglieder sind über einen IBU-Mitgliedsverband angebunden. Der Mitgliedsbeitrag wird dann über den Verband abgerechnet.",
     "options": [
-      { "label": "Verbandsmitglied",  "value": "associate",     "nextQuestionID": "environdecMembershipType" },
-      { "label": "Direktmitglied",    "value": "non-associate",  "nextQuestionID": "ibuMembershipGroup" }
+      { "label": "Ja",  "value": "associate",     "nextQuestionID": "environdecMembershipType" },
+      { "label": "Nein",    "value": "non-associate",  "nextQuestionID": "ibuMembershipGroup" }
     ]
   },
 

@@ -28,7 +28,7 @@ Version: 1.2
     }
 
     .page-shell {
-      width: min(100%, 860px);
+      width: min(100%, 600px);
     }
 
     header {
@@ -182,9 +182,13 @@ Version: 1.2
       background: #281A39;
       color: #e2e8f0;
       min-width: 100px;
-      max-width: 100px;
+      max-width: 200px;
       padding: 10px 14px;
       margin-top: 18px;
+    }
+
+    .skip-button {
+      margin-left: 12px;
     }
 
     .result-actions {
@@ -197,6 +201,17 @@ Version: 1.2
     .result-actions .back-button {
       max-width: none;
       min-width: 180px;
+      margin-top: 0;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    
+    .button-row .back-button {
       margin-top: 0;
     }
 

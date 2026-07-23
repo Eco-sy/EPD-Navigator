@@ -133,6 +133,8 @@ function showQuestion() {
     inputRow.appendChild(btn);
     div.appendChild(inputRow);
   }
+
+
   const backBtn = document.createElement("button");
   backBtn.className = "back-button";
   backBtn.innerText = "← Zurück";
@@ -144,7 +146,7 @@ function showQuestion() {
   };
 
   const skipBtn = document.createElement("button");
-  skipBtn.className = "back-button";
+  skipBtn.className = "back-button skip-button";
   skipBtn.innerText = "Frage Überspringen";
   // skipBtn.disabled = questionHistory.length === 0;
   skipBtn.onclick = () => {
@@ -155,8 +157,11 @@ function showQuestion() {
     showQuestion();
   };
 
-  div.appendChild(skipBtn); 
-  div.appendChild(backBtn);
+  const navrow = document.createElement("div");
+  navrow.appendChild(backBtn);
+  navrow.appendChild(skipBtn);
+  div.appendChild(navrow);
+
   container.appendChild(div);
 }
 
@@ -392,14 +397,14 @@ function renderResult() {
         </p>
 
         <div class="metric-grid">
-          ${metricCard("Einmalige Kosten",  fmt(resultEnv.oneTime.total),  "Verifizierung (gestaffelt)")}
+          ${metricCard("Einmalige Kosten",  fmt(resultEnv.oneTime.total))}
           ${metricCard("Jährliche Kosten",  fmt(resultEnv.annual.total),   "Jahresmitgliedschaft")}
           ${metricCard("Gesamt Jahr 1",     fmt(resultEnv.totalFirstYear), "Einmalig + erste Jahresgebühren")}
           ${metricCard("EPDs nach Vorgang", iEnv.totalValidEPDsAfter,      "Gültige Deklarationen")}
         </div>
 
         <div class="summary-item cost-section">
-          <p class="cost-section-title">Einmalige Kosten (Verifizierung)</p>
+          <p class="cost-section-title">Einmalige Kosten</p>
           ${costTable([
             ...resultEnv.oneTime.newEPDs.breakdown.map(({ position, fee }) =>
               [`Neue EPD (Position ${position})`, fmt(fee)]

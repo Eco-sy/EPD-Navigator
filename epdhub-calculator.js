@@ -63,21 +63,23 @@ function findPriceEntry(count) {
 function calculateEPDHub(customerData, answers) {
   const complexity = answers.epdHubComplexity;
   const newEPDs    = Math.max(0, Number(answers.newEPDs) || 0);
+  const effectiveCount = newEPDs - Math.floor(newEPDs / 5);
+  console.log(effectiveCount)
 
   if (complexity !== "simple" && complexity !== "complex") {
     throw new Error(`Ungültige Komplexität: "${complexity}". Erlaubt: "simple" | "complex".`);
   }
-  if (newEPDs === 0) {
+  if (effectiveCount === 0) {
     throw new Error("Anzahl EPDs muss größer als 0 sein.");
   }
-  if (newEPDs > EPD_PRICE_MAX) {
+  if (effectiveCount > EPD_PRICE_MAX) {
     throw new Error(
       `Für mehr als ${EPD_PRICE_MAX} EPDs bietet EPD Hub Scaling Packs auf Anfrage an. ` +
       `Bitte kontaktieren Sie sales@epdhub.com für ein individuelles Angebot.`
     );
   }
 
-  const entry        = findPriceEntry(newEPDs);
+  const entry        = findPriceEntry(effectiveCount);
   const packagePrice = entry.prices[complexity];
   const pricePerEPD  = Math.round(packagePrice / entry.step);
 
@@ -99,7 +101,7 @@ function calculateEPDHub(customerData, answers) {
       packageStep: entry.step,
     },
     package: {
-      label:       `EPD Pack – ${entry.step} EPDs (${complexity === "simple" ? "Simple" : "Complex"} Product)`,
+      label:       `EPD Pack – ${newEPDs} EPDs (${complexity === "simple" ? "Simple" : "Complex"} Product)`,
       step:        entry.step,
       price:       packagePrice,
       pricePerEPD,
