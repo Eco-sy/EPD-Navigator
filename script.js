@@ -60,6 +60,49 @@ function showStartScreen() {
   container.appendChild(div);
 }
 
+function resolveValidationValue(value, answers, fallback = null) {
+  if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    const raw = answers[value.answerKey];
+    const parsed = Number(raw);
+    const baseValue = Number.isFinite(parsed) ? parsed : (value.fallback ?? fallback ?? 0);
+    const cap = value.cap ?? null;
+    return cap !== null && Number.isFinite(cap) ? Math.min(baseValue, cap) : baseValue;
+  }
+
+  return value ?? fallback;
+}
+
+function getInputValidation(question, answers) {
+  const validation = question?.validation || {};
+  const min = resolveValidationValue(validation.min, answers, validation.allowZero === false ? 1 : 0);
+  const max = resolveValidationValue(validation.max, answers, null);
+  return { ...validation, min, max };
+}
+
+function isInputValueValid(input, validation) {
+  const rawValue = input.value.trim();
+  if (rawValue === "") return false;
+
+  const value = Number(rawValue);
+  if (!Number.isFinite(value)) return false;
+  if (validation.integer && !Number.isInteger(value)) return false;
+  if (validation.min !== undefined && value < validation.min) return false;
+  if (validation.max !== undefined && value > validation.max) return false;
+  if (validation.allowZero === false && value === 0) return false;
+  return true;
+}
+
+function getValidationMessage(validation) {
+  const parts = [];
+  if (validation.min !== undefined) parts.push(`mindestens ${validation.min}`);
+  if (validation.max !== undefined) parts.push(`höchstens ${validation.max}`);
+
+  const rangeText = parts.length > 0 ? ` (${parts.join(" und ")})` : "";
+  return validation.integer
+    ? `Bitte geben Sie eine ganze Zahl${rangeText} ein.`
+    : `Bitte geben Sie einen gültigen Wert${rangeText} ein.`;
+}
+
 function showQuestion() {
   const container    = document.getElementById("question-container");
   // const submitButton = document.getElementById("submit-button");
@@ -104,35 +147,61 @@ function showQuestion() {
   }
 
   if (type === "number" || type === "text") {
-    const inputRow = document.createElement("div");
-    inputRow.className = "input-row";
+  const inputRow = document.createElement("div");
+  inputRow.className = "input-row";
 
-    const input = document.createElement("input");
-    input.type = type;
-    if (type === "number") { input.min = "0"; input.value = "0"; }
-    if (currentQuestion === "renewCount") { input.max = Number(answers.existingValidEPDs); }
+  const input = document.createElement("input");
+  input.type = type;
+  const validation = getInputValidation(q, answers);
 
-    if (currentQuestion === "familyEPD") {
-      const parsedCount = Number(answers.newEPDCount);
-      const maxAllowed = Math.min(37, Math.max(1, Number.isFinite(parsedCount) ? parsedCount : 37));
-      input.max = String(maxAllowed);
+  if (type === "number") {
+    input.min = String(validation.min ?? 0);
+    input.step = validation.integer ? "1" : "any";
+    input.inputMode = validation.integer ? "numeric" : "decimal";
+    input.value = "";
+    if (validation.max !== undefined) input.max = String(validation.max);
+  }
+
+  const btn = document.createElement("button");
+  btn.className = "back-button input-action-button";
+  btn.innerText = "Weiter";
+
+  const feedback = document.createElement("p");
+  feedback.className = "input-feedback";
+
+  const updateButtonState = () => {
+    const isValid = isInputValueValid(input, validation);
+    input.classList.toggle("is-valid", isValid);
+    input.classList.toggle("is-invalid", !isValid && input.value !== "");
+    btn.classList.toggle("is-valid", isValid);
+    btn.classList.toggle("is-invalid", !isValid && input.value !== "");
+    feedback.textContent = isValid || input.value === "" ? "" : getValidationMessage(validation);
+    feedback.style.color = isValid ? "#64748b" : "#dc2626";
+  };
+
+  btn.onclick = () => {
+    if (!isInputValueValid(input, validation)) {
+      updateButtonState();
+      alert(getValidationMessage(validation));
+      return;
     }
 
-    const btn = document.createElement("button");
-    btn.innerText = "Weiter";
-    btn.onclick = () => {
-      if (input.value === "") { alert("Bitte eine Antwort eingeben."); return; }
-      questionHistory.push(currentQuestion);
-      answers[currentQuestion] = input.value;
-      currentQuestion = getNextQuestionId(q);
-      showQuestion();
-    };
-    input.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    questionHistory.push(currentQuestion);
+    answers[currentQuestion] = input.value;
+    currentQuestion = getNextQuestionId(q);
+    showQuestion();
+  };
 
-    inputRow.appendChild(input);
-    inputRow.appendChild(btn);
-    div.appendChild(inputRow);
-  }
+  input.addEventListener("input", updateButtonState);
+  input.addEventListener("change", updateButtonState);
+  input.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+
+  inputRow.appendChild(input);
+  inputRow.appendChild(btn);
+  inputRow.appendChild(feedback);
+  div.appendChild(inputRow);
+  updateButtonState();
+}
 
 
   const backBtn = document.createElement("button");
@@ -172,10 +241,22 @@ function buildCustomerData() {
   return {
     companyName:              "",
     membershipType:           answers.ibuMembershipType           || "non-associate",
-    membershipGroup:          Number(answers.ibuMembershipGroup)  || null,
+    membershipGroup:          Number(assessIbuMembership())  || null,
     environdecMembershipType: answers.environdecMembershipType    || "sme",
     existingValidEPDs:        Number(answers.existingValidEPDs)   || Number(answers.renewCount) || 0,
   };
+}
+
+function assessIbuMembership() {
+  const revenue = Number(answers.yearlyRevenue);
+
+  if (revenue <= 1) return "1"; // bis 1 Mio F1
+  if (revenue <= 3) return "2"; // bis 3 Mio F2
+  if (revenue <= 10) return "3"; // bis 10 Mio F3
+  if (revenue <= 30) return "4"; // bis 30 Mio F4
+  if (revenue <= 100) return "5"; // bis 100 Mio F5
+  if (revenue <= 300) return "6"; // bis 300 Mio F6
+  return "7"; // über 300 Mio F7
 }
 
 // ---------------------------------------------------------------------------
@@ -597,6 +678,7 @@ function submitAnswers() {
     alert("Bitte beantworten Sie zuerst alle Fragen.");
     return;
   }
+  
   const customerData = buildCustomerData();
   const entry = {
     timestamp:   new Date().toISOString(),

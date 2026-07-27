@@ -491,3 +491,29 @@ Version: 1.2
       font-weight: 700;
       color: #2563eb;
     }
+
+    .input-action-button.is-valid {
+      background: #16a34a;
+      color: #ffffff;
+    }
+
+    .input-action-button.is-invalid {
+      background: #dc2626;
+      color: #ffffff;
+    }
+
+    input.is-valid {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.18);
+    }
+
+    input.is-invalid {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+    }
+
+    .input-feedback {
+      font-size: 0.875rem;
+      color: #64748b;
+      margin: 0;
+    }

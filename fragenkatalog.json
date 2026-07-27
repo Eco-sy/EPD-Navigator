@@ -4,9 +4,9 @@
     "skipValue": "new",
     "skipNext": "newEPDCount",
     "options": [
-      { "label": "Neue EPDs veröffentlichen",          "value": "new",    "nextQuestionID": "newEPDCount" },
-      { "label": "Bestehende EPDs verlängern",         "value": "renew",  "nextQuestionID": "renewCount" },
-      { "label": "Beides",                             "value": "both",   "nextQuestionID": ["newEPDCount", "renewCount"] }
+      { "label": "Neue EPDs veröffentlichen", "value": "new", "nextQuestionID": "newEPDCount" },
+      { "label": "Bestehende EPDs verlängern", "value": "renew", "nextQuestionID": "renewCount" },
+      { "label": "Beides", "value": "both", "nextQuestionID": ["newEPDCount", "renewCount"] }
     ]
   },
 
@@ -15,6 +15,12 @@
     "skipValue": "1",
     "skipNext": "familyEPD",
     "type": "number",
+    "validation": {
+      "min": 1,
+      "max": 500,
+      "integer": true,
+      "allowZero": false
+    },
     "nextQuestionID": "familyEPD"
   },
 
@@ -24,16 +30,26 @@
     "skipNext": "ibuMembershipType",
     "hint": "Für mehr Informationen zu Produktfamilien, schauen sie in unseren Leitfaden!",
     "type": "number",
+    "validation": {
+      "min": 1,
+      "max": {
+        "answerKey": "newEPDCount",
+        "fallback": 37,
+        "cap": 37
+      },
+      "integer": true,
+      "allowZero": false
+    },
     "nextQuestionID": "ibuMembershipType"
   },
 
   "renewLocation": {
     "text": "Bei welchem Anbieter liegen Ihre bestehenden EPDs?",
     "options": [
-      { "label": "IBU",                  "value": "ibu",          "nextQuestionID": "renewCount" },
-      { "label": "Environdec",           "value": "environdec",   "nextQuestionID": "renewCount" },
-      { "label": "EPD Hub",              "value": "epdhub",       "nextQuestionID": "renewCount" },
-      { "label": "Mehrere Anbieter",     "value": "multiple",     "nextQuestionID": "renewCount" }
+      { "label": "IBU", "value": "ibu", "nextQuestionID": "renewCount" },
+      { "label": "Environdec", "value": "environdec", "nextQuestionID": "renewCount" },
+      { "label": "EPD Hub", "value": "epdhub", "nextQuestionID": "renewCount" },
+      { "label": "Mehrere Anbieter", "value": "multiple", "nextQuestionID": "renewCount" }
     ]
   },
 
@@ -42,6 +58,12 @@
     "skipValue": "1",
     "skipNext": "existingValidEPDs",
     "type": "number",
+    "validation": {
+      "min": 1,
+      "max": 500,
+      "integer": true,
+      "allowZero": false
+    },
     "nextQuestionID": "existingValidEPDs"
   },
 
@@ -50,6 +72,12 @@
     "skipValue": "1",
     "skipNext": "ibuMembershipType",
     "type": "number",
+    "validation": {
+      "min": 1,
+      "max": 500,
+      "integer": true,
+      "allowZero": false
+    },
     "nextQuestionID": "ibuMembershipType"
   },
 
@@ -59,10 +87,25 @@
     "skipNext": "environdecMembershipType",
     "hint": "Verbandsmitglieder sind über einen IBU-Mitgliedsverband angebunden. Der Mitgliedsbeitrag wird dann über den Verband abgerechnet.",
     "options": [
-      { "label": "Ja",  "value": "associate",     "nextQuestionID": "environdecMembershipType" },
-      { "label": "Nein",    "value": "non-associate",  "nextQuestionID": "ibuMembershipGroup" }
+      { "label": "Ja", "value": "associate", "nextQuestionID": "environdecMembershipType" },
+      { "label": "Nein", "value": "non-associate", "nextQuestionID": "yearlyRevenue" }
     ]
   },
+
+  "yearlyRevenue": {
+    "text": "Jahresumsatz in Mio",
+    "skipValue": "1",
+    "skipNext": "environdecMembershipType",
+    "type": "number",
+    "validation": {
+      "min": 0,
+      "max": 1000,
+      "integer": false
+    },
+    "nextQuestionID": "environdecMembershipType"
+  },
+
+  
 
   "ibuMembershipGroup": {
     "text": "In welche IBU-Beitragsgruppe fällt Ihr Unternehmen?",
@@ -70,13 +113,13 @@
     "skipNext": "environdecMembershipType",
     "hint": "Die Gruppe richtet sich nach dem Jahresumsatz Ihres Unternehmens.",
     "options": [
-      { "label": "F1 – bis 1 Mio. € Umsatz",          "value": "1", "nextQuestionID": "environdecMembershipType" },
-      { "label": "F2 – bis 3 Mio. € Umsatz",          "value": "2", "nextQuestionID": "environdecMembershipType" },
-      { "label": "F3 – bis 10 Mio. € Umsatz",         "value": "3", "nextQuestionID": "environdecMembershipType" },
-      { "label": "F4 – bis 30 Mio. € Umsatz",         "value": "4", "nextQuestionID": "environdecMembershipType" },
-      { "label": "F5 – bis 100 Mio. € Umsatz",        "value": "5", "nextQuestionID": "environdecMembershipType" },
-      { "label": "F6 – bis 300 Mio. € Umsatz",        "value": "6", "nextQuestionID": "environdecMembershipType" },
-      { "label": "F7 – über 300 Mio. € Umsatz",       "value": "7", "nextQuestionID": "environdecMembershipType" }
+      { "label": "F1 - bis 1 Mio. € Umsatz", "value": "1", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F2 - bis 3 Mio. € Umsatz", "value": "2", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F3 - bis 10 Mio. € Umsatz", "value": "3", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F4 - bis 30 Mio. € Umsatz", "value": "4", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F5 - bis 100 Mio. € Umsatz", "value": "5", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F6 - bis 300 Mio. € Umsatz", "value": "6", "nextQuestionID": "environdecMembershipType" },
+      { "label": "F7 - über 300 Mio. € Umsatz", "value": "7", "nextQuestionID": "environdecMembershipType" }
     ]
   },
 
@@ -85,8 +128,8 @@
     "skipValue": "micro",
     "skipNext": "epdHubComplexity",
     "options": [
-      { "label": "Micro Business (bis 10 MA, bis 2 Mio. € Umsatz)",               "value": "micro",         "nextQuestionID": "epdHubComplexity" },
-      { "label": "Small & Medium Business (bis 250 MA, bis 50 Mio. € Umsatz)",    "value": "sme",           "nextQuestionID": "epdHubComplexity" },
+      { "label": "Micro Business (bis 10 MA, bis 2 Mio. € Umsatz)", "value": "micro", "nextQuestionID": "epdHubComplexity" },
+      { "label": "Small & Medium Business (bis 250 MA, bis 50 Mio. € Umsatz)", "value": "sme", "nextQuestionID": "epdHubComplexity" },
       { "label": "Multinational Business (über 250 MA oder über 50 Mio. € Umsatz)", "value": "multinational", "nextQuestionID": "epdHubComplexity" }
     ]
   },
@@ -97,7 +140,7 @@
     "skipNext": "ENDE",
     "hint": "Simple: Standardprodukte mit einer Funktion. Complex: Produkte mit mehreren Komponenten oder Varianten. Details: epdhub.com/about-epd-hub/pricing",
     "options": [
-      { "label": "Simple Product",  "value": "simple",  "nextQuestionID": "ENDE" },
+      { "label": "Simple Product", "value": "simple", "nextQuestionID": "ENDE" },
       { "label": "Complex Product", "value": "complex", "nextQuestionID": "ENDE" }
     ]
   }
