@@ -493,8 +493,8 @@ Version: 1.2
     }
 
     .input-action-button.is-valid {
-      background: #16a34a;
-      color: #ffffff;
+      background: #2BF89A;
+      color: #281A39;
     }
 
     .input-action-button.is-invalid {
@@ -503,7 +503,7 @@ Version: 1.2
     }
 
     input.is-valid {
-      border-color: #16a34a;
+      border-color: #2BF89A;
       box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.18);
     }
 

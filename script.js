@@ -163,7 +163,7 @@ function showQuestion() {
   }
 
   const btn = document.createElement("button");
-  btn.className = "back-button input-action-button";
+  btn.className = "input-action-button";
   btn.innerText = "Weiter";
 
   const feedback = document.createElement("p");
@@ -240,10 +240,10 @@ function showQuestion() {
 function buildCustomerData() {
   return {
     companyName:              "",
-    membershipType:           answers.ibuMembershipType           || "non-associate",
-    membershipGroup:          Number(assessIbuMembership())  || null,
-    environdecMembershipType: answers.environdecMembershipType    || "sme",
-    existingValidEPDs:        Number(answers.existingValidEPDs)   || Number(answers.renewCount) || 0,
+    membershipType:           answers.ibuMembershipType || "non-associate",
+    membershipGroup:          Number(assessIbuMembership()) || null,
+    environdecMembershipType: assessEnvirondecMembership() || "sme",
+    existingValidEPDs:        Number(answers.existingValidEPDs) || Number(answers.renewCount) || 0,
   };
 }
 
@@ -257,6 +257,14 @@ function assessIbuMembership() {
   if (revenue <= 100) return "5"; // bis 100 Mio F5
   if (revenue <= 300) return "6"; // bis 300 Mio F6
   return "7"; // über 300 Mio F7
+}
+
+function assessEnvirondecMembership() {
+  const employees = answers.amountEmployees;
+
+  if (employees <= 10) return "micro"; // 1-10 Mitarbeiter
+  if (employees <= 250) return "sme"; // 11-250 Mitarbeiter
+  return "multinational"; // Über 250 Mitarbeiter
 }
 
 // ---------------------------------------------------------------------------
