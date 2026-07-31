@@ -162,9 +162,10 @@ function showQuestion() {
     if (validation.max !== undefined) input.max = String(validation.max);
   }
 
-  const btn = document.createElement("button");
-  btn.className = "input-action-button";
-  btn.innerText = "Weiter";
+  const continueBtn = document.createElement("button");
+  continueBtn.className = "input-action-button";
+  continueBtn.disabled = !isInputValueValid(input, validation);
+  continueBtn.innerText = "Weiter";
 
   const feedback = document.createElement("p");
   feedback.className = "input-feedback";
@@ -173,13 +174,18 @@ function showQuestion() {
     const isValid = isInputValueValid(input, validation);
     input.classList.toggle("is-valid", isValid);
     input.classList.toggle("is-invalid", !isValid && input.value !== "");
-    btn.classList.toggle("is-valid", isValid);
-    btn.classList.toggle("is-invalid", !isValid && input.value !== "");
+    continueBtn.classList.toggle("is-valid", isValid);
+    continueBtn.classList.toggle("is-invalid", !isValid && input.value !== "");
     feedback.textContent = isValid || input.value === "" ? "" : getValidationMessage(validation);
     feedback.style.color = isValid ? "#64748b" : "#dc2626";
+    if (isValid){
+      continueBtn.disabled = false;
+    } else {
+      continueBtn.disabled = true;
+    }
   };
 
-  btn.onclick = () => {
+  continueBtn.onclick = () => {
     if (!isInputValueValid(input, validation)) {
       updateButtonState();
       alert(getValidationMessage(validation));
@@ -194,10 +200,10 @@ function showQuestion() {
 
   input.addEventListener("input", updateButtonState);
   input.addEventListener("change", updateButtonState);
-  input.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+  input.addEventListener("keydown", e => { if (e.key === "Enter") continueBtn.click(); });
 
   inputRow.appendChild(input);
-  inputRow.appendChild(btn);
+  inputRow.appendChild(continueBtn);
   inputRow.appendChild(feedback);
   div.appendChild(inputRow);
   updateButtonState();
@@ -217,7 +223,7 @@ function showQuestion() {
   const skipBtn = document.createElement("button");
   skipBtn.className = "back-button skip-button";
   skipBtn.innerText = "Frage Überspringen";
-  // skipBtn.disabled = questionHistory.length === 0;
+  skipBtn.disabled = questionHistory.length === 0;
   skipBtn.onclick = () => {
     answers[currentQuestion] = q.skipValue;
     questionHistory.push(currentQuestion);
@@ -395,7 +401,7 @@ function renderResult() {
             · ${i.membershipType === 'associate' ? 'Verbandsmitglied' : 'Kein Verbandsmitglied'}
           </span>
         </span>
-        <span class="provider-summary-total"><span style="color:#ff00ff;">${fmt(result.oneTime.total)}</span> + ${fmt(result.projection[result.projection.length - 1].cumulative - result.oneTime.total)} *</span>
+        <span class="provider-summary-total"><span style="color:#F252A7;">${fmt(result.oneTime.total)}</span> + ${fmt(result.projection[result.projection.length - 1].cumulative - result.oneTime.total)} *</span>
       </summary>
       <div class="provider-content">
         <p class="provider-meta">
@@ -403,7 +409,7 @@ function renderResult() {
         </p>
 
           <div class="metric-grid">
-            ${metricCard("Einmalige Kosten",  `<span style="color:#ff00ff;">${fmt(result.oneTime.total)}</span>`,  "Verifizierung & Bearbeitung")}
+            ${metricCard("Einmalige Kosten",  `<span style="color:#F252A7;">${fmt(result.oneTime.total)}</span>`,  "Verifizierung & Bearbeitung")}
             ${metricCard("Jährliche Kosten",  fmt(result.annual.total),   "Mitglied + Zeichenentgelte")}
             ${metricCard("Gesamt Jahr 1",     fmt(result.totalFirstYear), "Einmalig + erste Jahresgebühren")}
             ${metricCard("EPDs nach Vorgang", i.totalValidEPDsAfter,      "Gültige Deklarationen")}
@@ -610,6 +616,7 @@ function renderResult() {
 
   const screenshotBtn = document.createElement("button");
   screenshotBtn.id = "download-screenshot-btn";
+  screenshotBtn.setAttribute("data-html2canvas-ignore", "");
   screenshotBtn.className = "back-button";
   screenshotBtn.innerText = "Screenshot herunterladen";
   screenshotBtn.onclick = downloadResultScreenshot;
@@ -618,6 +625,7 @@ function renderResult() {
   const restartBtn = document.createElement("button");
   restartBtn.className = "back-button";
   restartBtn.innerText = "Neustart";
+  restartBtn.setAttribute("data-html2canvas-ignore", "");
   restartBtn.onclick = restartQuestionnaire;
   actionRow.appendChild(restartBtn);
 
