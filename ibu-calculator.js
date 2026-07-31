@@ -85,9 +85,9 @@ function calculateIBU(customerData, answers) {
   const existingEPDs      = Math.max(0, Number(customerData.existingValidEPDs) || 0); //Anzahl schon existierender EPDs
   const renewEPDs         = Math.max(0, Number(answers.renewEPDs)         || 0); //Anzahl zu erneuernden EPDS
   const newEPDs           = Math.max(0, Number(answers.newEPDs)           || 0); //Anzahl aller neuen EPDs
-  const numFamilies       = Math.max(0, Math.min(Number(answers.newEPDsFromFamily) || 1, 37)); //Anzahl der versch. Produktfamilien
+  const numFamilies       = newEPDs > 0 ? Math.max(0, Math.min(Number(answers.newEPDsFromFamily) || 1, newEPDs)) : 0; //Anzahl der versch. Produktfamilien
   const newEPDsFromFamily = newEPDs - numFamilies//Anzahl alles EPDs unter folgekosten
-  const reworkEPDs        = Math.max(0, Number(answers.reworkEPDs)        || 0);
+  // const reworkEPDs        = Math.max(0, Number(answers.reworkEPDs)        || 0);
   const normalNewEPDs     = numFamilies //Anzahl EPDs mit Erstaustellungsgebühren (Im Endeffekt die Anzahl aller versch. Familien)
 
   // --- Plausibilitätsprüfung ---
@@ -99,18 +99,18 @@ function calculateIBU(customerData, answers) {
       `bestehender gültiger EPDs (${existingEPDs}).`
     );
   }
-  if (reworkEPDs > existingEPDs) {
-    throw new Error(
-      `Anzahl der zu überarbeitenden EPDs (${reworkEPDs}) übersteigt die Anzahl ` +
-      `bestehender gültiger EPDs (${existingEPDs}).`
-    );
-  }
+  // if (reworkEPDs > existingEPDs) {
+  //   throw new Error(
+  //     `Anzahl der zu überarbeitenden EPDs (${reworkEPDs}) übersteigt die Anzahl ` +
+  //     `bestehender gültiger EPDs (${existingEPDs}).`
+  //   );
+  // }
 
   // --- Einmalige Kosten (identisch für beide Typen) ---
   const verificationCosts = {
     newEPDs:    { count: normalNewEPDs,     unitCost: ONE_TIME_FEES.newEPD,     total: normalNewEPDs     * ONE_TIME_FEES.newEPD,     label: 'Erstausstellung neue EPDs' },
     familyEPDs: { count: newEPDsFromFamily, unitCost: ONE_TIME_FEES.familyEPD,  total: newEPDsFromFamily       * ONE_TIME_FEES.familyEPD,  label: 'Weitere EPDs gleiche Produktfamilie' },
-    reworkEPDs: { count: reworkEPDs,        unitCost: ONE_TIME_FEES.reworkEPD,  total: reworkEPDs        * ONE_TIME_FEES.reworkEPD,  label: 'Überarbeitung / Aktualisierung' },
+    // reworkEPDs: { count: reworkEPDs,        unitCost: ONE_TIME_FEES.reworkEPD,  total: reworkEPDs        * ONE_TIME_FEES.reworkEPD,  label: 'Überarbeitung / Aktualisierung' },
     renewEPDs:  { count: renewEPDs,         unitCost: ONE_TIME_FEES.renewalEPD, total: renewEPDs         * ONE_TIME_FEES.renewalEPD, label: 'Verlängerung bestehender EPDs' },
   };
   const totalOneTimeCosts = Object.values(verificationCosts).reduce((s, c) => s + c.total, 0);
@@ -127,7 +127,7 @@ function calculateIBU(customerData, answers) {
   if (membershipType === "non-associate") {
     const group = Number(customerData.membershipGroup);
     if (!MEMBERSHIP_FEES[group]) {
-      throw new Error(`Ungültige Mitgliedschaftsgruppe: ${group}. Erlaubt: 1–7.`);
+      throw new Error(`Ungültige Mitgliedschaftsgruppe: ${group}.`);
     }
     membershipFee      = MEMBERSHIP_FEES[group];
     membershipFeeLabel = `Mitgliedsbeitrag IBU (Gruppe F${group})`;
@@ -160,7 +160,7 @@ function calculateIBU(customerData, answers) {
     inputs: {
       membershipType,
       membershipGroup: customerData.membershipGroup ?? null,
-      existingEPDs, renewEPDs, newEPDs, newEPDsFromFamily, reworkEPDs,
+      existingEPDs, renewEPDs, newEPDs, newEPDsFromFamily,
       totalValidEPDsAfter: totalValidEPDs,
     },
     oneTime: { items: verificationCosts, total: totalOneTimeCosts },
