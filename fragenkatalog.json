@@ -5,8 +5,8 @@
     "skipNext": "newEPDCount",
     "options": [
       { "label": "Neue EPDs veröffentlichen", "value": "new", "nextQuestionID": "newEPDCount" },
-      { "label": "Bestehende EPDs verlängern", "value": "renew", "nextQuestionID": "existingValidEPDs" },
-      { "label": "Beides", "value": "both", "nextQuestionID": ["newEPDCount", "existingValidEPDs"] }
+      { "label": "Bestehende EPDs aktualisieren", "value": "renew", "nextQuestionID": "renewCount" },
+      { "label": "Beides", "value": "both", "nextQuestionID": ["newEPDCount", "renewCount"] }
     ]
   },
 
@@ -44,17 +44,13 @@
   },
 
   "renewCount": {
-    "text": "Wie viele EPDs möchten Sie verlängern?",
+    "text": "Wie viele EPDs möchten Sie aktualisieren?",
     "skipValue": "1",
     "skipNext": "ibuMembershipType",
     "type": "number",
     "validation": {
       "min": 1,
-      "max": {
-        "answerKey": "existingValidEPDs",
-        "fallback": 1,
-        "cap": "existingValidEPDs"
-      },
+      "max": 500,
       "integer": true,
       "allowZero": false
     },

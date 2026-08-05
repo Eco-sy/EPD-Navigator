@@ -91,11 +91,11 @@ function calculateIBU(customerData, answers) {
   const normalNewEPDs     = numFamilies //Anzahl EPDs mit Erstaustellungsgebühren (Im Endeffekt die Anzahl aller versch. Familien)
 
   // --- Plausibilitätsprüfung ---
-  // Verlängerungen und Überarbeitungen können sich nur auf bereits bestehende,
+  // Aktualisierung und Überarbeitungen können sich nur auf bereits bestehende,
   // gültige EPDs beziehen.
   if (renewEPDs > existingEPDs) {
     throw new Error(
-      `Anzahl der zu verlängernden EPDs (${renewEPDs}) übersteigt die Anzahl ` +
+      `Anzahl der zu aktualisierenden EPDs (${renewEPDs}) übersteigt die Anzahl ` +
       `bestehender gültiger EPDs (${existingEPDs}).`
     );
   }
@@ -111,13 +111,13 @@ function calculateIBU(customerData, answers) {
     newEPDs:    { count: normalNewEPDs,     unitCost: ONE_TIME_FEES.newEPD,     total: normalNewEPDs     * ONE_TIME_FEES.newEPD,     label: 'Erstausstellung neue EPDs' },
     familyEPDs: { count: newEPDsFromFamily, unitCost: ONE_TIME_FEES.familyEPD,  total: newEPDsFromFamily       * ONE_TIME_FEES.familyEPD,  label: 'Weitere EPDs gleiche Produktfamilie' },
     // reworkEPDs: { count: reworkEPDs,        unitCost: ONE_TIME_FEES.reworkEPD,  total: reworkEPDs        * ONE_TIME_FEES.reworkEPD,  label: 'Überarbeitung / Aktualisierung' },
-    renewEPDs:  { count: renewEPDs,         unitCost: ONE_TIME_FEES.renewalEPD, total: renewEPDs         * ONE_TIME_FEES.renewalEPD, label: 'Verlängerung bestehender EPDs' },
+    renewEPDs:  { count: renewEPDs,         unitCost: ONE_TIME_FEES.renewalEPD, total: renewEPDs         * ONE_TIME_FEES.renewalEPD, label: 'Aktualisierung bestehender EPDs' },
   };
   const totalOneTimeCosts = Object.values(verificationCosts).reduce((s, c) => s + c.total, 0);
 
   // --- Jährliche Kosten (abhängig vom Mitgliedstyp) ---
   // Überarbeitete EPDs (reworkEPDs) sind Teil der bestehenden EPDs und werden
-  // daher NICHT zusätzlich gezählt. Verlängerungen (renewEPDs) ändern die
+  // daher NICHT zusätzlich gezählt. Aktualisierungen (renewEPDs) ändern die
   // Gesamtzahl ebenfalls nicht – sie erhalten lediglich bestehende EPDs.
   const totalValidEPDs = existingEPDs + newEPDs;
 

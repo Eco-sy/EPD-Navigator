@@ -4,7 +4,7 @@
  *
  * Datenquellen:
  *   customer.json      → Stammdaten (simuliert CRM-Profil)
- *   fragenkatalog.json → EPD-Fragen (Verlängerungen, neue EPDs, Produktfamilie)
+ *   fragenkatalog.json → EPD-Fragen (Aktualisierung, neue EPDs, Produktfamilie)
  *   ibu-calculator.js  → Berechnungslogik (muss vor script.js geladen sein)
  */
 
@@ -50,7 +50,7 @@ function showStartScreen() {
     <p>Willkommen beim EPD Kostenvergleich</p>
     <p style="font-weight:400; font-size:0.95rem; color:#64748b;">
       Beantworten Sie einige kurze Fragen und erhalten Sie eine individuelle
-      Gebührenaufstellung für die Veröffentlichung oder Verlängerung Ihrer EPDs –
+      Gebührenaufstellung für die Veröffentlichung oder Aktualisierung Ihrer EPDs –
       für IBU, EPD International und EPD Hub im Vergleich.
     </p>
     <button class="answer-button" id="start-btn">Jetzt starten →</button>
@@ -389,10 +389,10 @@ function renderResult() {
   }
   if(result){
     const i = result.inputs;
-    const costSection = document.createElement("details");
-    costSection.className = "provider-box";
-    costSection.open = false; // erste/einzige Box standardmäßig zugeklappt
-    costSection.innerHTML = `
+    const costSectionIBU = document.createElement("details");
+    costSectionIBU.className = "provider-box";
+    costSectionIBU.open = false; // erste/einzige Box standardmäßig zugeklappt
+    costSectionIBU.innerHTML = `
       <summary class="provider-summary">
         <span>
           <span class="provider-summary-title">IBU EPD-Programm</span><br>
@@ -454,7 +454,7 @@ function renderResult() {
             </div>
           </div>
         </div>`;
-    wrapper.appendChild(costSection);
+    wrapper.appendChild(costSectionIBU);
   }
 
   // ── Environdec ────────────────────────────────────────────────────────────
@@ -505,7 +505,7 @@ function renderResult() {
               [`Neue EPD (Position ${position})`, fmt(fee)]
             ),
             ...resultEnv.oneTime.renewEPDs.breakdown.map(({ position, fee }) =>
-              [`Verlängerung (Position ${position})`, fmt(fee)]
+              [`Aktualisierung (Position ${position})`, fmt(fee)]
             ),
           ], ["Summe einmalig", fmt(resultEnv.oneTime.total)])}
         </div>
