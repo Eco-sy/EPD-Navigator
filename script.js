@@ -12,7 +12,7 @@
 // Zustand
 // ---------------------------------------------------------------------------
 let questions             = {};
-// let customerData          = {};   // wird aus customer.json geladen
+  // let customerData          = {};   // wird aus customer.json geladen
 let answers               = {};
 let currentQuestion       = "start";
 let questionQueue         = [];
@@ -33,6 +33,7 @@ function getNextQuestionId(question, option) {
 }
 
 function restartQuestionnaire() {
+  document.querySelector(".page-shell")?.classList.remove("result-mode");
   answers = {};
   currentQuestion = "start";
   questionQueue = [];
@@ -255,7 +256,7 @@ function buildCustomerData() {
 
 function assessIbuMembership() {
   const revenue = Number(answers.yearlyRevenue);
-
+  if (answers.ibuMembershipType == "associate") return "";
   if (revenue <= 1) return "1"; // bis 1 Mio F1
   if (revenue <= 3) return "2"; // bis 3 Mio F2
   if (revenue <= 10) return "3"; // bis 10 Mio F3
@@ -335,11 +336,16 @@ function downloadResultScreenshot() {
 // Ergebnis-Seite rendern
 // ---------------------------------------------------------------------------
 function renderResult() {
+  document.querySelector(".page-shell")?.classList.add("result-mode");
   const fmt = n =>
     new Intl.NumberFormat("de-DE", { style:"currency", currency:"EUR", maximumFractionDigits:0 }).format(n);
 
   const wrapper = document.createElement("div");
   wrapper.className = "summary-page";
+
+  const providerGrid = document.createElement("div");
+  providerGrid.className = "provider-grid";
+  wrapper.appendChild(providerGrid);
 
   // ── Antwortzusammenfassung ──────────────────────────────────────────────
   // const summaryHeader = document.createElement("div");
@@ -389,23 +395,23 @@ function renderResult() {
   }
   if(result){
     const i = result.inputs;
-    const costSectionIBU = document.createElement("details");
+    const costSectionIBU = document.createElement("div");
     costSectionIBU.className = "provider-box";
-    costSectionIBU.open = false; // erste/einzige Box standardmäßig zugeklappt
+    // costSectionIBU.open = true; // erste Box standardmäßig aufgeklappt
     costSectionIBU.innerHTML = `
-      <summary class="provider-summary">
+      <div class="provider-summary">
         <span>
           <span class="provider-summary-title">IBU EPD-Programm</span><br>
           <span class="provider-summary-sub">
             ${result.companyName}${i.membershipGroup ? ` · Mitgliedsgruppe F${i.membershipGroup}` : ''}
-            · ${i.membershipType === 'associate' ? 'Verbandsmitglied' : 'Kein Verbandsmitglied'}
+             ${i.membershipType === 'associate' ? '· Verbandsmitglied' : ''}
           </span>
         </span>
         <span class="provider-summary-total"><span style="color:#F252A7;">${fmt(result.oneTime.total)}</span> + ${fmt(result.projection[result.projection.length - 1].cumulative - result.oneTime.total)} *</span>
-      </summary>
+      </div>
       <div class="provider-content">
         <p class="provider-meta">
-          Netto zzgl. 19 % MwSt. · Gebührenordnung ab 01.09.2025
+          Gebührenordnung ab 01.09.2025
         </p>
 
           <div class="metric-grid">
@@ -416,26 +422,40 @@ function renderResult() {
           </div>
 
           <div class="summary-item cost-section">
-            <p class="cost-section-title">Einmalige Kosten (Verifizierung)</p>
+            <p class="cost-section-title">Einmalige Kosten</p>
             ${costTable(
               Object.values(result.oneTime.items)
                 .filter(x => x.count > 0)
-                .map(x => [`${x.label} (${x.count} × ${fmt(x.unitCost)})`, fmt(x.total)]),
-              ["Summe einmalig", fmt(result.oneTime.total)]
+                .map(x => [`${x.label} (${x.count} × ${fmt(x.unitCost)})`, fmt(x.total)])
             )}
+            <table class="cost-table">
+              <tr class="cost-table-total">
+                <td>Summe einmalig</td>
+                <td>${fmt(result.oneTime.total)}</td>
+              </tr>
+            </table>
           </div>
 
+          <div class="summary-item note-box note-ibu">
+            <p>Verifizierung Inklusive</p>
+          </div>
+          
           <div class="summary-item cost-section">
-            <p class="cost-section-title">Jährliche Kosten</p>
-            ${costTable([
-              [
-                result.annual.items.membershipFee.label,
-                result.annual.items.membershipFee.billedExternally ? '—' : fmt(result.annual.items.membershipFee.total)
-              ],
-              ...result.annual.items.signFees.breakdown.map(({ position, fee }) =>
-                [`Zeichenentgelt EPD ${position}`, fmt(fee) + " / Jahr"]
-              ),
-            ], ["Summe jährlich", fmt(result.annual.total)])}
+            <details class="cost-section">
+              <summary class="cost-section-title">
+                <span>Jährliche Kosten</span>
+              </summary>
+              ${costTable([
+                [result.annual.items.membershipFee.label, result.annual.items.membershipFee.billedExternally ? '—' : fmt(result.annual.items.membershipFee.total)],
+                ...result.annual.items.signFees.breakdown.map(({ position, fee }) => [`Zeichenentgelt EPD ${position}`, fmt(fee)]),
+                ])}
+            </details>
+            <table class="cost-table">
+              <tr class="cost-table-total">
+                <td>Summe Jährlich</td>
+                <td>${fmt(result.annual.total)}</td>
+              </tr>
+            </table>
           </div>
 
           <div class="summary-item cost-section">
@@ -454,7 +474,7 @@ function renderResult() {
             </div>
           </div>
         </div>`;
-    wrapper.appendChild(costSectionIBU);
+    providerGrid.appendChild(costSectionIBU);
   }
 
   // ── Environdec ────────────────────────────────────────────────────────────
@@ -473,11 +493,11 @@ function renderResult() {
     const iEnv = resultEnv.inputs;
     const membershipTypeLabels = { micro: 'Micro Business', sme: 'Small & Medium Business', multinational: 'Multinational Business' };
 
-    const costSectionEnv = document.createElement("details");
+    const costSectionEnv = document.createElement("div");
     costSectionEnv.className = "provider-box";
-    costSectionEnv.open = false; // zweite Box standardmäßig zugeklappt
+    // costSectionEnv.open = true; // zweite Box standardmäßig aufgeklappt
     costSectionEnv.innerHTML = `
-      <summary class="provider-summary">
+      <div class="provider-summary">
         <span>
           <span class="provider-summary-title">EPD International</span><br>
           <span class="provider-summary-sub">
@@ -485,29 +505,39 @@ function renderResult() {
           </span>
         </span>
         <span class="provider-summary-total">${fmt(resultEnv.projection[result.projection.length - 1].cumulative)}</span>
-      </summary>
+      </div>
       <div class="provider-content">
         <p class="provider-meta">
-          Netto zzgl. MwSt.
+        ·
         </p>
 
         <div class="metric-grid">
-          ${metricCard("Einmalige Kosten",  fmt(resultEnv.oneTime.total))}
+          ${metricCard("Einmalige Kosten",  fmt(resultEnv.oneTime.total), "")}
           ${metricCard("Jährliche Kosten",  fmt(resultEnv.annual.total),   "Jahresmitgliedschaft")}
           ${metricCard("Gesamt Jahr 1",     fmt(resultEnv.totalFirstYear), "Einmalig + erste Jahresgebühren")}
           ${metricCard("EPDs nach Vorgang", iEnv.totalValidEPDsAfter,      "Gültige Deklarationen")}
         </div>
 
         <div class="summary-item cost-section">
-          <p class="cost-section-title">Einmalige Kosten</p>
-          ${costTable([
-            ...resultEnv.oneTime.newEPDs.breakdown.map(({ position, fee }) =>
-              [`Neue EPD (Position ${position})`, fmt(fee)]
-            ),
-            ...resultEnv.oneTime.renewEPDs.breakdown.map(({ position, fee }) =>
-              [`Aktualisierung (Position ${position})`, fmt(fee)]
-            ),
-          ], ["Summe einmalig", fmt(resultEnv.oneTime.total)])}
+          <details class="cost-section">
+            <summary class="cost-section-title">
+              <span class="cost-section-title">Einmalige Kosten</span>
+            </summary>
+            ${costTable([
+              ...resultEnv.oneTime.newEPDs.breakdown.map(({ position, fee }) =>
+                [`Neue EPD (Position ${position})`, fmt(fee)]
+              ),
+              ...resultEnv.oneTime.renewEPDs.breakdown.map(({ position, fee }) =>
+                [`Aktualisierung (Position ${position})`, fmt(fee)]
+              ),
+            ])}
+          </details>
+            <table class="cost-table">
+              <tr class="cost-table-total">
+                <td>Summe einmalig</td>
+                <td>${fmt(resultEnv.oneTime.total)}</td>
+              </tr>
+            </table>
         </div>
 
         <div class="summary-item cost-section">
@@ -534,7 +564,7 @@ function renderResult() {
         </div>
       </div>`;
 
-    wrapper.appendChild(costSectionEnv);
+    providerGrid.appendChild(costSectionEnv);
   }
   // ── EPD Hub ───────────────────────────────────────────────────────────────
   let resultHub;
@@ -553,41 +583,45 @@ function renderResult() {
   }
  
   if (resultHub){
-    const costSectionHub = document.createElement("details");
+    const noteBoxClass = resultHub.inputs.limitExceeded
+      ? "summary-item note-box warning-box"
+      : "summary-item note-box";
+
+    const costSectionHub = document.createElement("div");
     costSectionHub.className = "provider-box";
-    costSectionHub.open = false;
+    // costSectionHub.open = true;
     costSectionHub.innerHTML = `
-      <summary class="provider-summary">
+      <div class="provider-summary">
         <span>
           <span class="provider-summary-title">EPD Hub</span><br>
           <span class="provider-summary-sub">
-            ${resultHub.package.label}
+            · ${resultHub.package.label}
           </span>
         </span>
         <span class="provider-summary-total">${fmt(resultHub.projection[result.projection.length - 1].cumulative)}</span>
-      </summary>
+      </div>
       <div class="provider-content">
         <p class="provider-meta">
-          Netto zzgl. MwSt. · Paketpreis inkl. Verifizierung & Publishing
+          Paketpreis inkl. Verifizierung & Publishing
         </p>
   
         <div class="metric-grid">
-          ${metricCard("Paketpreis",       fmt(resultHub.package.price),       resultHub.package.label)}
-          ${metricCard("Ø pro EPD",        fmt(resultHub.package.pricePerEPD), "bei " + resultHub.inputs.packageStep + " EPDs im Paket")}
-          ${metricCard("Neue EPDs",        resultHub.inputs.newEPDs,           "Angefragte Menge")}
-          ${metricCard("Jährliche Kosten", "—",                                "Kein Mitgliedsbeitrag")}
+          ${metricCard("Paketpreis", fmt(resultHub.package.price), resultHub.package.label)}
+          ${metricCard("Jährliche Kosten", "—", "Kein Mitgliedsbeitrag")}
+          ${metricCard("Ø pro EPD", fmt(resultHub.package.pricePerEPD), "bei " + resultHub.inputs.packageStep + " EPDs im Paket")}
+          ${metricCard("Neue EPDs", (resultHub.inputs.limitExceeded ? resultHub.inputs.cappedCount : resultHub.inputs.requestedEPDs), resultHub.inputs.limitExceeded ? "Maximale Anzahl" : "Angefragte Menge")}
         </div>
   
         <div class="summary-item cost-section">
           <p class="cost-section-title">Paketdetails</p>
           ${costTable([
             ["Produkttyp",      resultHub.inputs.complexity === "simple" ? "Simple Product" : "Complex Product"],
-            ["Angefragte EPDs", resultHub.inputs.newEPDs],
+            ["Angefragte EPDs", resultHub.inputs.requestedEPDs],
             ["Paketstufe",      "bis " + resultHub.inputs.packageStep + " EPDs"],
           ], ["Paketpreis gesamt", fmt(resultHub.package.price)])}
         </div>
   
-        <div class="summary-item note-box">
+        <div class="${noteBoxClass}">
           <p>${resultHub.package.note}</p>
         </div>
 
@@ -608,7 +642,7 @@ function renderResult() {
         </div>
       </div>`;
   
-    wrapper.appendChild(costSectionHub);
+    providerGrid.appendChild(costSectionHub);
   }
 
   const actionRow = document.createElement("div");
@@ -642,7 +676,23 @@ function metricCard(label, value, sub) {
     </div>`;
 }
 
-function costTable(rows, totalRow) {
+// function costTable(rows, totalRow) {
+//   const rowsHtml = rows.map(([l, v]) => `
+//     <tr>
+//       <td>${l}</td>
+//       <td>${v}</td>
+//     </tr>`).join("");
+//   return `
+//     <table class="cost-table">
+//       ${rowsHtml}
+//       <tr class="cost-table-total">
+//         <td>${totalRow[0]}</td>
+//         <td>${totalRow[1]}</td>
+//       </tr>
+//     </table>`;
+// }
+
+function costTable(rows) {
   const rowsHtml = rows.map(([l, v]) => `
     <tr>
       <td>${l}</td>
@@ -651,10 +701,6 @@ function costTable(rows, totalRow) {
   return `
     <table class="cost-table">
       ${rowsHtml}
-      <tr class="cost-table-total">
-        <td>${totalRow[0]}</td>
-        <td>${totalRow[1]}</td>
-      </tr>
     </table>`;
 }
 
@@ -705,7 +751,6 @@ function submitAnswers() {
   const stored = JSON.parse(localStorage.getItem("fragebogenAntworten") || "[]");
   stored.push(entry);
   localStorage.setItem("fragebogenAntworten", JSON.stringify(stored, null, 2));
-  console.log("Gespeicherter Eintrag:", entry);
   alert("Antworten und Gebührenberechnung wurden gespeichert.");
 }
 

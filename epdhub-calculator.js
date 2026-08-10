@@ -62,9 +62,9 @@ function findPriceEntry(count) {
  */
 function calculateEPDHub(customerData, answers) {
   const complexity = answers.epdHubComplexity;
+  const requestedCount = Math.max(0, Number(answers.newEPDs) || 0);
   const newEPDs    = Math.max(0, Number(answers.newEPDs) || 0);
   const effectiveCount = newEPDs - Math.floor(newEPDs / 5);
-  console.log(effectiveCount)
 
   if (complexity !== "simple" && complexity !== "complex") {
     throw new Error(`Ungültige Komplexität: "${complexity}". Erlaubt: "simple" | "complex".`);
@@ -72,14 +72,17 @@ function calculateEPDHub(customerData, answers) {
   if (effectiveCount === 0) {
     throw new Error("Anzahl EPDs muss größer als 0 sein.");
   }
-  if (effectiveCount > EPD_PRICE_MAX) {
-    throw new Error(
-      `Für mehr als ${EPD_PRICE_MAX} EPDs bietet EPD Hub Scaling Packs auf Anfrage an. ` +
-      `Bitte kontaktieren Sie sales@epdhub.com für ein individuelles Angebot.`
-    );
-  }
+  // if (effectiveCount > EPD_PRICE_MAX) {
+  //   throw new Error(
+  //     `Für mehr als ${EPD_PRICE_MAX} EPDs bietet EPD Hub Scaling Packs auf Anfrage an. ` +
+  //     `Bitte kontaktieren Sie sales@epdhub.com für ein individuelles Angebot.`
+  //   );
+  // }
 
-  const entry        = findPriceEntry(effectiveCount);
+  const cappedCount = EPD_PRICE_MAX;
+  const limitExceeded = requestedCount > cappedCount;
+
+  const entry        = findPriceEntry(cappedCount);
   const packagePrice = entry.prices[complexity];
   const pricePerEPD  = Math.round(packagePrice / entry.step);
 
@@ -97,15 +100,20 @@ function calculateEPDHub(customerData, answers) {
     calculatedAt: new Date().toISOString(),
     inputs: {
       complexity,
-      newEPDs,
+      requestedEPDs: requestedCount,
+      effectiveCount,
+      cappedCount,
       packageStep: entry.step,
+      limitExceeded,
     },
     package: {
-      label:       `EPD Pack – ${newEPDs} EPDs (${complexity === "simple" ? "Simple" : "Complex"} Product)`,
+      label:       `EPD Pack – ${limitExceeded ? cappedCount : requestedCount} EPDs (${complexity === "simple" ? "Simple" : "Complex"} Product)`,
       step:        entry.step,
       price:       packagePrice,
       pricePerEPD,
-      note:        'Inkl. bis zu 3 Verifikationsrunden, Publishing und digitalem Workflow. Kein Mitgliedsbeitrag.',
+      note: limitExceeded
+        ? 'Inkl. bis zu 3 Verifikationsrunden, Publishing und digitalem Workflow. Kein Mitgliedsbeitrag. <br >Berechnet als Maximalpaket für 20 EPDs. Für größere Mengen kontaktieren Sie sales@epdhub.com.'
+        : 'Inkl. bis zu 3 Verifikationsrunden, Publishing und digitalem Workflow. Kein Mitgliedsbeitrag.',
     },
     totalFirstYear: packagePrice,
     projection,

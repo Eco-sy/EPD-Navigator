@@ -31,6 +31,10 @@ Version: 1.2
       width: min(100%, 600px);
     }
 
+    .page-shell.result-mode {
+      width: min(100%, 1400px);
+    }
+
     header {
       display: flex;
       flex-wrap: wrap;
@@ -270,6 +274,13 @@ Version: 1.2
     }
 
     /* NEU */
+    .provider-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
     .provider-box {
       border: 1px solid rgba(148, 163, 184, 0.24);
       border-radius: 20px;
@@ -277,13 +288,18 @@ Version: 1.2
       overflow: hidden;
     }
 
+    .provider-box {
+      min-width: 0;
+      /* pointer-events: none; */
+    }
+
     .provider-box+.provider-box {
-      margin-top: 14px;
+      margin-top: 0;
     }
 
     .provider-summary {
       list-style: none;
-      cursor: pointer;
+      /* cursor: pointer; */
       padding: 16px 18px;
       display: flex;
       justify-content: space-between;
@@ -298,7 +314,7 @@ Version: 1.2
     }
 
     .provider-summary::after {
-      content: "▾";
+      /* content: "▾"; */
       font-size: 1.5rem;
       color: #94a3b8;
       transition: transform 0.2s ease;
@@ -377,7 +393,7 @@ Version: 1.2
     }
 
     .cost-section-title {
-      margin: 0 0 12px;
+      /* margin: 0 0 12px; */
       font-weight: 700;
       color: #0f172a;
     }
@@ -439,14 +455,30 @@ Version: 1.2
     .note-box {
       background: #f0fdf4 !important;
       border: 1px solid #bbf7d0 !important;
+      margin-bottom: 15px;
     }
 
     .note-box p {
-      margin: 0;
+      /* margin: 0; */
       font-size: 0.8rem;
       color: #15803d;
       font-weight: 400;
     }
+
+    .warning-box {
+      background: #fef9c3 !important;
+      border-color: #fbbf24 !important;
+    }
+
+    .warning-box p {
+      color: #92400e !important;
+    }
+
+    /* .note-ibu {
+      padding: 14px 16px;
+      margin-bottom: 15px;
+      border-radius: 20px;
+    } */
 
     /* Projektionstabelle */
     .projection-table {
@@ -516,4 +548,32 @@ Version: 1.2
       font-size: 0.875rem;
       color: #64748b;
       margin: 0;
+    }
+
+    .cost-section > summary {
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: initial;
+      display: flex;
+    }
+
+    .cost-section > summary::after {
+      content: "▾";
+      font-size: 0.9rem;
+      color: #94a3b8;
+      transition: transform 0.2s ease;
+    }
+
+    .cost-section[open] > summary::after {
+      transform: rotate(180deg);
+    }
+
+    .cost-section-total {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 0.95rem;
     }
