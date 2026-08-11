@@ -14,7 +14,7 @@
 let questions             = {};
   // let customerData          = {};   // wird aus customer.json geladen
 let answers               = {};
-let currentQuestion       = "start";
+let currentQuestion       = "newEPDCount"; //Auf erste Frage initialisiert
 let questionQueue         = [];
 let questionnaireFinished = false;
 let questionHistory = [];
@@ -224,7 +224,7 @@ function showQuestion() {
   const skipBtn = document.createElement("button");
   skipBtn.className = "back-button skip-button";
   skipBtn.innerText = "Frage Überspringen";
-  skipBtn.disabled = questionHistory.length === 0;
+  // skipBtn.disabled = questionHistory.length === 0;
   skipBtn.onclick = () => {
     answers[currentQuestion] = q.skipValue;
     questionHistory.push(currentQuestion);
@@ -422,12 +422,14 @@ function renderResult() {
           </div>
 
           <div class="summary-item cost-section">
-            <p class="cost-section-title">Einmalige Kosten</p>
-            ${costTable(
-              Object.values(result.oneTime.items)
-                .filter(x => x.count > 0)
-                .map(x => [`${x.label} (${x.count} × ${fmt(x.unitCost)})`, fmt(x.total)])
-            )}
+            <details class="cost-section">
+              <summary class="cost-section-title">Einmalige Kosten</summary>
+              ${costTable(
+                Object.values(result.oneTime.items)
+                  .filter(x => x.count > 0)
+                  .map(x => [`${x.label} (${x.count} × ${fmt(x.unitCost)})`, fmt(x.total)])
+              )}
+            </details>
             <table class="cost-table">
               <tr class="cost-table-total">
                 <td>Summe einmalig</td>
@@ -446,9 +448,10 @@ function renderResult() {
                 <span>Jährliche Kosten</span>
               </summary>
               ${costTable([
-                [result.annual.items.membershipFee.label, result.annual.items.membershipFee.billedExternally ? '—' : fmt(result.annual.items.membershipFee.total)],
-                ...result.annual.items.signFees.breakdown.map(({ position, fee }) => [`Zeichenentgelt EPD ${position}`, fmt(fee)]),
-                ])}
+                [result.annual.items.membershipFee.label,
+                result.annual.items.membershipFee.billedExternally ? '—' : fmt(result.annual.items.membershipFee.total)],
+                ...buildSignFeeRows(result.annual.items.signFees.breakdown, fmt),
+              ])}
             </details>
             <table class="cost-table">
               <tr class="cost-table-total">
@@ -523,14 +526,7 @@ function renderResult() {
             <summary class="cost-section-title">
               <span class="cost-section-title">Einmalige Kosten</span>
             </summary>
-            ${costTable([
-              ...resultEnv.oneTime.newEPDs.breakdown.map(({ position, fee }) =>
-                [`Neue EPD (Position ${position})`, fmt(fee)]
-              ),
-              ...resultEnv.oneTime.renewEPDs.breakdown.map(({ position, fee }) =>
-                [`Aktualisierung (Position ${position})`, fmt(fee)]
-              ),
-            ])}
+            ${costTable(buildEnvirondecRows(resultEnv.oneTime.newEPDs.breakdown, fmt))}
           </details>
             <table class="cost-table">
               <tr class="cost-table-total">
@@ -538,6 +534,10 @@ function renderResult() {
                 <td>${fmt(resultEnv.oneTime.total)}</td>
               </tr>
             </table>
+        </div>
+
+        <div class="summary-item note-box warning-box note-ibu">
+            <p>Verifizierung nicht inkludiert</p>
         </div>
 
         <div class="summary-item cost-section">
@@ -676,22 +676,6 @@ function metricCard(label, value, sub) {
     </div>`;
 }
 
-// function costTable(rows, totalRow) {
-//   const rowsHtml = rows.map(([l, v]) => `
-//     <tr>
-//       <td>${l}</td>
-//       <td>${v}</td>
-//     </tr>`).join("");
-//   return `
-//     <table class="cost-table">
-//       ${rowsHtml}
-//       <tr class="cost-table-total">
-//         <td>${totalRow[0]}</td>
-//         <td>${totalRow[1]}</td>
-//       </tr>
-//     </table>`;
-// }
-
 function costTable(rows) {
   const rowsHtml = rows.map(([l, v]) => `
     <tr>
@@ -704,13 +688,74 @@ function costTable(rows) {
     </table>`;
 }
 
+function buildSignFeeRows(breakdown, fmt) {
+  const rows = [];
+
+  for (const item of breakdown.slice(0, 4)) {
+    rows.push([`Zeichenentgelt EPD ${item.position}`, fmt(item.fee)]);
+  }
+
+  const group5to20 = breakdown.filter(item => item.position >= 5 && item.position <= 20);
+  if (group5to20.length > 0) {
+    const start = 5;
+    const end = group5to20[group5to20.length - 1].position;
+    const unitFee = group5to20[0].fee;
+    rows.push([
+      `Zeichenentgelt EPD ${start}–${end}`,
+      `pro\u00A0EPD\u00A0` + fmt(unitFee)
+    ]);
+  }
+
+  const group21Plus = breakdown.filter(item => item.position >= 21);
+  if (group21Plus.length > 0) {
+    const unitFee = group21Plus[0].fee;
+    rows.push([
+      `Zeichenentgelt EPD 21+`,
+      fmt(unitFee)
+    ]);
+  }
+
+  return rows;
+}
+
+function buildEnvirondecRows(breakdown, fmt) {
+  const rows = [];
+
+  const addGroup = (from, to, labelPrefix) => {
+    const items = breakdown.filter(item => item.position >= from && item.position <= to);
+    if (items.length === 0) return;
+
+    const start = from;
+    const end = items[items.length - 1].position;
+    const fee = items[0].fee;
+
+    const label = start === end
+      ? `${labelPrefix} ${start}`
+      : `${labelPrefix} ${start}–${end}`;
+
+    rows.push([`${label}`, `pro\u00A0EPD\u00A0` + fmt(fee)]);
+  };
+
+  // EPD 1 individuell
+  const first = breakdown.find(item => item.position === 1);
+  if (first) {
+    rows.push([`Verifizierung EPD 1`, fmt(first.fee)]);
+  }
+
+  addGroup(2, 4, "Verifizierung EPD");
+  addGroup(5, 99, "Verifizierung EPD");
+  addGroup(100, Infinity, "Verifizierung EPD");
+
+  return rows;
+}
+
 function projectionTable(projection) {
   const fmt = n => n === 0 ? "—"
     : new Intl.NumberFormat("de-DE", { style:"currency", currency:"EUR", maximumFractionDigits:0 }).format(n);
 
   const rows = projection.map(row => `
     <tr>
-      <td>Jahr ${row.year}</td>
+      <td>Jahr\u00A0${row.year}</td>
       <td>${fmt(row.oneTime)}</td>
       <td>${fmt(row.annual)}</td>
       <td class="col-total">${fmt(row.total)}</td>

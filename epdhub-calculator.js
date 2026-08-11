@@ -107,7 +107,7 @@ function calculateEPDHub(customerData, answers) {
       limitExceeded,
     },
     package: {
-      label:       `EPD Pack – ${limitExceeded ? cappedCount : requestedCount} EPDs (${complexity === "simple" ? "Simple" : "Complex"} Product)`,
+      label:       `${limitExceeded ? cappedCount : requestedCount} EPDs (${complexity === "simple" ? "Simple" : "Complex"} Product)`,
       step:        entry.step,
       price:       packagePrice,
       pricePerEPD,

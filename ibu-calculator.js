@@ -87,7 +87,6 @@ function calculateIBU(customerData, answers) {
   const newEPDs           = Math.max(0, Number(answers.newEPDs)           || 0); //Anzahl aller neuen EPDs
   const numFamilies       = newEPDs > 0 ? Math.max(0, Math.min(Number(answers.newEPDsFromFamily) || 1, newEPDs)) : 0; //Anzahl der versch. Produktfamilien
   const newEPDsFromFamily = newEPDs - numFamilies//Anzahl alles EPDs unter folgekosten
-  // const reworkEPDs        = Math.max(0, Number(answers.reworkEPDs)        || 0);
   const normalNewEPDs     = numFamilies //Anzahl EPDs mit Erstaustellungsgebühren (Im Endeffekt die Anzahl aller versch. Familien)
 
   // --- Plausibilitätsprüfung ---

@@ -14,6 +14,7 @@
     "text": "Wie viele neue EPDs möchten Sie veröffentlichen?",
     "skipValue": "1",
     "skipNext": "familyEPD",
+    "hint": "Manche Anbieter haben kein Kostenmodell für das Einreichen für mehr als 20 EPDs. In diesem Fall werden dann nur die Kosten für 20 Pakete ausgegeben.",
     "type": "number",
     "validation": {
       "min": 1,
@@ -86,6 +87,7 @@
     "text": "Jahresumsatz in Mio",
     "skipValue": "1",
     "skipNext": "amountEmployees",
+    "hint": "Werte unter 1 Millionen sollen mit . oder , getrennt werden!",
     "type": "number",
     "validation": {
       "min": 0,

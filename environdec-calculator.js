@@ -155,7 +155,7 @@ function calculateEnvirondec(customerData, answers) {
     },
     annual: {
       membershipFee: {
-        label: `Jahresmitgliedschaft Environdec (${membershipType})`,
+        label: `Jahresmitgliedschaft (${membershipType})`,
         total: membershipFee,
       },
       total: totalAnnualCosts,

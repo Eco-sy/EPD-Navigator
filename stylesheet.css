@@ -285,7 +285,7 @@ Version: 1.2
       border: 1px solid rgba(148, 163, 184, 0.24);
       border-radius: 20px;
       background: #f8fafc;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .provider-box {
@@ -299,7 +299,6 @@ Version: 1.2
 
     .provider-summary {
       list-style: none;
-      /* cursor: pointer; */
       padding: 16px 18px;
       display: flex;
       justify-content: space-between;
@@ -307,6 +306,12 @@ Version: 1.2
       gap: 12px;
       flex-wrap: wrap;
       user-select: none;
+      /* position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #f8fafc;
+      border-top-left-radius: inherit;
+      border-top-right-radius: inherit; */
     }
 
     .provider-summary::-webkit-details-marker {
@@ -489,7 +494,7 @@ Version: 1.2
     .projection-table th {
       padding: 6px 8px;
       text-align: right;
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       color: #64748b;
       font-weight: 600;
       text-transform: uppercase;
@@ -502,9 +507,9 @@ Version: 1.2
     }
 
     .projection-table td {
-      padding: 6px 8px;
+      /* padding: 6px 8px; */
       text-align: right;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       color: #334155;
       border-top: 1px solid #f1f5f9;
     }
@@ -552,7 +557,6 @@ Version: 1.2
 
     .cost-section > summary {
       cursor: pointer;
-      user-select: none;
       list-style: none;
       display: flex;
       justify-content: space-between;
@@ -576,4 +580,8 @@ Version: 1.2
       font-weight: 700;
       color: #0f172a;
       font-size: 0.95rem;
+    }
+
+    .cost-section:not([open]) {
+      overflow: hidden;
     }
