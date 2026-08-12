@@ -82,9 +82,9 @@ function calculateEPDHub(customerData, answers) {
   const cappedCount = EPD_PRICE_MAX;
   const limitExceeded = requestedCount > cappedCount;
 
-  const entry        = findPriceEntry(cappedCount);
+  const entry        = findPriceEntry((limitExceeded ? cappedCount : effectiveCount));
   const packagePrice = entry.prices[complexity];
-  const pricePerEPD  = Math.round(packagePrice / entry.step);
+  const pricePerEPD  = Math.round(packagePrice / (limitExceeded ? cappedCount : requestedCount));
 
   const projection = Array.from({ length: 5 }, (_, idx) => ({
     year:       idx + 1,

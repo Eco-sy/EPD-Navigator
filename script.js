@@ -35,7 +35,7 @@ function getNextQuestionId(question, option) {
 function restartQuestionnaire() {
   document.querySelector(".page-shell")?.classList.remove("result-mode");
   answers = {};
-  currentQuestion = "start";
+  currentQuestion = "newEPDCount";
   questionQueue = [];
   questionnaireFinished = false;
   questionHistory = [];
@@ -407,7 +407,7 @@ function renderResult() {
              ${i.membershipType === 'associate' ? '· Verbandsmitglied' : ''}
           </span>
         </span>
-        <span class="provider-summary-total"><span style="color:#F252A7;">${fmt(result.oneTime.total)}</span> + ${fmt(result.projection[result.projection.length - 1].cumulative - result.oneTime.total)} *</span>
+        <span class="provider-summary-total"><span style="color:#C3B7C7;">${fmt(result.oneTime.total)} *</span> <span style="color:#FFF;">+</span> ${fmt(result.projection[result.projection.length - 1].cumulative - result.oneTime.total)}</span>
       </div>
       <div class="provider-content">
         <p class="provider-meta">
@@ -415,9 +415,9 @@ function renderResult() {
         </p>
 
           <div class="metric-grid">
-            ${metricCard("Einmalige Kosten",  `<span style="color:#F252A7;">${fmt(result.oneTime.total)}</span>`,  "Verifizierung & Bearbeitung")}
+            ${metricCard("Einmalige Kosten",  fmt(result.oneTime.total),  "Verifizierung & Bearbeitung")}
             ${metricCard("Jährliche Kosten",  fmt(result.annual.total),   "Mitglied + Zeichenentgelte")}
-            ${metricCard("Gesamt Jahr 1",     fmt(result.totalFirstYear), "Einmalig + erste Jahresgebühren")}
+            ${metricCard("Gesamt Jahr 1",     fmt(result.totalFirstYear), "Kosten erstes Jahr")}
             ${metricCard("EPDs nach Vorgang", i.totalValidEPDsAfter,      "Gültige Deklarationen")}
           </div>
 
@@ -517,7 +517,7 @@ function renderResult() {
         <div class="metric-grid">
           ${metricCard("Einmalige Kosten",  fmt(resultEnv.oneTime.total), "")}
           ${metricCard("Jährliche Kosten",  fmt(resultEnv.annual.total),   "Jahresmitgliedschaft")}
-          ${metricCard("Gesamt Jahr 1",     fmt(resultEnv.totalFirstYear), "Einmalig + erste Jahresgebühren")}
+          ${metricCard("Gesamt Jahr 1",     fmt(resultEnv.totalFirstYear), "Kosten erstes Jahr")}
           ${metricCard("EPDs nach Vorgang", iEnv.totalValidEPDsAfter,      "Gültige Deklarationen")}
         </div>
 
@@ -608,7 +608,7 @@ function renderResult() {
         <div class="metric-grid">
           ${metricCard("Paketpreis", fmt(resultHub.package.price), resultHub.package.label)}
           ${metricCard("Jährliche Kosten", "—", "Kein Mitgliedsbeitrag")}
-          ${metricCard("Ø pro EPD", fmt(resultHub.package.pricePerEPD), "bei " + resultHub.inputs.packageStep + " EPDs im Paket")}
+          ${metricCard("Ø pro EPD", fmt(resultHub.package.pricePerEPD), "bei " + (resultHub.inputs.limitExceeded ? resultHub.inputs.cappedCount : resultHub.inputs.requestedEPDs) + " EPDs")}
           ${metricCard("Neue EPDs", (resultHub.inputs.limitExceeded ? resultHub.inputs.cappedCount : resultHub.inputs.requestedEPDs), resultHub.inputs.limitExceeded ? "Maximale Anzahl" : "Angefragte Menge")}
         </div>
   

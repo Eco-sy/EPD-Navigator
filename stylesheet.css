@@ -282,9 +282,9 @@ Version: 1.2
     }
 
     .provider-box {
-      border: 1px solid rgba(148, 163, 184, 0.24);
+      border: 1px solid rgba(185, 185, 185, 0.24);
       border-radius: 20px;
-      background: #f8fafc;
+      background: #281A39;
       overflow: visible;
     }
 
@@ -332,7 +332,7 @@ Version: 1.2
 
     .provider-summary-title {
       font-weight: 700;
-      color: #281A39;
+      color: #FFF;
       font-size: 1rem;
     }
 
@@ -345,7 +345,7 @@ Version: 1.2
     .provider-summary-total {
       font-weight: 700;
       font-size: 1.1rem;
-      color: #2563eb;
+      color: #2bf89A;
       margin-left: auto;
     }
 
@@ -384,7 +384,7 @@ Version: 1.2
       margin: 0 0 4px;
       font-size: 1.3rem;
       font-weight: 700;
-      color: #2563eb;
+      color: #5c5168;
     }
 
     .metric-card .metric-card-sub {
@@ -426,7 +426,7 @@ Version: 1.2
     }
 
     .total-box {
-      border: 2px solid #2563eb !important;
+      border: 2px solid #2BF89A !important;
     }
 
     .total-box-row {
@@ -446,7 +446,7 @@ Version: 1.2
     .total-box-amount {
       font-weight: 700;
       font-size: 1.4rem;
-      color: #2563eb;
+      color: #5c5168;
     }
 
     .total-box-vat {
