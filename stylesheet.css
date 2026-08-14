@@ -91,6 +91,7 @@ Version: 1.2
       font-size: 1rem;
       font-weight: 600;
       color: #281A39;
+      max-width: 420px;
     }
 
     #question-container pre {
@@ -178,6 +179,8 @@ Version: 1.2
       opacity: 0.55;
       transform: none;
       box-shadow: none;
+      color: gray;
+      background-color: lightgray;
     }
 
     .answer-button {
@@ -238,7 +241,7 @@ Version: 1.2
       display: grid;
       gap: 12px;
       width: 100%;
-      max-width: 420px;
+      /* max-width: 420px; */
     }
 
     input[type="text"],
@@ -476,7 +479,7 @@ Version: 1.2
 
     .note-box p {
       /* margin: 0; */
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: #15803d;
       font-weight: 400;
     }
@@ -599,7 +602,7 @@ Version: 1.2
 
     .info-button {
         position: absolute;
-        right: 12px;
+        right: 0px;
         height: 24px;
         display: flex;
         align-items: center;
@@ -610,6 +613,7 @@ Version: 1.2
         font-size: 20px;
         font-weight: bold;
         cursor: pointer;
+        font-size: 25px;
     }
     .info-button-end {
       /* position: absolute;

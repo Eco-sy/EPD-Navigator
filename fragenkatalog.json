@@ -29,7 +29,7 @@
     "text": "Aus wie vielen Produktfamilien stammen die EPDs?",
     "skipValue": "1",
     "skipNext": "ibuMembershipType",
-    "hint": "Für mehr Informationen zu Produktfamilien, schauen sie in unseren Leitfaden!",
+    "hint": "",
     "type": "number",
     "validation": {
       "min": 1,
@@ -76,7 +76,7 @@
     "text": "Sind Sie Mitglied eines Verbands, welcher Mitglied bei IBU ist?",
     "skipValue": "associate",
     "skipNext": "amountEmployees",
-    "hint": "Verbandsmitglieder sind über einen IBU-Mitgliedsverband angebunden. Der Mitgliedsbeitrag wird dann über den Verband abgerechnet.",
+    "hint": "",
     "options": [
       { "label": "Ja", "value": "associate", "nextQuestionID": "amountEmployees" },
       { "label": "Nein", "value": "non-associate", "nextQuestionID": "yearlyRevenue" }
@@ -84,10 +84,10 @@
   },
 
   "yearlyRevenue": {
-    "text": "Jahresumsatz in Mio",
+    "text": "Wie hoch war der Jahresumsatz Ihres Unternehmens im letzten Geschäftsjahr?",
     "skipValue": "1",
     "skipNext": "amountEmployees",
-    "hint": "Werte unter 1 Millionen sollen mit . oder , getrennt werden!",
+    "hint": "Bitte geben Sie den Jahresumsatz in Millionen Euro an. Werte unter 1 Million Euro können Sie mit Dezimalstellen angeben (z. B. 0,5 oder 0.5).",
     "type": "number",
     "validation": {
       "min": 0,
@@ -98,7 +98,7 @@
   },
 
   "amountEmployees": {
-    "text": "Anzahl Mitarbeiter",
+    "text": "Wie hoch ist die aktuelle Anzahl der Mitarbeiterinnen und Mitarbeiter in Ihrem Unternehmen?",
     "skipValue": "11",
     "skipNext": "epdHubComplexity",
     "type": "number",

@@ -18,6 +18,7 @@ let currentQuestion       = "newEPDCount"; //Auf erste Frage initialisiert
 let questionQueue         = [];
 let questionnaireFinished = false;
 let questionHistory = [];
+let leitfaden = "https://www.eco-sy.com/epd-leitfaden"
 
 // ---------------------------------------------------------------------------
 // Fragebogen-Engine
@@ -44,7 +45,7 @@ function restartQuestionnaire() {
 
 function showStartScreen() {
   const container = document.getElementById("question-container");
-  container.innerHTML = `<a href="https://example.com/leitfaden" class="info-button" target="_blank">ⓘ<span class="info-tooltip">
+  container.innerHTML = `<a href=${leitfaden} class="info-button" target="_blank">ⓘ<span class="info-tooltip">
         Mehr Informationen finden Sie in unserem Leitfaden
     </span></a>`;
 
@@ -53,7 +54,7 @@ function showStartScreen() {
     <h3>Willkommen beim EPD Kostenvergleich</h3>
     <p style="font-weight:400; font-size:0.95rem; color:#64748b;">
       Beantworten Sie einige kurze Fragen und erhalten Sie eine individuelle
-      Gebührenaufstellung für die Veröffentlichung oder Aktualisierung Ihrer EPDs –
+      Gebührenaufstellung für die Veröffentlichung Ihrer EPDs –
       für IBU, EPD International und EPD Hub im Vergleich.
     </p>
     <button class="answer-button" id="start-btn">Jetzt starten →</button>
@@ -124,6 +125,16 @@ function showQuestion() {
   const label = document.createElement("h3");
   label.innerText = q.text || "Frage nicht gefunden";
   div.appendChild(label);
+
+  const infoBtn = document.createElement("a");
+  infoBtn.className = "info-button";
+  infoBtn.setAttribute("href", leitfaden);
+  infoBtn.setAttribute("target", "_blank");
+  infoBtn.innerHTML = `ⓘ<span class="info-tooltip">
+        Mehr Informationen finden Sie in unserem Leitfaden
+    </span>`;
+  
+  div.appendChild(infoBtn);
 
   function parseHint(text){
     return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
@@ -354,8 +365,7 @@ function renderResult() {
   
   const infoBtn = document.createElement("div");
   infoBtn.className = "info-button-end";
-  infoBtn.innerHTML = `<a href="https://example.com/leitfaden" target="_blank" class="info-button-end">ⓘ</a><span class="info-tooltip">Mehr Informationen finden Sie in unserem Leitfaden</span>`
-  // wrapper.innerHTML = `<a href="https://example.com/leitfaden" class="info-button" target="_blank"></a>`;
+  infoBtn.innerHTML = `<a href=${leitfaden} target="_blank" class="info-button-end">ⓘ</a><span class="info-tooltip">Mehr Informationen finden Sie in unserem Leitfaden</span>`
   wrapper.appendChild(infoBtn);
 
   const providerGrid = document.createElement("div");
@@ -426,7 +436,7 @@ function renderResult() {
       </div>
       <div class="provider-content">
         <p class="provider-meta">
-          Gebührenordnung ab 01.09.2025
+          Gebührenordnung ab 12.08.2026
         </p>
 
           <div class="metric-grid">
@@ -454,7 +464,7 @@ function renderResult() {
           </div>
 
           <div class="summary-item note-box note-ibu">
-            <p>Verifizierung Inklusive</p>
+            <p>Die kosten der Verifizierung sind in den Preisen enthalten</p>
           </div>
           
           <div class="summary-item cost-section">
@@ -526,11 +536,11 @@ function renderResult() {
       </div>
       <div class="provider-content">
         <p class="provider-meta">
-        ·
+        Veröffentlichungs Gebühren
         </p>
 
         <div class="metric-grid">
-          ${metricCard("Einmalige Kosten",  fmt(resultEnv.oneTime.total), "")}
+          ${metricCard("Einmalige Kosten",  fmt(resultEnv.oneTime.total), "Regestrierungs Gebühr")}
           ${metricCard("Jährliche Kosten",  fmt(resultEnv.annual.total),   "Jahresmitgliedschaft")}
           ${metricCard("Gesamt Jahr 1",     fmt(resultEnv.totalFirstYear), "Kosten erstes Jahr")}
           ${metricCard("EPDs nach Vorgang", iEnv.totalValidEPDsAfter,      "Gültige Deklarationen")}
@@ -552,14 +562,22 @@ function renderResult() {
         </div>
 
         <div class="summary-item note-box warning-box note-ibu">
-            <p>Verifizierung nicht inkludiert</p>
+            <p>Die kosten der Verifizierung sind nicht in den Kosten enthalten</p>
         </div>
 
         <div class="summary-item cost-section">
-          <p class="cost-section-title">Jährliche Kosten</p>
+        <details class="cost-section">
+          <summary class="cost-section-title"><span class="cost-section-title">Jährliche Kosten</span></summary>
           ${costTable([
             [resultEnv.annual.membershipFee.label, fmt(resultEnv.annual.membershipFee.total)],
-          ], ["Summe jährlich", fmt(resultEnv.annual.total)])}
+          ])}
+        </details>
+          <table class="cost-table">
+            <tr class="cost-table-total">
+              <td>Summe Jährlich</td>
+              <td>${fmt(resultEnv.annual.total)}</td>
+            </tr>
+          </table>
         </div>
         
         <div class="summary-item cost-section">
