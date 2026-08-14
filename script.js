@@ -345,11 +345,18 @@ function downloadResultScreenshot() {
 // ---------------------------------------------------------------------------
 function renderResult() {
   document.querySelector(".page-shell")?.classList.add("result-mode");
+  
   const fmt = n =>
     new Intl.NumberFormat("de-DE", { style:"currency", currency:"EUR", maximumFractionDigits:0 }).format(n);
 
   const wrapper = document.createElement("div");
   wrapper.className = "summary-page";
+  
+  const infoBtn = document.createElement("div");
+  infoBtn.className = "info-button-end";
+  infoBtn.innerHTML = `<a href="https://example.com/leitfaden" target="_blank" class="info-button-end">ⓘ</a><span class="info-tooltip">Mehr Informationen finden Sie in unserem Leitfaden</span>`
+  // wrapper.innerHTML = `<a href="https://example.com/leitfaden" class="info-button" target="_blank"></a>`;
+  wrapper.appendChild(infoBtn);
 
   const providerGrid = document.createElement("div");
   providerGrid.className = "provider-grid";
