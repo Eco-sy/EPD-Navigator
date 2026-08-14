@@ -666,3 +666,22 @@ Version: 1.2
         opacity: 1;
         visibility: visible;
     }
+
+    @media (max-width: 1300px) {
+      .hidden {
+        display: none;
+      }
+
+      .provider-grid{
+        grid-template-columns: auto;
+      }
+
+      /* .metric-card{
+        height:15vh;
+        width: 20vw;
+      } */
+
+      .provider-box{
+        /* width: 25vw; */
+      }
+    }

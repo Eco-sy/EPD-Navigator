@@ -446,6 +446,7 @@ function renderResult() {
             ${metricCard("EPDs nach Vorgang", i.totalValidEPDsAfter,      "Gültige Deklarationen")}
           </div>
 
+        <div class="hidden">
           <div class="summary-item cost-section">
             <details class="cost-section">
               <summary class="cost-section-title">Einmalige Kosten</summary>
@@ -501,6 +502,7 @@ function renderResult() {
               <span>${fmt(result.totalFirstYear * 1.19)}</span>
             </div>
           </div>
+        </div>
         </div>`;
     providerGrid.appendChild(costSectionIBU);
   }
@@ -545,7 +547,7 @@ function renderResult() {
           ${metricCard("Gesamt Jahr 1",     fmt(resultEnv.totalFirstYear), "Kosten erstes Jahr")}
           ${metricCard("EPDs nach Vorgang", iEnv.totalValidEPDsAfter,      "Gültige Deklarationen")}
         </div>
-
+      <div class="hidden">
         <div class="summary-item cost-section">
           <details class="cost-section">
             <summary class="cost-section-title">
@@ -595,7 +597,8 @@ function renderResult() {
             <span>Steuersatz abhängig vom Land</span>
           </div>
         </div>
-      </div>`;
+      </div>
+    </div>`;
 
     providerGrid.appendChild(costSectionEnv);
   }
@@ -645,6 +648,8 @@ function renderResult() {
           ${metricCard("Neue EPDs", (resultHub.inputs.limitExceeded ? resultHub.inputs.cappedCount : resultHub.inputs.requestedEPDs), resultHub.inputs.limitExceeded ? "Maximale Anzahl" : "Angefragte Menge")}
         </div>
   
+        
+      <div class="hidden">
         <div class="summary-item cost-section">
           <p class="cost-section-title">Paketdetails</p>
           ${costTable([
@@ -673,6 +678,7 @@ function renderResult() {
             <span>Steuersatz abhängig vom Land</span>
           </div>
         </div>
+      </div>
       </div>`;
   
     providerGrid.appendChild(costSectionHub);
@@ -802,7 +808,7 @@ function projectionTable(projection) {
           <th></th>
           <th>Einmalig</th>
           <th>Jährlich</th>
-          <th>Gesamt</th>
+          <th class="hidden">Gesamt</th>
           <th>Kumuliert</th>
         </tr>
       </thead>
