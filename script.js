@@ -44,11 +44,13 @@ function restartQuestionnaire() {
 
 function showStartScreen() {
   const container = document.getElementById("question-container");
-  container.innerHTML = "";
+  container.innerHTML = `<a href="https://example.com/leitfaden" class="info-button" target="_blank">ⓘ<span class="info-tooltip">
+        Mehr Informationen finden Sie in unserem Leitfaden
+    </span></a>`;
 
   const div = document.createElement("div");
   div.innerHTML = `
-    <p>Willkommen beim EPD Kostenvergleich</p>
+    <h3>Willkommen beim EPD Kostenvergleich</h3>
     <p style="font-weight:400; font-size:0.95rem; color:#64748b;">
       Beantworten Sie einige kurze Fragen und erhalten Sie eine individuelle
       Gebührenaufstellung für die Veröffentlichung oder Aktualisierung Ihrer EPDs –
@@ -119,14 +121,20 @@ function showQuestion() {
   }
 
   const div   = document.createElement("div");
-  const label = document.createElement("p");
+  const label = document.createElement("h3");
   label.innerText = q.text || "Frage nicht gefunden";
   div.appendChild(label);
+
+  function parseHint(text){
+    return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  }
 
   if (q.hint) {
     const hint = document.createElement("p");
     hint.style.cssText = "font-size:0.875rem; color:#64748b; font-weight:400; margin:0;";
-    hint.innerText = q.hint;
+    // hint.innerText = q.hint;
+    // hint.innerHTML = parseHint(q.hint);
+    hint.innerHTML = q.hint;
     div.appendChild(hint);
   }
 
@@ -651,13 +659,13 @@ function renderResult() {
   const screenshotBtn = document.createElement("button");
   screenshotBtn.id = "download-screenshot-btn";
   screenshotBtn.setAttribute("data-html2canvas-ignore", "");
-  screenshotBtn.className = "back-button";
+  screenshotBtn.className = "answer-button";
   screenshotBtn.innerText = "Screenshot herunterladen";
   screenshotBtn.onclick = downloadResultScreenshot;
   actionRow.appendChild(screenshotBtn);
 
   const restartBtn = document.createElement("button");
-  restartBtn.className = "back-button";
+  restartBtn.className = "answer-button";
   restartBtn.innerText = "Neustart";
   restartBtn.setAttribute("data-html2canvas-ignore", "");
   restartBtn.onclick = restartQuestionnaire;

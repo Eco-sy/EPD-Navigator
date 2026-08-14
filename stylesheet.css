@@ -70,6 +70,10 @@ Version: 1.2
       padding: 32px;
     }
 
+    #question-container {
+      position: relative;
+    }
+
     #question-container>div {
       display: grid;
       gap: 18px;
@@ -77,9 +81,16 @@ Version: 1.2
 
     #question-container p {
       margin: 0;
-      /* font-size: 1rem; */
-      /* font-weight: 600; */
-      /* color: #281A39; */
+      /* font-size: 1rem;
+      font-weight: 600;
+      color: #281A39; */
+    }
+    
+    #question-container h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #281A39;
     }
 
     #question-container pre {
@@ -174,7 +185,7 @@ Version: 1.2
       color: #281A39;
       min-width: 140px;
       margin: 4px 0;
-      text-align: left;
+      /* text-align: left; */
     }
 
     .answer-button.secondary {
@@ -183,8 +194,8 @@ Version: 1.2
     }
 
     .back-button {
-      background: #281A39;
-      color: #e2e8f0;
+      background: #281a39;
+      color: #2bf89A;
       min-width: 100px;
       max-width: 200px;
       padding: 10px 14px;
@@ -338,7 +349,7 @@ Version: 1.2
 
     .provider-summary-sub {
       font-size: 0.8rem;
-      color: #64748b;
+      color: #fff;
       font-weight: 400;
     }
 
@@ -355,7 +366,7 @@ Version: 1.2
 
     /* Ergebnisseite – Provider-Inhalt */
     .provider-meta {
-      color: #94a3b8;
+      color: #fff;
       margin: 0 0 20px;
       font-size: 0.8rem;
     }
@@ -390,7 +401,7 @@ Version: 1.2
     .metric-card .metric-card-sub {
       margin: 0;
       font-size: 0.7rem;
-      color: #94a3b8;
+      color: #5c5168;
     }
 
     .cost-section {
@@ -426,7 +437,7 @@ Version: 1.2
     }
 
     .total-box {
-      border: 2px solid #2BF89A !important;
+      border: 3px solid #2BF89A !important;
     }
 
     .total-box-row {
@@ -584,4 +595,51 @@ Version: 1.2
 
     .cost-section:not([open]) {
       overflow: hidden;
+    }
+
+    .info-button {
+        position: absolute;
+        right: 12px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: #555;
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .info-button:hover {
+        color: #000;
+        background-color: #f0f0f0;
+    }
+
+    .info-tooltip {
+      position: absolute;
+      top: 32px;
+      right: 0;
+
+      width: 220px;
+      padding: 8px 12px;
+
+      background: #281A39;
+      color: #2BF89A;
+
+      font-size: 13px;
+      font-weight: normal;
+      text-align: center;
+
+      border-radius: 6px;
+
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s;
+    }
+
+    .info-button:hover .info-tooltip {
+        opacity: 1;
+        visibility: visible;
     }

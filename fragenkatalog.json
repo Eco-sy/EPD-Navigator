@@ -114,7 +114,7 @@
     "text": "Handelt es sich um Simple oder Complex Products?",
     "skipValue": "simple",
     "skipNext": "ENDE",
-    "hint": "Simple: Standardprodukte mit einer Funktion. Complex: Produkte mit mehreren Komponenten oder Varianten. Details: epdhub.com/about-epd-hub/pricing",
+    "hint": "<b>Simple</b>: Standardprodukte mit einer Funktion.<br > <b>Complex</b>: Produkte mit mehreren Komponenten oder Varianten.",
     "options": [
       { "label": "Simple Product", "value": "simple", "nextQuestionID": "ENDE" },
       { "label": "Complex Product", "value": "complex", "nextQuestionID": "ENDE" }
