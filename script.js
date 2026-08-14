@@ -656,7 +656,8 @@ function renderResult() {
             ["Produkttyp",      resultHub.inputs.complexity === "simple" ? "Simple Product" : "Complex Product"],
             ["Angefragte EPDs", resultHub.inputs.requestedEPDs],
             ["Paketstufe",      "bis " + resultHub.inputs.packageStep + " EPDs"],
-          ], ["Paketpreis gesamt", fmt(resultHub.package.price)])}
+            ["Paketpreis gesamt", fmt(resultHub.package.price)]
+          ])}
         </div>
   
         <div class="${noteBoxClass}">
