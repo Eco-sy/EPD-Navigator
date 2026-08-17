@@ -1,6 +1,6 @@
 (function () {
   const target = document.getElementById("app");
-  const WIX_ORIGIN = "https://www.eco-sy.com/";
+  const WIX_ORIGIN = "https://www.eco-sy.com";
 
   function reportHeight() {
     const height = target.scrollHeight;
