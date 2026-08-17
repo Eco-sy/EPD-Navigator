@@ -4,6 +4,7 @@
 
   function reportHeight() {
     const height = target.scrollHeight;
+    console.log("Sende Höhe:", height, "an", WIX_ORIGIN);
     window.parent.postMessage({ type: "epd-calc-resize", height }, WIX_ORIGIN);
   }
 
