@@ -309,7 +309,7 @@ function mapToCalculatorInput() {
 // Screenshot erstellen
 // ---------------------------------------------------------------------------
 function downloadResultScreenshot() {
-  const target = document.querySelector(".summary-page");
+  const target = document.querySelector(".card");
   if (!target) return;
 
   const btn = document.getElementById("download-screenshot-btn");
@@ -364,7 +364,7 @@ function renderResult() {
   
   const infoBtn = document.createElement("div");
   infoBtn.className = "info-button-end";
-  infoBtn.innerHTML = `<p class="seen" style="font-weight:400; font-size:0.95rem; color:#64748b;">Für eine detailiertere Aufstellung, benutzen Sie bitte die Desktopansicht.</p><a href=${leitfaden} target="_blank" class="info-button-end">ⓘ</a><span class="info-tooltip">Mehr Informationen finden Sie in unserem Leitfaden</span>`
+  infoBtn.innerHTML = `<p class="seen" style="font-weight:400; font-size:1.5vh; color:#64748b;">Für eine detailiertere Aufstellung, benutzen Sie bitte die Desktopansicht.</p><a href=${leitfaden} target="_blank" class="info-button-end">ⓘ</a><span class="info-tooltip">Mehr Informationen finden Sie in unserem Leitfaden</span>`
   wrapper.appendChild(infoBtn);
 
   const providerGrid = document.createElement("div");
