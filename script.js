@@ -248,7 +248,6 @@ function showQuestion() {
     answers[currentQuestion] = q.skipValue;
     questionHistory.push(currentQuestion);
     currentQuestion = q.skipNext ?? q.nextQuestionID ?? null;
-    console.log(answers);
     showQuestion();
   };
 
