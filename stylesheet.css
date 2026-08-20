@@ -13,6 +13,10 @@ Version: 1.2
       line-height: 1.6;
     }
 
+    h3 {
+      padding-right: 10px;
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -167,6 +171,7 @@ Version: 1.2
       padding: 14px 18px;
       cursor: pointer;
       transition: transform 0.17s ease, box-shadow 0.17s ease, background-color 0.17s ease;
+      margin-right: 15px;
     }
 
     button:hover:not(:disabled) {
@@ -205,9 +210,9 @@ Version: 1.2
       margin-top: 18px;
     }
 
-    .skip-button {
+    /* .skip-button {
       margin-left: 12px;
-    }
+    } */
 
     .result-actions {
       display: flex;
@@ -602,7 +607,7 @@ Version: 1.2
 
     .info-button {
         position: absolute;
-        right: 0px;
+        right: -5px;
         height: 24px;
         display: flex;
         align-items: center;
@@ -683,5 +688,11 @@ Version: 1.2
 
       .provider-box{
         /* width: 25vw; */
+      }
+    }
+
+    @media (min-width: 1301px) {
+      .seen {
+        display: none;
       }
     }
