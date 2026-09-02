@@ -107,8 +107,8 @@ function calculateIBU(customerData, answers) {
 
   // --- Einmalige Kosten (identisch für beide Typen) ---
   const verificationCosts = {
-    newEPDs:    { count: normalNewEPDs,     unitCost: ONE_TIME_FEES.newEPD,     total: normalNewEPDs     * ONE_TIME_FEES.newEPD,     label: 'Erstausstellung neue EPDs' },
-    familyEPDs: { count: newEPDsFromFamily, unitCost: ONE_TIME_FEES.familyEPD,  total: newEPDsFromFamily       * ONE_TIME_FEES.familyEPD,  label: 'Weitere EPDs gleiche Produktfamilie' },
+    newEPDs:    { count: normalNewEPDs,     unitCost: ONE_TIME_FEES.newEPD,     total: normalNewEPDs     * ONE_TIME_FEES.newEPD,     label: "ibu.label.initialEPD" },
+    familyEPDs: { count: newEPDsFromFamily, unitCost: ONE_TIME_FEES.familyEPD,  total: newEPDsFromFamily       * ONE_TIME_FEES.familyEPD,  label: "ibu.label.familyEPD" },
     // reworkEPDs: { count: reworkEPDs,        unitCost: ONE_TIME_FEES.reworkEPD,  total: reworkEPDs        * ONE_TIME_FEES.reworkEPD,  label: 'Überarbeitung / Aktualisierung' },
     renewEPDs:  { count: renewEPDs,         unitCost: ONE_TIME_FEES.renewalEPD, total: renewEPDs         * ONE_TIME_FEES.renewalEPD, label: 'Aktualisierung bestehender EPDs' },
   };
@@ -129,11 +129,11 @@ function calculateIBU(customerData, answers) {
       throw new Error(`Ungültige Mitgliedschaftsgruppe: ${group}.`);
     }
     membershipFee      = MEMBERSHIP_FEES[group];
-    membershipFeeLabel = `Mitgliedsbeitrag IBU (Gruppe F${group})`;
+    membershipFeeLabel = "ibu.label.membershipFeeLabel";
   } else {
     // associate: Mitgliedsbeitrag läuft über den Verband
     membershipFee      = 0;
-    membershipFeeLabel = 'Mitgliedsbeitrag (über Verband abgerechnet)';
+    membershipFeeLabel = "ibu.label.associate";
   }
 
   const signFees         = calcSignFees(SIGN_FEE_TIERS, totalValidEPDs);

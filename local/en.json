@@ -1,0 +1,86 @@
+{
+  "start.title": "Welcome to the EPD Cost Comparison",
+  "start.description": "Answer a few short questions and receive an individual fee overview for publishing your EPDs – comparing IBU, EPD International, and EPD Hub.",
+  "start.button": "Get started →",
+
+  "ibu.title": "IBU EPD Program",
+  "ibu.membershipGroup": "Membership group",
+  "ibu.membershipType": "Association member",
+  "ibu.meta": "Fee schedule from 12 August 2026",
+  "ibu.metricLabel.oneTime": "Verification & Processing",
+  "ibu.metricLabel.yearlyCost": "Membership + Labeling fee",
+  "ibu.metricLabel.totalFirstYear": "First-year costs",
+  "ibu.metricLabel.totalEPDsAfter": "Valid Declarations",
+  "ibu.noteBox": "Verification costs are included in the prices",
+  "ibu.label.initialEPD": "Initial issue of new EPDs",
+  "ibu.label.familyEPD": "Additional EPDs in the same product family",
+  "ibu.label.membershipFeeLabel": "Membership fee IBU (Group F{group})",
+  "ibu.label.associate": "Membership fee (deducted through association)",
+  "ibu.label.labelingFee": "Labeling fee EPD",
+
+
+  "env.title": "EPD International",
+  "env.meta": "Publication Fees",
+  "env.metricLabel.oneTime": "Registration Fee",
+  "env.metricLabel.yearlyCost": "Annual Membership",
+  "env.metricLabel.totalFirstYear": "First-year costs",
+  "env.metricLabel.totalEPDsAfter": "Valid Declarations",
+  "env.notebox": "Verification costs are not included in the costs",
+
+  "hub.title": "EPD Hub",
+  "hub.meta": "Package price incl. verification & publishing",
+  "hub.noteOverflow": "Includes up to 3 verification rounds, publishing, and digital workflow. No membership fee. <br >Calculated as the maximum package for 20 EPDs. For larger quantities, please contact sales@epdhub.com.",
+  "hub.note": "Includes up to 3 verification rounds, publishing, and digital workflow. No membership fee.",
+  "hub.metricLabel.yearlyCost": "No membership fee",
+  "hub.metricLabel.pricePerEPD": "for {count} EPDs",
+  "hub.metricLabel.newEPDsMax": "Maximum quantity",
+  "hub.metricLabel.newEPDsRequested": "Requested quantity",
+  "hub.productTyp": "Product type",
+  "hub.requestedEPDs": "Requested EPDs",
+  "hub.packageStep": "Package tier",
+  "hub.packagePrice": "Total package price",
+
+
+
+  "sectionLabel.oneTime": "One-time costs",
+  "sectionLabel.packagePrice": "Package price",
+  "sectionLabel.yearlyCost": "Annual costs",
+  "sectionLabel.pricePerEPD": "Average per EPD",
+  "sectionLabel.totalFirstYear": "Total Year 1",
+  "sectionLabel.totalFirstYearAlt": "Total Year 1 (net)",
+  "sectionLabel.totalEPDsAfter": "EPDs after process",
+  "sectionLabel.newEPDs": "New EPDs",
+  "sectionLabel.oneTimeSum": "Total one-time costs",
+  "sectionLabel.yearlyCostSum": "Total annual costs",
+  "sectionLabel.fiveYearProjection": "5-year projection",
+  "sectionLabel.inclVatDE": "incl. 19% VAT",
+  "sectionLabel.inclVat": "incl. VAT",
+  "sectionLabel.inclVatUnkown": "Tax rate depends on country",
+
+  "label.perEPD": "per\u00A0EPD\u00A0",
+  "label.verifyEPD": "Verify EPD",
+  "label.year": "Year",
+  "label.oneTime": "One-time",
+  "label.annual": "Annual",
+  "label.cumulated": "Cumulated",
+
+  "info.tooltip": "For more information, please refer to our guide",
+  "info.desktop": "For a more detailed breakdown, please use the desktop view.",
+
+  "error.questionNotFound": "Question not found",
+  "error.screenshotWarning": "Screenshot function is currently unavailable.",
+  "error.noEPDs": "No fee calculation – no EPDs were specified.",
+  "error.calculationError": "Error during calculation: ",
+
+  "buttonLabel.continue": "Continue",
+  "buttonLabel.back": "← Back",
+  "buttonLabel.skip": "Skip question",
+  "buttonLabel.screenshot": "Download screenshot",
+  "buttonLabel.createScreenshot": "Creating…",
+  "buttonLabel.restart": "Restart",
+
+
+  "validation.wholeNumberWarning": "Please enter a whole number.",
+  "validation.validInputWarning": "Please enter a valid value"
+
+}

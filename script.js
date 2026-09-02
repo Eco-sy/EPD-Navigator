@@ -12,13 +12,21 @@
 // Zustand
 // ---------------------------------------------------------------------------
 let questions             = {};
-  // let customerData          = {};   // wird aus customer.json geladen
 let answers               = {};
 let currentQuestion       = "newEPDCount"; //Auf erste Frage initialisiert
 let questionQueue         = [];
 let questionnaireFinished = false;
 let questionHistory = [];
 let leitfaden = "https://www.eco-sy.com/epd-leitfaden"
+let lang = new URLSearchParams(window.location.search).get("lang") || "de";
+let local = {};
+
+//---
+// Load Translated String
+//---
+function t(key) {
+  return local[key] ?? key;
+}
 
 // ---------------------------------------------------------------------------
 // Fragebogen-Engine
@@ -46,18 +54,16 @@ function restartQuestionnaire() {
 function showStartScreen() {
   const container = document.getElementById("question-container");
   container.innerHTML = `<a href=${leitfaden} class="info-button" target="_blank">ⓘ<span class="info-tooltip">
-        Mehr Informationen finden Sie in unserem Leitfaden
+        ${t("info.tooltip")}
     </span></a>`;
 
   const div = document.createElement("div");
   div.innerHTML = `
-    <h3>Willkommen beim EPD Kostenvergleich</h3>
+    <h3>${t("start.title")}</h3>
     <p style="font-weight:400; font-size:0.95rem; color:#64748b;">
-      Beantworten Sie einige kurze Fragen und erhalten Sie eine individuelle
-      Gebührenaufstellung für die Veröffentlichung Ihrer EPDs –
-      für IBU, EPD International und EPD Hub im Vergleich.
+      ${t("start.description")}
     </p>
-    <button class="answer-button" id="start-btn">Jetzt starten →</button>
+    <button class="answer-button" id="start-btn">${t("start.button")}</button>
   `;
   div.querySelector("#start-btn").addEventListener("click", showQuestion);
 
@@ -98,13 +104,16 @@ function isInputValueValid(input, validation) {
 
 function getValidationMessage(validation) {
   const parts = [];
-  if (validation.min !== undefined) parts.push(`mindestens ${validation.min}`);
-  if (validation.max !== undefined) parts.push(`höchstens ${validation.max}`);
+  // if (validation.min !== undefined) parts.push(`mindestens ${validation.min}`);
+  // if (validation.max !== undefined) parts.push(`höchstens ${validation.max}`);
+  if (validation.min !== undefined) parts.push(`${validation.min}`);
+  if (validation.max !== undefined) parts.push(`${validation.max}`);
 
-  const rangeText = parts.length > 0 ? ` (${parts.join(" und ")})` : "";
+  // const rangeText = parts.length > 0 ? ` (${parts.join(" und ")})` : "";
+  const rangeText = parts.length > 0 ? ` (${parts.join(" - ")})` : "";
   return validation.integer
-    ? `Bitte geben Sie eine ganze Zahl${rangeText} ein.`
-    : `Bitte geben Sie einen gültigen Wert${rangeText} ein.`;
+    ? t("validation.wholeNumberWarning") + rangeText
+    : t("validation.validInputWarning") + rangeText;
 }
 
 function showQuestion() {
@@ -123,7 +132,7 @@ function showQuestion() {
 
   const div   = document.createElement("div");
   const label = document.createElement("h3");
-  label.innerText = q.text || "Frage nicht gefunden";
+  label.innerText = q.text || t("error.questionNotFound");
   div.appendChild(label);
 
   const infoBtn = document.createElement("a");
@@ -131,7 +140,7 @@ function showQuestion() {
   infoBtn.setAttribute("href", leitfaden);
   infoBtn.setAttribute("target", "_blank");
   infoBtn.innerHTML = `ⓘ<span class="info-tooltip">
-        Mehr Informationen finden Sie in unserem Leitfaden
+        ${t("info.tooltip")}
     </span>`;
   
   div.appendChild(infoBtn);
@@ -185,7 +194,7 @@ function showQuestion() {
   const continueBtn = document.createElement("button");
   continueBtn.className = "input-action-button";
   continueBtn.disabled = !isInputValueValid(input, validation);
-  continueBtn.innerText = "Weiter";
+  continueBtn.innerText = t("buttonLabel.continue");
 
   const feedback = document.createElement("p");
   feedback.className = "input-feedback";
@@ -232,7 +241,7 @@ function showQuestion() {
 
   const backBtn = document.createElement("button");
   backBtn.className = "back-button";
-  backBtn.innerText = "← Zurück";
+  backBtn.innerText = t("buttonLabel.back");
   backBtn.disabled = questionHistory.length === 0;
   backBtn.onclick = () => {
     if (questionHistory.length === 0) return;
@@ -242,7 +251,7 @@ function showQuestion() {
 
   const skipBtn = document.createElement("button");
   skipBtn.className = "back-button skip-button";
-  skipBtn.innerText = "Frage Überspringen";
+  skipBtn.innerText = t("buttonLabel.skip");
   // skipBtn.disabled = questionHistory.length === 0;
   skipBtn.onclick = () => {
     answers[currentQuestion] = q.skipValue;
@@ -315,14 +324,14 @@ function downloadResultScreenshot() {
   const btn = document.getElementById("download-screenshot-btn");
   if (btn) {
     btn.disabled = true;
-    btn.textContent = "Wird erstellt…";
+    btn.textContent = t("buttonLabel.createScreenshot");
   }
 
   if (typeof html2canvas === "undefined") {
-    alert("Screenshot-Funktion ist momentan nicht verfügbar.");
+    alert(t("error.ScreenshotWarning"));
     if (btn) {
       btn.disabled = false;
-      btn.textContent = "Screenshot herunterladen";
+      btn.textContent = t("buttonLabel.screenshot");
     }
     return;
   }
@@ -334,7 +343,7 @@ function downloadResultScreenshot() {
   })
     .then(canvas => {
       const link = document.createElement("a");
-      link.download = "epd-ergebnis.png";
+      link.download = "ecosy-epd-kostenvergleich.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
     })
@@ -345,7 +354,7 @@ function downloadResultScreenshot() {
     .finally(() => {
       if (btn) {
         btn.disabled = false;
-        btn.textContent = "Screenshot herunterladen";
+        btn.textContent = t("buttonLabel.screenshot");
       }
     });
 }
@@ -361,10 +370,11 @@ function renderResult() {
 
   const wrapper = document.createElement("div");
   wrapper.className = "summary-page";
+  wrapper.innerHTML =`<img src="https://static.wixstatic.com/media/db9150_92bfb1a2f7da45a69e98ad8289f50dde~mv2.png/v1/fill/w_168,h_58,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Home.png">`
   
   const infoBtn = document.createElement("div");
   infoBtn.className = "info-button-end";
-  infoBtn.innerHTML = `<p class="seen" style="font-weight:400; font-size:1.5vh; color:#64748b;">Für eine detailiertere Aufstellung, benutzen Sie bitte die Desktopansicht.</p><a href=${leitfaden} target="_blank" class="info-button-end">ⓘ</a><span class="info-tooltip">Mehr Informationen finden Sie in unserem Leitfaden</span>`
+  infoBtn.innerHTML = `<p class="seen" style="font-weight:400; font-size:1.5vh; color:#64748b;">${t("info.desktop")}</p><a href=${leitfaden} target="_blank" class="info-button-end">ⓘ</a><span class="info-tooltip">${t("info.tooltip")}</span>`
   wrapper.appendChild(infoBtn);
 
   const providerGrid = document.createElement("div");
@@ -399,7 +409,7 @@ function renderResult() {
   if (!hasEPDInput) {
     const note = document.createElement("p");
     note.style.cssText = "color:#64748b; font-size:0.9rem; margin-top:16px;";
-    note.innerText = "Keine Gebührenberechnung – es wurden keine EPDs angegeben.";
+    note.innerText = t("error.noEPDs");
     wrapper.appendChild(note);
     // return wrapper;
   }
@@ -413,7 +423,7 @@ function renderResult() {
   } catch (err) {
     const errMsg = document.createElement("p");
     errMsg.style.color = "red";
-    errMsg.innerText = "Fehler bei der Berechnung: " + err.message;
+    errMsg.innerText = t("error.calculationError") + err.message;
     wrapper.appendChild(errMsg);
     return wrapper;
   }
@@ -425,79 +435,79 @@ function renderResult() {
     costSectionIBU.innerHTML = `
       <div class="provider-summary">
         <span>
-          <span class="provider-summary-title">IBU EPD-Programm</span><br>
+          <span class="provider-summary-title">${t("ibu.title")}</span><br>
           <span class="provider-summary-sub">
-            ${result.companyName}${i.membershipGroup ? ` · Mitgliedsgruppe F${i.membershipGroup}` : ''}
-             ${i.membershipType === 'associate' ? '· Verbandsmitglied' : ''}
+            ${result.companyName}${i.membershipGroup ? ` · ${t("ibu.membershipGroup")} F${i.membershipGroup}` : ''}
+             ${i.membershipType === 'associate' ? `· ${t("ibu.membershipType")}` : ''}
           </span>
         </span>
         <span class="provider-summary-total"><span style="color:#C3B7C7;">${fmt(result.oneTime.total)} *</span> <span style="color:#FFF;">+</span> ${fmt(result.projection[result.projection.length - 1].cumulative - result.oneTime.total)}</span>
       </div>
       <div class="provider-content">
         <p class="provider-meta">
-          Gebührenordnung ab 12.08.2026
+          ${t("ibu.meta")}
         </p>
 
           <div class="metric-grid">
-            ${metricCard("Einmalige Kosten",  fmt(result.oneTime.total),  "Verifizierung & Bearbeitung")}
-            ${metricCard("Jährliche Kosten",  fmt(result.annual.total),   "Mitglied + Zeichenentgelte")}
-            ${metricCard("Gesamt Jahr 1",     fmt(result.totalFirstYear), "Kosten erstes Jahr")}
-            ${metricCard("EPDs nach Vorgang", i.totalValidEPDsAfter,      "Gültige Deklarationen")}
+            ${metricCard(t("sectionLabel.oneTime"), fmt(result.oneTime.total), t("ibu.metricLabel.oneTime"))}
+            ${metricCard(t("sectionLabel.yearlyCost"), fmt(result.annual.total), t("ibu.metricLabel.yearlyCost"))}
+            ${metricCard(t("sectionLabel.totalFirstYear"), fmt(result.totalFirstYear), t("ibu.metricLabel.totalFirstYear"))}
+            ${metricCard(t("sectionLabel.totalEPDsAfter"), i.totalValidEPDsAfter, t("ibu.metricLabel.totalEPDsAfter"))}
           </div>
 
         <div class="hidden">
           <div class="summary-item cost-section">
             <details class="cost-section">
-              <summary class="cost-section-title">Einmalige Kosten</summary>
+              <summary class="cost-section-title">${t("sectionLabel.oneTime")}</summary>
               ${costTable(
                 Object.values(result.oneTime.items)
                   .filter(x => x.count > 0)
-                  .map(x => [`${x.label} (${x.count} × ${fmt(x.unitCost)})`, fmt(x.total)])
+                  .map(x => [`${t(x.label)} (${x.count} × ${fmt(x.unitCost)})`, fmt(x.total)])
               )}
             </details>
             <table class="cost-table">
               <tr class="cost-table-total">
-                <td>Summe einmalig</td>
+                <td>${t("sectionLabel.oneTimeSum")}</td>
                 <td>${fmt(result.oneTime.total)}</td>
               </tr>
             </table>
           </div>
 
           <div class="summary-item note-box note-ibu">
-            <p>Die kosten der Verifizierung sind in den Preisen enthalten</p>
+            <p>${t("ibu.noteBox")}</p>
           </div>
           
           <div class="summary-item cost-section">
             <details class="cost-section">
               <summary class="cost-section-title">
-                <span>Jährliche Kosten</span>
+                <span>${t("sectionLabel.yearlyCost")}</span>
               </summary>
               ${costTable([
-                [result.annual.items.membershipFee.label,
+                [t(result.annual.items.membershipFee.label).replace("{group}", i.membershipGroup),
                 result.annual.items.membershipFee.billedExternally ? '—' : fmt(result.annual.items.membershipFee.total)],
                 ...buildSignFeeRows(result.annual.items.signFees.breakdown, fmt),
               ])}
             </details>
             <table class="cost-table">
               <tr class="cost-table-total">
-                <td>Summe Jährlich</td>
+                <td>${t("sectionLabel.yearlyCostSum")}</td>
                 <td>${fmt(result.annual.total)}</td>
               </tr>
             </table>
           </div>
 
           <div class="summary-item cost-section">
-            <p class="cost-section-title">5-Jahres-Projektion</p>
+            <p class="cost-section-title">${t("sectionLabel.fiveYearProjection")}</p>
             ${projectionTable(result.projection)}
           </div>      
 
           <div class="summary-item total-box">
             <div class="total-box-row">
-              <span class="total-box-label">Gesamt Jahr 1 (netto)</span>
+              <span class="total-box-label">${t("sectionLabel.totalFirstYearAlt")}</span>
               <span class="total-box-amount">${fmt(result.totalFirstYear)}</span>
             </div>
             <div class="total-box-vat">
-              <span>inkl. 19 % MwSt.</span>
+              <span>${t("sectionLabel.inclVatDE")}</span>
               <span>${fmt(result.totalFirstYear * 1.19)}</span>
             </div>
           </div>
@@ -513,7 +523,7 @@ function renderResult() {
   } catch (err) {
     const errMsg = document.createElement("p");
     errMsg.style.cssText = "color:red; margin-top:12px;";
-    errMsg.innerText = "EPD International – Fehler bei der Berechnung: " + err.message;
+    errMsg.innerText = t("error.calculationError") + err.message;
     wrapper.appendChild(errMsg);
     // return wrapper;
   }
@@ -528,7 +538,7 @@ function renderResult() {
     costSectionEnv.innerHTML = `
       <div class="provider-summary">
         <span>
-          <span class="provider-summary-title">EPD International</span><br>
+          <span class="provider-summary-title">${t("env.title")}</span><br>
           <span class="provider-summary-sub">
             ${resultEnv.companyName} · ${membershipTypeLabels[iEnv.membershipType]}
           </span>
@@ -537,63 +547,63 @@ function renderResult() {
       </div>
       <div class="provider-content">
         <p class="provider-meta">
-        Veröffentlichungs Gebühren
+        ${t("env.meta")}
         </p>
 
         <div class="metric-grid">
-          ${metricCard("Einmalige Kosten",  fmt(resultEnv.oneTime.total), "Regestrierungs Gebühr")}
-          ${metricCard("Jährliche Kosten",  fmt(resultEnv.annual.total),   "Jahresmitgliedschaft")}
-          ${metricCard("Gesamt Jahr 1",     fmt(resultEnv.totalFirstYear), "Kosten erstes Jahr")}
-          ${metricCard("EPDs nach Vorgang", iEnv.totalValidEPDsAfter,      "Gültige Deklarationen")}
+          ${metricCard(t("sectionLabel.oneTime"), fmt(resultEnv.oneTime.total), t("env.metricLabel.oneTime"))}
+          ${metricCard(t("sectionLabel.yearlyCost"), fmt(resultEnv.annual.total), t("env.metricLabel.yearlyCost"))}
+          ${metricCard(t("sectionLabel.totalFirstYear"), fmt(resultEnv.totalFirstYear), t("env.metricLabel.totalFirstYear"))}
+          ${metricCard(t("sectionLabel.totalEPDsAfter"), iEnv.totalValidEPDsAfter, t("env.metricLabel.totalEPDsAfter"))}
         </div>
       <div class="hidden">
         <div class="summary-item cost-section">
           <details class="cost-section">
             <summary class="cost-section-title">
-              <span class="cost-section-title">Einmalige Kosten</span>
+              <span class="cost-section-title">${t("sectionLabel.oneTime")}</span>
             </summary>
             ${costTable(buildEnvirondecRows(resultEnv.oneTime.newEPDs.breakdown, fmt))}
           </details>
             <table class="cost-table">
               <tr class="cost-table-total">
-                <td>Summe einmalig</td>
+                <td>${t("sectionLabel.oneTimeSum")}</td>
                 <td>${fmt(resultEnv.oneTime.total)}</td>
               </tr>
             </table>
         </div>
 
         <div class="summary-item note-box warning-box note-ibu">
-            <p>Die kosten der Verifizierung sind nicht in den Kosten enthalten</p>
+            <p>${t("env.notebox")}</p>
         </div>
 
         <div class="summary-item cost-section">
         <details class="cost-section">
-          <summary class="cost-section-title"><span class="cost-section-title">Jährliche Kosten</span></summary>
+          <summary class="cost-section-title"><span class="cost-section-title">${t("sectionLabel.yearlyCost")}</span></summary>
           ${costTable([
             [resultEnv.annual.membershipFee.label, fmt(resultEnv.annual.membershipFee.total)],
           ])}
         </details>
           <table class="cost-table">
             <tr class="cost-table-total">
-              <td>Summe Jährlich</td>
+              <td>${t("sectionLabel.yearlyCostSum")}</td>
               <td>${fmt(resultEnv.annual.total)}</td>
             </tr>
           </table>
         </div>
         
         <div class="summary-item cost-section">
-          <p class="cost-section-title">5-Jahres-Projektion</p>
+          <p class="cost-section-title">${t("sectionLabel.fiveYearProjection")}</p>
           ${projectionTable(resultEnv.projection)}
         </div>      
 
         <div class="summary-item total-box">
           <div class="total-box-row">
-            <span class="total-box-label">Gesamt Jahr 1 (netto)</span>
+            <span class="total-box-label">${t("sectionLabel.totalFirstYearAlt")}</span>
             <span class="total-box-amount">${fmt(resultEnv.totalFirstYear)}</span>
           </div>
           <div class="total-box-vat">
-            <span>inkl. MwSt.</span>
-            <span>Steuersatz abhängig vom Land</span>
+            <span>${t("sectionLabel.inclVat")}</span>
+            <span>${t("sectionLabel.inclVatUnkown")}</span>
           </div>
         </div>
       </div>
@@ -612,7 +622,7 @@ function renderResult() {
   } catch (err) {
     const errMsg = document.createElement("p");
     errMsg.style.cssText = "color:red; margin-top:12px;";
-    errMsg.innerText = "EPD Hub – Fehler bei der Berechnung: " + err.message;
+    errMsg.innerText = t("error.calculationError") + err.message;
     wrapper.appendChild(errMsg);
     // return wrapper;
   }
@@ -622,13 +632,21 @@ function renderResult() {
       ? "summary-item note-box warning-box"
       : "summary-item note-box";
 
+    const noteBoxContent = resultHub.inputs.limitExceeded
+      ? t("hub.noteOverflow")
+      : t("hub.note");
+
+    const count = resultHub.inputs.limitExceeded
+      ? resultHub.inputs.cappedCount
+      : resultHub.inputs.requestedEPDs;
+
     const costSectionHub = document.createElement("div");
     costSectionHub.className = "provider-box";
     // costSectionHub.open = true;
     costSectionHub.innerHTML = `
       <div class="provider-summary">
         <span>
-          <span class="provider-summary-title">EPD Hub</span><br>
+          <span class="provider-summary-title">${t("hub.title")}</span><br>
           <span class="provider-summary-sub">
             · ${resultHub.package.label}
           </span>
@@ -637,14 +655,14 @@ function renderResult() {
       </div>
       <div class="provider-content">
         <p class="provider-meta">
-          Paketpreis inkl. Verifizierung & Publishing
+          ${t("hub.meta")}
         </p>
   
         <div class="metric-grid">
-          ${metricCard("Paketpreis", fmt(resultHub.package.price), resultHub.package.label)}
-          ${metricCard("Jährliche Kosten", "—", "Kein Mitgliedsbeitrag")}
-          ${metricCard("Ø pro EPD", fmt(resultHub.package.pricePerEPD), "bei " + (resultHub.inputs.limitExceeded ? resultHub.inputs.cappedCount : resultHub.inputs.requestedEPDs) + " EPDs")}
-          ${metricCard("Neue EPDs", (resultHub.inputs.limitExceeded ? resultHub.inputs.cappedCount : resultHub.inputs.requestedEPDs), resultHub.inputs.limitExceeded ? "Maximale Anzahl" : "Angefragte Menge")}
+          ${metricCard(t("sectionLabel.packagePrice"), fmt(resultHub.package.price), resultHub.package.label)}
+          ${metricCard(t("sectionLabel.yearlyCost"), "—", t("hub.metricLabel.yearlyCost"))}
+          ${metricCard(t("sectionLabel.pricePerEPD"), fmt(resultHub.package.pricePerEPD), t("hub.metricLabel.pricePerEPD").replace("{count}", count))}
+          ${metricCard(t("sectionLabel.newEPDs"), (resultHub.inputs.limitExceeded ? resultHub.inputs.cappedCount : resultHub.inputs.requestedEPDs), resultHub.inputs.limitExceeded ? t("hub.metricLabel.newEPDsMax") : t("hub.metricLabel.newEPDsRequested"))}
         </div>
   
         
@@ -652,30 +670,30 @@ function renderResult() {
         <div class="summary-item cost-section">
           <p class="cost-section-title">Paketdetails</p>
           ${costTable([
-            ["Produkttyp",      resultHub.inputs.complexity === "simple" ? "Simple Product" : "Complex Product"],
-            ["Angefragte EPDs", resultHub.inputs.requestedEPDs],
-            ["Paketstufe",      "bis " + resultHub.inputs.packageStep + " EPDs"],
-            ["Paketpreis gesamt", fmt(resultHub.package.price)]
+            [t("hub.productTyp"), resultHub.inputs.complexity === "simple" ? "Simple Product" : "Complex Product"],
+            [t("hub.requestedEPDs"), resultHub.inputs.requestedEPDs],
+            [t("hub.packageStep"), resultHub.inputs.packageStep + " EPDs"],
+            [t("hub.packagePrice"), fmt(resultHub.package.price)]
           ])}
         </div>
   
         <div class="${noteBoxClass}">
-          <p>${resultHub.package.note}</p>
+          <p>${noteBoxContent}</p>
         </div>
 
         <div class="summary-item cost-section">
-          <p class="cost-section-title">5-Jahres-Projektion</p>
+          <p class="cost-section-title">${t("sectionLabel.fiveYearProjection")}</p>
           ${projectionTable(resultHub.projection)}
         </div>      
 
         <div class="summary-item total-box">
           <div class="total-box-row">
-            <span class="total-box-label">Gesamtpreis (netto)</span>
+            <span class="total-box-label">${t("sectionLabel.totalFirstYearAlt")}</span>
             <span class="total-box-amount">${fmt(resultHub.totalFirstYear)}</span>
           </div>
           <div class="total-box-vat">
-            <span>inkl. MwSt.</span>
-            <span>Steuersatz abhängig vom Land</span>
+            <span>${t("sectionLabel.inclVat")}</span>
+            <span>${t("sectionLabel.inclVatUnkown")}</span>
           </div>
         </div>
       </div>
@@ -691,13 +709,13 @@ function renderResult() {
   screenshotBtn.id = "download-screenshot-btn";
   screenshotBtn.setAttribute("data-html2canvas-ignore", "");
   screenshotBtn.className = "answer-button";
-  screenshotBtn.innerText = "Screenshot herunterladen";
+  screenshotBtn.innerText = t("buttonLabel.screenshot");
   screenshotBtn.onclick = downloadResultScreenshot;
   actionRow.appendChild(screenshotBtn);
 
   const restartBtn = document.createElement("button");
   restartBtn.className = "answer-button";
-  restartBtn.innerText = "Neustart";
+  restartBtn.innerText = t("buttonLabel.restart");
   restartBtn.setAttribute("data-html2canvas-ignore", "");
   restartBtn.onclick = restartQuestionnaire;
   actionRow.appendChild(restartBtn);
@@ -731,7 +749,7 @@ function buildSignFeeRows(breakdown, fmt) {
   const rows = [];
 
   for (const item of breakdown.slice(0, 4)) {
-    rows.push([`Zeichenentgelt EPD ${item.position}`, fmt(item.fee)]);
+    rows.push([`${t("ibu.label.labelingFee")} ${item.position}`, fmt(item.fee)]);
   }
 
   const group5to20 = breakdown.filter(item => item.position >= 5 && item.position <= 20);
@@ -740,8 +758,8 @@ function buildSignFeeRows(breakdown, fmt) {
     const end = group5to20[group5to20.length - 1].position;
     const unitFee = group5to20[0].fee;
     rows.push([
-      `Zeichenentgelt EPD ${start}–${end}`,
-      `pro\u00A0EPD\u00A0` + fmt(unitFee)
+      `${t("ibu.label.labelingFee")} ${start}–${end}`,
+      `${t("label.perEPD")}` + fmt(unitFee)
     ]);
   }
 
@@ -749,7 +767,7 @@ function buildSignFeeRows(breakdown, fmt) {
   if (group21Plus.length > 0) {
     const unitFee = group21Plus[0].fee;
     rows.push([
-      `Zeichenentgelt EPD 21+`,
+      `${t("ibu.label.labelingFee")} 21+`,
       fmt(unitFee)
     ]);
   }
@@ -772,18 +790,18 @@ function buildEnvirondecRows(breakdown, fmt) {
       ? `${labelPrefix} ${start}`
       : `${labelPrefix} ${start}–${end}`;
 
-    rows.push([`${label}`, `pro\u00A0EPD\u00A0` + fmt(fee)]);
+    rows.push([`${label}`, `${t("label.perEPD")}` + fmt(fee)]);
   };
 
   // EPD 1 individuell
   const first = breakdown.find(item => item.position === 1);
   if (first) {
-    rows.push([`Verifizierung EPD 1`, fmt(first.fee)]);
+    rows.push([`${t("label.verifyEPD")} 1`, fmt(first.fee)]);
   }
 
-  addGroup(2, 4, "Verifizierung EPD");
-  addGroup(5, 99, "Verifizierung EPD");
-  addGroup(100, Infinity, "Verifizierung EPD");
+  addGroup(2, 4, t("label.verifyEPD"));
+  addGroup(5, 99, t("label.verifyEPD"));
+  addGroup(100, Infinity, t("label.verifyEPD"));
 
   return rows;
 }
@@ -794,7 +812,7 @@ function projectionTable(projection) {
 
   const rows = projection.map(row => `
     <tr>
-      <td>Jahr\u00A0${row.year}</td>
+      <td>${t("label.year")}\u00A0${row.year}</td>
       <td>${fmt(row.oneTime)}</td>
       <td>${fmt(row.annual)}</td>
       <td class="col-total">${fmt(row.total)}</td>
@@ -806,10 +824,10 @@ function projectionTable(projection) {
       <thead>
         <tr>
           <th></th>
-          <th>Einmalig</th>
-          <th>Jährlich</th>
+          <th>${t("label.oneTime")}</th>
+          <th>${t("label.yearly")}</th>
           <th class="hidden">Gesamt</th>
-          <th>Kumuliert</th>
+          <th>${t("label.cumulated")}</th>
         </tr>
       </thead>
       <tbody>${rows}</tbody>
@@ -841,6 +859,15 @@ function submitAnswers() {
 // ---------------------------------------------------------------------------
 // Laden – beide Quellen parallel fetchen
 // ---------------------------------------------------------------------------
+
+// ----
+// Load Translationfile
+// ---
+async function loadLocale(lang = "de") {
+  const res = await fetch(`./local/${lang}.json`);
+  local = await res.json();
+}
+
 async function loadData() {
   try {
     // const [questionsRes, customerRes] = await Promise.all([
@@ -852,6 +879,7 @@ async function loadData() {
 
     // questions    = await questionsRes.json();
     // customerData = await customerRes.json();
+    await loadLocale(lang);
     const res = await fetch("./fragenkatalog.json");
     if (!res.ok) throw new Error(`fragenkatalog.json: ${res.status}`);
     questions = await res.json();

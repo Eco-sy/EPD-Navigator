@@ -521,6 +521,10 @@ Version: 1.2
       color: #2563eb;
     }
 
+    .input-action-button {
+      margin-right: 0px;
+    }
+
     .input-action-button.is-valid {
       background: var(--color-accent);
       color: var(--color-dark);
@@ -648,6 +652,17 @@ Version: 1.2
 
       .provider-grid{
         grid-template-columns: auto;
+      }
+      .summary-item {
+        padding: 0px;
+      }
+
+      .provider-content {
+        padding-bottom: 0px;
+      }
+      .metric-card {
+        max-height: 75px;
+        max-width: 250px;
       }
 
     }

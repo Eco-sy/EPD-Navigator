@@ -1,0 +1,86 @@
+{
+  "start.title": "Willkommen beim EPD Kostenvergleich",
+  "start.description": "Beantworten Sie einige kurze Fragen und erhalten Sie eine individuelle Gebührenaufstellung für die Veröffentlichung Ihrer EPDs – für IBU, EPD International und EPD Hub im Vergleich.",
+  "start.button": "Jetzt starten →",
+
+  "ibu.title": "IBU EPD-Programm",
+  "ibu.membershipGroup": "Mitgliedsgruppe",
+  "ibu.membershipType": "Verbandsmitglied",
+  "ibu.meta": "Gebührenordnung ab 12.08.2026",
+  "ibu.metricLabel.oneTime": "Verifizierung & Bearbeitung",
+  "ibu.metricLabel.yearlyCost": "Mitglied + Zeichenentgelte",
+  "ibu.metricLabel.totalFirstYear": "Kosten erstes Jahr",
+  "ibu.metricLabel.totalEPDsAfter": "Gültige Deklarationen",
+  "ibu.noteBox": "Die kosten der Verifizierung sind in den Preisen enthalten",
+  "ibu.label.initialEPD": "Erstausstellung neue EPDs",
+  "ibu.label.familyEPD": "Weitere EPDs gleiche Produktfamilie",
+  "ibu.label.membershipFeeLabel": "Mitgliedsbeitrag IBU (Gruppe F{group})",
+  "ibu.label.associate": "Mitgliedsbeitrag (über Verband abgerechnet)",
+  "ibu.label.labelingFee": "Zeichenentgelt EPD",
+
+
+  "env.title": "EPD International",
+  "env.meta": "Veröffentlichungs Gebühren",
+  "env.metricLabel.oneTime": "Regestrierungs Gebühr",
+  "env.metricLabel.yearlyCost": "Jahresmitgliedschaft",
+  "env.metricLabel.totalFirstYear": "Kosten erstes Jahr",
+  "env.metricLabel.totalEPDsAfter": "Gültige Deklarationen",
+  "env.notebox": "Die kosten der Verifizierung sind nicht in den Kosten enthalten",
+
+  "hub.title": "EPD Hub",
+  "hub.meta": "Paketpreis inkl. Verifizierung & Publishing",
+  "hub.noteOverflow": "Inkl. bis zu 3 Verifikationsrunden, Publishing und digitalem Workflow. Kein Mitgliedsbeitrag. <br >Berechnet als Maximalpaket für 20 EPDs. Für größere Mengen kontaktieren Sie sales@epdhub.com.",
+  "hub.note": "Inkl. bis zu 3 Verifikationsrunden, Publishing und digitalem Workflow. Kein Mitgliedsbeitrag.",
+  "hub.metricLabel.yearlyCost": "Kein Mitgliedsbeitrag",
+  "hub.metricLabel.pricePerEPD": "bei {count} EPDs",
+  "hub.metricLabel.newEPDsMax": "Maximale Anzahl",
+  "hub.metricLabel.newEPDsRequested": "Angefragte Menge",
+  "hub.productTyp": "Produkttyp",
+  "hub.requestedEPDs": "Angefragte EPDs",
+  "hub.packageStep": "Paketstufe",
+  "hub.packagePrice": "Paketpreis gesamt",
+
+
+
+  "sectionLabel.oneTime": "Einmalige Kosten",
+  "sectionLabel.packagePrice": "Paketpreis",
+  "sectionLabel.yearlyCost": "Jährliche Kosten",
+  "sectionLabel.pricePerEPD": "Ø pro EPD",
+  "sectionLabel.totalFirstYear": "Gesamt Jahr 1",
+  "sectionLabel.totalFirstYearAlt": "Gesamt Jahr 1 (netto)",
+  "sectionLabel.totalEPDsAfter": "EPDs nach Vorgang",
+  "sectionLabel.newEPDs": "Neue EPDs",
+  "sectionLabel.oneTimeSum": "Summe einmalig",
+  "sectionLabel.yearlyCostSum": "Summe Jährlich",
+  "sectionLabel.fiveYearProjection": "5-Jahres-Projektion",
+  "sectionLabel.inclVatDE": "inkl. 19 % MwSt.",
+  "sectionLabel.inclVat": "inkl. MwSt.",
+  "sectionLabel.inclVatUnkown": "Steuersatz abhängig vom Land",
+
+  "label.perEPD": "pro\u00A0EPD\u00A0",
+  "label.verifyEPD": "Verifizierung EPD",
+  "label.year": "Jahr",
+  "label.oneTime": "Einmalig",
+  "label.annual": "Jährlich",
+  "label.cumulated": "Kumuliert",
+
+  "info.tooltip": "Mehr Informationen finden Sie in unserem Leitfaden",
+  "info.desktop": "Für eine detailiertere Aufstellung, benutzen Sie bitte die Desktopansicht.",
+
+  "error.questionNotFound": "Frage nicht gefunden",
+  "error.screenshotWarning": "Screenshot-Funktion ist momentan nicht verfügbar.",
+  "error.noEPDs": "Keine Gebührenberechnung – es wurden keine EPDs angegeben.",
+  "error.calculationError": "Fehler bei der Berechnung: ",
+
+  "buttonLabel.continue": "Weiter",
+  "buttonLabel.back": "← Zurück",
+  "buttonLabel.skip": "Frage Überspringen",
+  "buttonLabel.screenshot": "Screenshot herunterladen",
+  "buttonLabel.createScreenshot": "Wird erstellt…",
+  "buttonLabel.restart": "Neustarten",
+
+
+  "validation.wholeNumberWarning": "Bitte geben Sie eine ganze Zahl ein.",
+  "validation.validInputWarning": "Bitte geben Sie einen gültigen Wert ein"
+
+}

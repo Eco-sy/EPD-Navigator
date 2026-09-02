@@ -111,9 +111,6 @@ function calculateEPDHub(customerData, answers) {
       step:        entry.step,
       price:       packagePrice,
       pricePerEPD,
-      note: limitExceeded
-        ? 'Inkl. bis zu 3 Verifikationsrunden, Publishing und digitalem Workflow. Kein Mitgliedsbeitrag. <br >Berechnet als Maximalpaket für 20 EPDs. Für größere Mengen kontaktieren Sie sales@epdhub.com.'
-        : 'Inkl. bis zu 3 Verifikationsrunden, Publishing und digitalem Workflow. Kein Mitgliedsbeitrag.',
     },
     totalFirstYear: packagePrice,
     projection,
