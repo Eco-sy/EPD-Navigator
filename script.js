@@ -311,6 +311,7 @@ function mapToCalculatorInput() {
     newEPDsFromFamily: Number(answers.familyEPD)    || 0,
     reworkEPDs:        0,
     epdHubComplexity:  answers.epdHubComplexity,
+    yearlyRevenue: Number(answers.yearlyRevenue),
   };
 }
 
@@ -328,7 +329,7 @@ function downloadResultScreenshot() {
   }
 
   if (typeof html2canvas === "undefined") {
-    alert(t("error.ScreenshotWarning"));
+    alert(t("error.screenshotWarning"));
     if (btn) {
       btn.disabled = false;
       btn.textContent = t("buttonLabel.screenshot");
@@ -381,25 +382,6 @@ function renderResult() {
   providerGrid.className = "provider-grid";
   wrapper.appendChild(providerGrid);
 
-  // ── Antwortzusammenfassung ──────────────────────────────────────────────
-  // const summaryHeader = document.createElement("div");
-  // summaryHeader.className = "summary-header";
-  // summaryHeader.innerHTML = `
-  //   <p>Fragebogen abgeschlossen</p>
-  //   <p>Ihre Antworten im Überblick.</p>`;
-  // wrapper.appendChild(summaryHeader);
-
-  // const summaryList = document.createElement("div");
-  // summaryList.className = "summary-list";
-  // Object.entries(answers).forEach(([qId, val]) => {
-  //   const item = document.createElement("div");
-  //   item.className = "summary-item";
-  //   item.innerHTML = `
-  //     <p class="summary-question">${questions[qId]?.text || qId}</p>
-  //     <div class="summary-answer">${String(val)}</div>`;
-  //   summaryList.appendChild(item);
-  // });
-  // wrapper.appendChild(summaryList);
 
   // ── Prüfen ob Berechnung sinnvoll ist ──────────────────────────────────
   // Berechnung nur wenn mindestens eine EPD-Angabe gemacht wurde
@@ -427,7 +409,14 @@ function renderResult() {
     wrapper.appendChild(errMsg);
     return wrapper;
   }
+  
   if(result){
+
+    const ONE_TIME_LABELS = {
+      newEPDs:    () => t("ibu.label.initialEPD"),
+      familyEPDs: () => t("ibu.label.familyEPD"),
+    };
+
     const i = result.inputs;
     const costSectionIBU = document.createElement("div");
     costSectionIBU.className = "provider-box";
@@ -460,9 +449,9 @@ function renderResult() {
             <details class="cost-section">
               <summary class="cost-section-title">${t("sectionLabel.oneTime")}</summary>
               ${costTable(
-                Object.values(result.oneTime.items)
-                  .filter(x => x.count > 0)
-                  .map(x => [`${t(x.label)} (${x.count} × ${fmt(x.unitCost)})`, fmt(x.total)])
+                Object.entries(result.oneTime.items)
+                  .filter(([, x]) => x.count > 0)
+                  .map(([key, x]) => [`${ONE_TIME_LABELS[key]()} (${x.count} × ${fmt(x.unitCost)})`, fmt(x.total)])
               )}
             </details>
             <table class="cost-table">
@@ -483,7 +472,7 @@ function renderResult() {
                 <span>${t("sectionLabel.yearlyCost")}</span>
               </summary>
               ${costTable([
-                [t(result.annual.items.membershipFee.label).replace("{group}", i.membershipGroup),
+                [t("ibu.label.membershipFeeLabel").replace("{group}", (result.annual.items.membershipFee.billedExternally ? t("ibu.label.associate") : t("ibu.label.membershipLabel") + i.membershipGroup)),
                 result.annual.items.membershipFee.billedExternally ? '—' : fmt(result.annual.items.membershipFee.total)],
                 ...buildSignFeeRows(result.annual.items.signFees.breakdown, fmt),
               ])}
@@ -532,6 +521,7 @@ function renderResult() {
     const iEnv = resultEnv.inputs;
     const membershipTypeLabels = { micro: 'Micro Business', sme: 'Small & Medium Business', multinational: 'Multinational Business' };
 
+    const membershipType = iEnv.membershipType;
     const costSectionEnv = document.createElement("div");
     costSectionEnv.className = "provider-box";
     // costSectionEnv.open = true; // zweite Box standardmäßig aufgeklappt
@@ -580,7 +570,7 @@ function renderResult() {
         <details class="cost-section">
           <summary class="cost-section-title"><span class="cost-section-title">${t("sectionLabel.yearlyCost")}</span></summary>
           ${costTable([
-            [resultEnv.annual.membershipFee.label, fmt(resultEnv.annual.membershipFee.total)],
+            [t("env.label.membership").replace("{group}", membershipType), fmt(resultEnv.annual.membershipFee.total)],
           ])}
         </details>
           <table class="cost-table">
@@ -611,14 +601,11 @@ function renderResult() {
 
     providerGrid.appendChild(costSectionEnv);
   }
-  // ── EPD Hub ───────────────────────────────────────────────────────────────
-  let resultHub;
+  // ── EPDGlobal ───────────────────────────────────────────────────────────────
+  let resultEPDGlobal;
   try {
-    const epdHubCount = calcInput.newEPDs > 0 ? calcInput.newEPDs : calcInput.renewEPDs;
-    resultHub = calculateEPDHub(customerData, {
-      epdHubComplexity: answers.epdHubComplexity,
-      newEPDs:          epdHubCount,
-    });
+    // const epdHubCount = calcInput.newEPDs > 0 ? calcInput.newEPDs : calcInput.renewEPDs;
+    resultEPDGlobal = calculateEPDGlobal(customerData, calcInput);
   } catch (err) {
     const errMsg = document.createElement("p");
     errMsg.style.cssText = "color:red; margin-top:12px;";
@@ -627,69 +614,68 @@ function renderResult() {
     // return wrapper;
   }
  
-  if (resultHub){
-    const noteBoxClass = resultHub.inputs.limitExceeded
-      ? "summary-item note-box warning-box"
-      : "summary-item note-box";
+  if (resultEPDGlobal){
+    const noteBoxClass = "summary-item note-box warning-box";
 
-    const noteBoxContent = resultHub.inputs.limitExceeded
-      ? t("hub.noteOverflow")
-      : t("hub.note");
+    const noteBoxContent = t("epdGlobal.noteBox");
 
-    const count = resultHub.inputs.limitExceeded
-      ? resultHub.inputs.cappedCount
-      : resultHub.inputs.requestedEPDs;
+    const count = 1;
 
-    const costSectionHub = document.createElement("div");
-    costSectionHub.className = "provider-box";
-    // costSectionHub.open = true;
-    costSectionHub.innerHTML = `
+    const costSectionGlobal = document.createElement("div");
+    costSectionGlobal.className = "provider-box";
+    // costSectionGlobal.open = true;
+    costSectionGlobal.innerHTML = `
       <div class="provider-summary">
         <span>
-          <span class="provider-summary-title">${t("hub.title")}</span><br>
+          <span class="provider-summary-title">${t("epdGlobal.title")}</span><br>
           <span class="provider-summary-sub">
-            · ${resultHub.package.label}
+            · ${t("epdGlobal.label")}
           </span>
         </span>
-        <span class="provider-summary-total">${fmt(resultHub.projection[result.projection.length - 1].cumulative)}</span>
+        <span class="provider-summary-total">${fmt(resultEPDGlobal.projection[result.projection.length - 1].cumulative)}</span>
       </div>
       <div class="provider-content">
         <p class="provider-meta">
-          ${t("hub.meta")}
+          ${t("epdGlobal.meta")}
         </p>
   
         <div class="metric-grid">
-          ${metricCard(t("sectionLabel.packagePrice"), fmt(resultHub.package.price), resultHub.package.label)}
-          ${metricCard(t("sectionLabel.yearlyCost"), "—", t("hub.metricLabel.yearlyCost"))}
-          ${metricCard(t("sectionLabel.pricePerEPD"), fmt(resultHub.package.pricePerEPD), t("hub.metricLabel.pricePerEPD").replace("{count}", count))}
-          ${metricCard(t("sectionLabel.newEPDs"), (resultHub.inputs.limitExceeded ? resultHub.inputs.cappedCount : resultHub.inputs.requestedEPDs), resultHub.inputs.limitExceeded ? t("hub.metricLabel.newEPDsMax") : t("hub.metricLabel.newEPDsRequested"))}
-        </div>
-  
-        
-      <div class="hidden">
-        <div class="summary-item cost-section">
-          <p class="cost-section-title">Paketdetails</p>
-          ${costTable([
-            [t("hub.productTyp"), resultHub.inputs.complexity === "simple" ? "Simple Product" : "Complex Product"],
-            [t("hub.requestedEPDs"), resultHub.inputs.requestedEPDs],
-            [t("hub.packageStep"), resultHub.inputs.packageStep + " EPDs"],
-            [t("hub.packagePrice"), fmt(resultHub.package.price)]
-          ])}
+          ${metricCard(t("sectionLabel.oneTimeSum"), fmt(resultEPDGlobal.oneTime.price), t("epdGlobal.metricLabel.oneTime.label"))}
+          ${metricCard(t("sectionLabel.yearlyCost"), fmt(resultEPDGlobal.annual.total), t("epdGlobal.metricLabel.yearlyCost"))}
+          ${metricCard(t("sectionLabel.totalFirstYear"), fmt(resultEPDGlobal.totalFirstYear.price), t("epdGlobal.metricLabel.totalFirstYear"))}
+          ${metricCard(t("sectionLabel.totalEPDsAfter"), (resultEPDGlobal.inputs.newEPD), t("epdGlobal.metricLabel.totalEPDsAfter"))}
         </div>
   
         <div class="${noteBoxClass}">
           <p>${noteBoxContent}</p>
         </div>
+        
+        <div class="summary-item cost-section">
+        <details class="cost-section">
+          <summary class="cost-section-title"><span class="cost-section-title">${t("sectionLabel.yearlyCost")}</span></summary>
+          ${costTable([
+            [t("epdGlobal.memberShipFee"), fmt(resultEPDGlobal.annual.membershipFee)],
+            [t("epdGlobal.regestrationFee"), fmt(resultEPDGlobal.annual.regestrationFee)]
+          ])}
+        </details>
+          <table class="cost-table">
+            <tr class="cost-table-total">
+              <td>${t("sectionLabel.yearlyCostSum")}</td>
+              <td>${fmt(resultEPDGlobal.annual.total)}</td>
+            </tr>
+          </table>
+        </div>
+  
 
         <div class="summary-item cost-section">
           <p class="cost-section-title">${t("sectionLabel.fiveYearProjection")}</p>
-          ${projectionTable(resultHub.projection)}
+          ${projectionTable(resultEPDGlobal.projection)}
         </div>      
 
         <div class="summary-item total-box">
           <div class="total-box-row">
             <span class="total-box-label">${t("sectionLabel.totalFirstYearAlt")}</span>
-            <span class="total-box-amount">${fmt(resultHub.totalFirstYear)}</span>
+            <span class="total-box-amount">${fmt(resultEPDGlobal.totalFirstYear.price)}</span>
           </div>
           <div class="total-box-vat">
             <span>${t("sectionLabel.inclVat")}</span>
@@ -699,7 +685,7 @@ function renderResult() {
       </div>
       </div>`;
   
-    providerGrid.appendChild(costSectionHub);
+    providerGrid.appendChild(costSectionGlobal);
   }
 
   const actionRow = document.createElement("div");
@@ -826,7 +812,7 @@ function projectionTable(projection) {
           <th></th>
           <th>${t("label.oneTime")}</th>
           <th>${t("label.yearly")}</th>
-          <th class="hidden">Gesamt</th>
+          <th class="hidden">${t("label.total")}</th>
           <th>${t("label.cumulated")}</th>
         </tr>
       </thead>
@@ -864,7 +850,7 @@ function submitAnswers() {
 // Load Translationfile
 // ---
 async function loadLocale(lang = "de") {
-  const res = await fetch(`./local/${lang}.json`);
+  const res = await fetch(`./locales/${lang}.json`);
   local = await res.json();
 }
 

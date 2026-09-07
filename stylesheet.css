@@ -645,7 +645,7 @@ Version: 1.2
         visibility: visible;
     }
 
-    @media (max-width: 1280px) {
+    @media (max-width: 1279px) {
       .hidden {
         display: none;
       }
@@ -667,7 +667,7 @@ Version: 1.2
 
     }
 
-    @media (min-width: 1281px) {
+    @media (min-width: 1280px) {
       .seen {
         display: none;
       }

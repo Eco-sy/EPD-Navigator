@@ -107,10 +107,8 @@ function calculateIBU(customerData, answers) {
 
   // --- Einmalige Kosten (identisch für beide Typen) ---
   const verificationCosts = {
-    newEPDs:    { count: normalNewEPDs,     unitCost: ONE_TIME_FEES.newEPD,     total: normalNewEPDs     * ONE_TIME_FEES.newEPD,     label: "ibu.label.initialEPD" },
-    familyEPDs: { count: newEPDsFromFamily, unitCost: ONE_TIME_FEES.familyEPD,  total: newEPDsFromFamily       * ONE_TIME_FEES.familyEPD,  label: "ibu.label.familyEPD" },
-    // reworkEPDs: { count: reworkEPDs,        unitCost: ONE_TIME_FEES.reworkEPD,  total: reworkEPDs        * ONE_TIME_FEES.reworkEPD,  label: 'Überarbeitung / Aktualisierung' },
-    renewEPDs:  { count: renewEPDs,         unitCost: ONE_TIME_FEES.renewalEPD, total: renewEPDs         * ONE_TIME_FEES.renewalEPD, label: 'Aktualisierung bestehender EPDs' },
+    newEPDs: {count: normalNewEPDs, unitCost: ONE_TIME_FEES.newEPD, total: normalNewEPDs * ONE_TIME_FEES.newEPD},
+    familyEPDs: {count: newEPDsFromFamily, unitCost: ONE_TIME_FEES.familyEPD, total: newEPDsFromFamily * ONE_TIME_FEES.familyEPD},
   };
   const totalOneTimeCosts = Object.values(verificationCosts).reduce((s, c) => s + c.total, 0);
 
@@ -144,12 +142,8 @@ function calculateIBU(customerData, answers) {
     oneTime:     idx === 0 ? totalOneTimeCosts : 0,
     annual:      totalAnnualCosts,
     total:       (idx === 0 ? totalOneTimeCosts : 0) + totalAnnualCosts,
-    cumulative:  (idx === 0 ? totalOneTimeCosts : 0) + totalAnnualCosts * (idx + 1),
+    cumulative:  totalOneTimeCosts + (totalAnnualCosts * (idx + 1)),
   }));
-  // Kumulative Summe korrekt aufbauen
-  projection.forEach((row, idx) => {
-    row.cumulative = projection.slice(0, idx + 1).reduce((s, r) => s + r.total, 0);
-  });
 
   return {
     provider:     'IBU',
@@ -166,7 +160,7 @@ function calculateIBU(customerData, answers) {
     annual: {
       items: {
         membershipFee: { total: membershipFee, label: membershipFeeLabel, billedExternally: membershipType === "associate" },
-        signFees:      { total: signFees.total, breakdown: signFees.breakdown, label: 'Zeichenentgelte (jährlich)' },
+        signFees:      { total: signFees.total, breakdown: signFees.breakdown},
       },
       total: totalAnnualCosts,
     },

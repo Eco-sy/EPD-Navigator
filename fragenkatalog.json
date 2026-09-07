@@ -44,34 +44,6 @@
     "nextQuestionID": "ibuMembershipType"
   },
 
-  "renewCount": {
-    "text": "Wie viele EPDs möchten Sie aktualisieren?",
-    "skipValue": "1",
-    "skipNext": "ibuMembershipType",
-    "type": "number",
-    "validation": {
-      "min": 1,
-      "max": 500,
-      "integer": true,
-      "allowZero": false
-    },
-    "nextQuestionID": "ibuMembershipType"
-  },
-
-  "existingValidEPDs": {
-    "text": "Wie viele gültige EPDs besitzt Ihr Unternehmen insgesamt aktuell?",
-    "skipValue": "1",
-    "skipNext": "renewCount",
-    "type": "number",
-    "validation": {
-      "min": 1,
-      "max": 500,
-      "integer": true,
-      "allowZero": false
-    },
-    "nextQuestionID": "renewCount"
-  },
-
   "ibuMembershipType": {
     "text": "Sind Sie Mitglied eines Verbands, welcher Mitglied bei IBU ist?",
     "skipValue": "associate",
@@ -100,24 +72,13 @@
   "amountEmployees": {
     "text": "Wie hoch ist die aktuelle Anzahl der Mitarbeiterinnen und Mitarbeiter in Ihrem Unternehmen?",
     "skipValue": "11",
-    "skipNext": "epdHubComplexity",
+    "skipNext": "ENDE",
     "type": "number",
     "validation": {
       "min": 1,
       "max": 100000,
       "integer": true
     },
-    "nextQuestionID": "epdHubComplexity"
-  },
-
-  "epdHubComplexity": {
-    "text": "Handelt es sich um Simple oder Complex Products?",
-    "skipValue": "simple",
-    "skipNext": "ENDE",
-    "hint": "<b>Simple</b>: Standardprodukte mit einer Funktion.<br > <b>Complex</b>: Produkte mit mehreren Komponenten oder Varianten.",
-    "options": [
-      { "label": "Simple Product", "value": "simple", "nextQuestionID": "ENDE" },
-      { "label": "Complex Product", "value": "complex", "nextQuestionID": "ENDE" }
-    ]
+    "nextQuestionID": "ENDE"
   }
 }

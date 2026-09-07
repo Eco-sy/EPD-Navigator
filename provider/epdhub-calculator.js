@@ -18,7 +18,8 @@
  */
 
 // ---------------------------------------------------------------------------
-// Preistabelle – exakte Preise pro EPD-Anzahl
+// Preistabelle – exakte Preise pro EPD-Anzahl 
+// Preistabelle veraltet
 // ---------------------------------------------------------------------------
 const EPD_PRICES = {
    1: { simple:  1995, complex:  2850 },

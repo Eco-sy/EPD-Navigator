@@ -2,16 +2,6 @@
  * environdec-calculator.js
  * Environdec EPD Gebührenrechner
  *
- * Steuerung über customerData.environdecMembershipType:
- *   "micro"        → Micro Business          (515 €/Jahr)
- *   "sme"          → Small & Medium Business (1.030 €/Jahr)
- *   "multinational"→ Multinational Business  (2.575 €/Jahr)
- *
- * Einmalige Verifizierungsgebühren (gestaffelt nach Position der EPD):
- *   EPD 1:       1.000 €
- *   EPDs 2–4:      500 € je EPD
- *   EPDs 5–99:     100 € je EPD
- *   EPDs ab 100:    50 € je EPD
  */
 
 // ---------------------------------------------------------------------------
@@ -124,13 +114,11 @@ function calculateEnvirondec(customerData, answers) {
     oneTime: idx === 0 ? totalOneTimeCosts : 0,
     annual:  totalAnnualCosts,
     total:   (idx === 0 ? totalOneTimeCosts : 0) + totalAnnualCosts,
+    cumulative: totalOneTimeCosts + (totalAnnualCosts * (idx + 1))
   }));
-  projection.forEach((row, idx) => {
-    row.cumulative = projection.slice(0, idx + 1).reduce((s, r) => s + r.total, 0);
-  });
 
   return {
-    provider:     'Environdec',
+    provider:     'EPD International',
     companyName:  customerData.companyName,
     calculatedAt: new Date().toISOString(),
     inputs: {
@@ -142,20 +130,13 @@ function calculateEnvirondec(customerData, answers) {
     },
     oneTime: {
       newEPDs: {
-        label:     'Verifizierung neue EPDs (gestaffelt)',
         breakdown: verification.newBreakdown,
         total:     verification.newTotal,
-      },
-      renewEPDs: {
-        label:     'Verifizierung Verlängerungen (gestaffelt)',
-        breakdown: verification.renewBreakdown,
-        total:     verification.renewTotal,
       },
       total: totalOneTimeCosts,
     },
     annual: {
       membershipFee: {
-        label: `Jahresmitgliedschaft (${membershipType})`,
         total: membershipFee,
       },
       total: totalAnnualCosts,
