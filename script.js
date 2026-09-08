@@ -655,7 +655,7 @@ function renderResult() {
           <summary class="cost-section-title"><span class="cost-section-title">${t("sectionLabel.yearlyCost")}</span></summary>
           ${costTable([
             [t("epdGlobal.memberShipFee"), fmt(resultEPDGlobal.annual.membershipFee)],
-            [t("epdGlobal.regestrationFee"), fmt(resultEPDGlobal.annual.regestrationFee)]
+            [t("epdGlobal.regestrationFee") + " (" + `${resultEPDGlobal.inputs.newEPD}` + " × " + fmt(resultEPDGlobal.annual.regestrationFee) + ")", fmt(resultEPDGlobal.annual.regestrationFeeTotal)]
           ])}
         </details>
           <table class="cost-table">
