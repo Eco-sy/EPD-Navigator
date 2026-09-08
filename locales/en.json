@@ -1,6 +1,6 @@
 {
   "start.title": "Welcome to the EPD Cost Comparison",
-  "start.description": "Answer a few short questions and receive an individual fee overview for publishing your EPDs – comparing IBU, EPD International, and EPD Hub.",
+  "start.description": "Answer a few short questions and receive an individual fee overview for publishing your EPDs – comparing IBU, EPD International, and EPD Global.",
   "start.button": "Get started →",
   "ibu.title": "IBU EPD Program",
   "ibu.membershipGroup": "Membership group",
@@ -88,7 +88,7 @@
   "q.ibuMembershipType.label.no": "No",
   "q.ibuMembershipType.label.yes": "Yes",
   "q.ibuMembershipType.text": "Are you a member of an assosiation, which is a member of IBU?",
-  "q.newEPDCount.hint": "Some provider do not have cost model for more than 20 EPDs. In the case of an higher amount, only the cost for 20 EPDs will be calculated.",
+  "q.newEPDCount.hint": "Some provider do not have a cost model for more than 20 EPDs. In the case of an higher amount, only the cost for 20 EPDs will be calculated for that provider.",
   "q.newEPDCount.text": "How many EPDs do you want to publish?",
   "q.start.label.both": "Both",
   "q.start.label.new": "Publish new EPDs",

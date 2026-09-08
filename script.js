@@ -164,7 +164,7 @@ function showQuestion() {
     (q.options || []).forEach(opt => {
       const btn = document.createElement("button");
       btn.className = "answer-button";
-      btn.innerText = opt.label;
+      btn.innerText = t(opt.label);
       btn.onclick = () => {
         questionHistory.push(currentQuestion);
         answers[currentQuestion] = opt.value !== undefined ? opt.value : opt.label;

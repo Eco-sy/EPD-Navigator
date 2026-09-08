@@ -48,7 +48,7 @@
     "skipValue": "associate",
     "skipNext": "amountEmployees",
     "options": [
-      { "label": "q.ibuMembershipType.label.yes", "value": "associate", "nextQuestionID": "amountEmployees" },
+      { "label": "q.ibuMembershipType.label.yes", "value": "associate", "nextQuestionID": "yearlyRevenue" },
       { "label": "q.ibuMembershipType.label.no", "value": "non-associate", "nextQuestionID": "yearlyRevenue" }
     ]
   },

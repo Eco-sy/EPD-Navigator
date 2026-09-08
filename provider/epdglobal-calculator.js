@@ -40,9 +40,9 @@ const oneTimeCosts = 0;
 function calculateEPDGlobal(customerData, answers){
   const membershipType = getMembershipRating(answers.yearlyRevenue);
   const membershipFee = EPDGLOBAL_MEMBERSHIP_FEE[membershipType];
-  const regestrationFee = ANNUAL_REGESTRATION_FEE;
   const newEPD = Math.max(0, Number(answers.newEPDs) || 0);
-  const totalAnnualCosts = membershipFee + ANNUAL_REGESTRATION_FEE;
+  const regestrationFee = ANNUAL_REGESTRATION_FEE * newEPD;
+  const totalAnnualCosts = membershipFee + regestrationFee;
   const totalOneTimeCosts = oneTimeCosts;
   const totalFirstYear = totalAnnualCosts + totalOneTimeCosts;
 
@@ -54,17 +54,6 @@ function calculateEPDGlobal(customerData, answers){
     cumulative: totalOneTimeCosts + (totalAnnualCosts * (idx + 1))
   }));
 
-  // return {
-  //   provider: 'EPD Global',
-  //   inputs: {
-  //     newEPDs,
-  //     membershipType,
-  //   },
-  //   annual: {
-  //     membershipFee
-  //   },
-  //   totalFirstYear: membershipFee
-  // }
   return {
     inputs: { membershipType, membershipFee, newEPD,},
     oneTime:  { price: totalOneTimeCosts},
