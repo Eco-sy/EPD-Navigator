@@ -1,20 +1,20 @@
 {
   "start": {
-    "text": "Was möchten Sie tun?",
+    "text": "q.start.text",
     "skipValue": "new",
     "skipNext": "newEPDCount",
     "options": [
-      { "label": "Neue EPDs veröffentlichen", "value": "new", "nextQuestionID": "newEPDCount" },
-      { "label": "Bestehende EPDs aktualisieren", "value": "renew", "nextQuestionID": "renewCount" },
-      { "label": "Beides", "value": "both", "nextQuestionID": ["newEPDCount", "renewCount"] }
+      { "label": "q.start.label.new", "value": "new", "nextQuestionID": "newEPDCount" },
+      { "label": "q.start.label.renew", "value": "renew", "nextQuestionID": "renewCount" },
+      { "label": "q.start.label.both", "value": "both", "nextQuestionID": ["newEPDCount", "renewCount"] }
     ]
   },
 
   "newEPDCount": {
-    "text": "Wie viele neue EPDs möchten Sie veröffentlichen?",
+    "text": "q.newEPDCount.text",
     "skipValue": "1",
     "skipNext": "familyEPD",
-    "hint": "Manche Anbieter haben kein Kostenmodell für das Einreichen für mehr als 20 EPDs. In diesem Fall werden dann nur die Kosten für 20 Pakete ausgegeben.",
+    "hint": "q.newEPDCount.hint",
     "type": "number",
     "validation": {
       "min": 1,
@@ -26,10 +26,9 @@
   },
 
   "familyEPD": {
-    "text": "Aus wie vielen Produktfamilien stammen die EPDs?",
+    "text": "q.familyEPD.text",
     "skipValue": "1",
     "skipNext": "ibuMembershipType",
-    "hint": "",
     "type": "number",
     "validation": {
       "min": 1,
@@ -45,21 +44,20 @@
   },
 
   "ibuMembershipType": {
-    "text": "Sind Sie Mitglied eines Verbands, welcher Mitglied bei IBU ist?",
+    "text": "q.ibuMembershipType.text",
     "skipValue": "associate",
     "skipNext": "amountEmployees",
-    "hint": "",
     "options": [
-      { "label": "Ja", "value": "associate", "nextQuestionID": "amountEmployees" },
-      { "label": "Nein", "value": "non-associate", "nextQuestionID": "yearlyRevenue" }
+      { "label": "q.ibuMembershipType.label.yes", "value": "associate", "nextQuestionID": "amountEmployees" },
+      { "label": "q.ibuMembershipType.label.no", "value": "non-associate", "nextQuestionID": "yearlyRevenue" }
     ]
   },
 
   "yearlyRevenue": {
-    "text": "Wie hoch war der Jahresumsatz Ihres Unternehmens im letzten Geschäftsjahr?",
+    "text": "q.yearlyRevenue.text",
     "skipValue": "1",
     "skipNext": "amountEmployees",
-    "hint": "Bitte geben Sie den Jahresumsatz in Millionen Euro an. Werte unter 1 Million Euro können Sie mit Dezimalstellen angeben (z. B. 0,5 oder 0.5).",
+    "hint": "q.yearlyRevenue.hint",
     "type": "number",
     "validation": {
       "min": 0,
@@ -70,7 +68,7 @@
   },
 
   "amountEmployees": {
-    "text": "Wie hoch ist die aktuelle Anzahl der Mitarbeiterinnen und Mitarbeiter in Ihrem Unternehmen?",
+    "text": "q.amountEmployees.text",
     "skipValue": "11",
     "skipNext": "ENDE",
     "type": "number",

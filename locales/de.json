@@ -82,5 +82,18 @@
   "epdGlobal.metricLabel.totalEPDsAfter": "Gültige Deklarationen",
   "epdGlobal.memberShipFee": "Mitgliedsbeitrag",
   "epdGlobal.regestrationFee": "Registrierungsbeitrag",
-  "label.total": "Gesamt"
+  "label.total": "Gesamt",
+  "q.start.text": "Was möchten Sie tun?",
+  "q.start.label.new": "Neue EPDs veröffentlichen",
+  "q.start.label.renew": "Bestehende EPDs aktualisieren",
+  "q.start.label.both": "Beides",
+  "q.newEPDCount.text": "Wie viele neue EPDs möchten Sie veröffentlichen?",
+  "q.newEPDCount.hint": "Manche Anbieter haben kein Kostenmodell für das Einreichen für mehr als 20 EPDs. In diesem Fall werden dann nur die Kosten für 20 Pakete ausgegeben.",
+  "q.familyEPD.text": "Aus wie vielen Produktfamilien stammen die EPDs?",
+  "q.ibuMembershipType.text": "Sind Sie Mitglied eines Verbands, welcher Mitglied bei IBU ist?",
+  "q.ibuMembershipType.label.yes": "Ja",
+  "q.ibuMembershipType.label.no": "Nein",
+  "q.yearlyRevenue.text": "Wie hoch war der Jahresumsatz Ihres Unternehmens im letzten Geschäftsjahr?",
+  "q.yearlyRevenue.hint": "Bitte geben Sie den Jahresumsatz in Millionen Euro an. Werte unter 1 Million Euro können Sie mit Dezimalstellen angeben (z. B. 0,5 oder 0.5).",
+  "q.amountEmployees.text": "Wie viele ANgestellte arbeiten aktuell in Ihrem Unternehmen?"
 }

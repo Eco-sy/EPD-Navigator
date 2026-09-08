@@ -132,7 +132,7 @@ function showQuestion() {
 
   const div   = document.createElement("div");
   const label = document.createElement("h3");
-  label.innerText = q.text || t("error.questionNotFound");
+  label.innerText = t(q.text) || t("error.questionNotFound");
   div.appendChild(label);
 
   const infoBtn = document.createElement("a");
@@ -154,7 +154,7 @@ function showQuestion() {
     hint.style.cssText = "font-size:0.875rem; color:#64748b; font-weight:400; margin:0;";
     // hint.innerText = q.hint;
     // hint.innerHTML = parseHint(q.hint);
-    hint.innerHTML = q.hint;
+    hint.innerHTML = t(q.hint);
     div.appendChild(hint);
   }
 
