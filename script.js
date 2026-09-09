@@ -495,10 +495,6 @@ function renderResult() {
               <span class="total-box-label">${t("sectionLabel.totalFirstYearAlt")}</span>
               <span class="total-box-amount">${fmt(result.totalFirstYear)}</span>
             </div>
-            <div class="total-box-vat">
-              <span>${t("sectionLabel.inclVatDE")}</span>
-              <span>${fmt(result.totalFirstYear * 1.19)}</span>
-            </div>
           </div>
         </div>
         </div>`;
@@ -591,10 +587,6 @@ function renderResult() {
             <span class="total-box-label">${t("sectionLabel.totalFirstYearAlt")}</span>
             <span class="total-box-amount">${fmt(resultEnv.totalFirstYear)}</span>
           </div>
-          <div class="total-box-vat">
-            <span>${t("sectionLabel.inclVat")}</span>
-            <span>${t("sectionLabel.inclVatUnkown")}</span>
-          </div>
         </div>
       </div>
     </div>`;
@@ -676,10 +668,6 @@ function renderResult() {
           <div class="total-box-row">
             <span class="total-box-label">${t("sectionLabel.totalFirstYearAlt")}</span>
             <span class="total-box-amount">${fmt(resultEPDGlobal.totalFirstYear.price)}</span>
-          </div>
-          <div class="total-box-vat">
-            <span>${t("sectionLabel.inclVat")}</span>
-            <span>${t("sectionLabel.inclVatUnkown")}</span>
           </div>
         </div>
       </div>
