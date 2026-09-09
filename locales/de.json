@@ -74,7 +74,7 @@
   "epdGlobal.title": "EPD Global",
   "label.yearly": "Jährlich",
   "epdGlobal.noteBox": "Die kosten der Verifizierung sind nicht in den Kosten enthalten",
-  "epdGlobal.label": "–",
+  "epdGlobal.label": "Registrierungskosten für 'non-tool' generierte EPDs",
   "epdGlobal.meta": "Veröffentlichungs Gebühren",
   "epdGlobal.metricLabel.oneTime.label": "—",
   "epdGlobal.metricLabel.yearlyCost": "Mitgliedschaft & Registrierung",
@@ -95,5 +95,6 @@
   "q.ibuMembershipType.label.no": "Nein",
   "q.yearlyRevenue.text": "Wie hoch war der Jahresumsatz Ihres Unternehmens im letzten Geschäftsjahr?",
   "q.yearlyRevenue.hint": "Bitte geben Sie den Jahresumsatz in Millionen Euro an. Werte unter 1 Million Euro können Sie mit Dezimalstellen angeben (z. B. 0,5 oder 0.5).",
-  "q.amountEmployees.text": "Wie viele Angestellte arbeiten aktuell in Ihrem Unternehmen?"
+  "q.amountEmployees.text": "Wie viele Angestellte arbeiten aktuell in Ihrem Unternehmen?",
+  "label.timestamp": "Stand: "
 }

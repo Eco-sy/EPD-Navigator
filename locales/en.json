@@ -72,7 +72,7 @@
   "epdGlobal.title": "EPD Global",
   "label.year": "Year",
   "env.label.membership": "Annual membership ({group})",
-  "epdGlobal.label": "–",
+  "epdGlobal.label": "Registration fee for non-tool-generated EPDs",
   "epdGlobal.memberShipFee": "Membership fee",
   "epdGlobal.meta": "Publication fees",
   "epdGlobal.metricLabel.oneTime.label": "—",
@@ -95,5 +95,6 @@
   "q.start.label.renew": "Refresh existing EPDs",
   "q.start.text": "What do you want to do?",
   "q.yearlyRevenue.hint": "Please enter your yearly revenue in Millions Euro. Values under 1 Million Euro can be enter with a decimal points (e.g. 0,5 or 0.5).",
-  "q.yearlyRevenue.text": "How high was your companies yearly revenue last business year?"
+  "q.yearlyRevenue.text": "How high was your companies yearly revenue last business year?",
+  "label.timestamp": "Created on: "
 }

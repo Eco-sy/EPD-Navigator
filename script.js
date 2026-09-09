@@ -371,11 +371,15 @@ function renderResult() {
 
   const wrapper = document.createElement("div");
   wrapper.className = "summary-page";
-  wrapper.innerHTML =`<img src="https://static.wixstatic.com/media/db9150_92bfb1a2f7da45a69e98ad8289f50dde~mv2.png/v1/fill/w_168,h_58,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Home.png">`
   
   const infoBtn = document.createElement("div");
   infoBtn.className = "info-button-end";
-  infoBtn.innerHTML = `<p class="seen" style="font-weight:400; font-size:1.5vh; color:#64748b;">${t("info.desktop")}</p><a href=${leitfaden} target="_blank" class="info-button-end">ⓘ</a><span class="info-tooltip">${t("info.tooltip")}</span>`
+  infoBtn.innerHTML = `<img src="https://static.wixstatic.com/media/db9150_92bfb1a2f7da45a69e98ad8289f50dde~mv2.png/v1/fill/w_168,h_58,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Home.png">
+                        <p class="result-date">
+                          ${t("label.timestamp")}:
+                          ${new Intl.DateTimeFormat(lang === "en" ? "en-GB" : "de-DE").format(new Date())}
+                        </p>
+                        <p class="seen" style="font-weight:400; font-size:1.5vh; color:#64748b;">${t("info.desktop")}</p><a href=${leitfaden} target="_blank" class="info-button-end">ⓘ</a><span class="info-tooltip">${t("info.tooltip")}</span>`
   wrapper.appendChild(infoBtn);
 
   const providerGrid = document.createElement("div");

@@ -599,13 +599,17 @@ Version: 1.2
       height: 24px;
       display: flex;
       align-items: center;
-      justify-content: end;
+      justify-content: flex-start;
       border-radius: 50%;
       color: #555;
       text-decoration: none;
       font-size: 25px;
       font-weight: bold;
       cursor: pointer;
+    }
+
+    .info-button-end img {
+      margin-right: auto;
     }
 
     .info-button:hover {
@@ -643,6 +647,13 @@ Version: 1.2
     .info-button-end:hover .info-tooltip {
         opacity: 1;
         visibility: visible;
+    }
+    
+    .result-date {
+      margin-right: 10px !important;
+      color: #64748b;
+      font-size: 0.75rem;
+      text-align: left;
     }
 
     @media (max-width: 1279px) {
