@@ -16,6 +16,13 @@ Version: 1.2
       --color-white: #ffffff;
     }
 
+    .end-note {
+      color: var(--color-dark);
+      font-weight: bold;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+
     h3 {
       padding-right: 10px;
     }

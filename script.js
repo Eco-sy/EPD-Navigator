@@ -379,7 +379,8 @@ function renderResult() {
                           ${t("label.timestamp")}:
                           ${new Intl.DateTimeFormat(lang === "de" ? "de-DE" : "en-GB" ).format(new Date())}
                         </p>
-                        <p class="seen" style="font-weight:400; font-size:1.5vh; color:#64748b;">${t("info.desktop")}</p><a href=${leitfaden} target="_blank" class="info-button-end">ⓘ</a><span class="info-tooltip">${t("info.tooltip")}</span>`
+                        <a href=${leitfaden} target="_blank" class="info-button-end">ⓘ</a><span class="info-tooltip">${t("info.tooltip")}</span>
+                        `
   wrapper.appendChild(infoBtn);
 
   const providerGrid = document.createElement("div");
@@ -496,8 +497,8 @@ function renderResult() {
 
           <div class="summary-item total-box">
             <div class="total-box-row">
-              <span class="total-box-label">${t("sectionLabel.totalFirstYearAlt")}</span>
-              <span class="total-box-amount">${fmt(result.totalFirstYear)}</span>
+              <span class="total-box-label">${t("sectionLabel.total")}</span>
+              <span class="total-box-amount"> ${fmt(result.projection[result.projection.length - 1].cumulative)} </span>
             </div>
           </div>
         </div>
@@ -588,8 +589,8 @@ function renderResult() {
 
         <div class="summary-item total-box">
           <div class="total-box-row">
-            <span class="total-box-label">${t("sectionLabel.totalFirstYearAlt")}</span>
-            <span class="total-box-amount">${fmt(resultEnv.totalFirstYear)}</span>
+            <span class="total-box-label">${t("sectionLabel.total")}</span>
+            <span class="total-box-amount">${fmt(resultEnv.projection[result.projection.length - 1].cumulative)}</span>
           </div>
         </div>
       </div>
@@ -622,63 +623,70 @@ function renderResult() {
     // costSectionGlobal.open = true;
     costSectionGlobal.innerHTML = `
       <div class="provider-summary">
-        <span>
-          <span class="provider-summary-title">${t("epdGlobal.title")}</span><br>
-          <span class="provider-summary-sub">
-            · ${t("epdGlobal.label")}
+          <span>
+            <span class="provider-summary-title">${t("epdGlobal.title")}</span><br>
+            <span class="provider-summary-sub">
+              · ${t("epdGlobal.label")}
+            </span>
           </span>
-        </span>
-        <span class="provider-summary-total">${fmt(resultEPDGlobal.projection[result.projection.length - 1].cumulative)}</span>
-      </div>
-      <div class="provider-content">
-        <p class="provider-meta">
-          ${t("epdGlobal.meta")}
-        </p>
-  
-        <div class="metric-grid">
-          ${metricCard(t("sectionLabel.oneTimeSum"), fmt(resultEPDGlobal.oneTime.price), t("epdGlobal.metricLabel.oneTime.label"))}
-          ${metricCard(t("sectionLabel.yearlyCost"), fmt(resultEPDGlobal.annual.total), t("epdGlobal.metricLabel.yearlyCost"))}
-          ${metricCard(t("sectionLabel.totalFirstYear"), fmt(resultEPDGlobal.totalFirstYear.price), t("epdGlobal.metricLabel.totalFirstYear"))}
-          ${metricCard(t("sectionLabel.totalEPDsAfter"), (resultEPDGlobal.inputs.newEPD), t("epdGlobal.metricLabel.totalEPDsAfter"))}
+          <span class="provider-summary-total">${fmt(resultEPDGlobal.projection[result.projection.length - 1].cumulative)}</span>
         </div>
-  
-        <div class="${noteBoxClass}">
-          <p>${noteBoxContent}</p>
-        </div>
-        
-        <div class="summary-item cost-section">
-        <details class="cost-section">
-          <summary class="cost-section-title"><span class="cost-section-title">${t("sectionLabel.yearlyCost")}</span></summary>
-          ${costTable([
-            [t("epdGlobal.memberShipFee"), fmt(resultEPDGlobal.annual.membershipFee)],
-            [t("epdGlobal.regestrationFee") + " (" + `${resultEPDGlobal.inputs.newEPD}` + " × " + fmt(resultEPDGlobal.annual.regestrationFee) + ")", fmt(resultEPDGlobal.annual.regestrationFeeTotal)]
-          ])}
-        </details>
-          <table class="cost-table">
-            <tr class="cost-table-total">
-              <td>${t("sectionLabel.yearlyCostSum")}</td>
-              <td>${fmt(resultEPDGlobal.annual.total)}</td>
-            </tr>
-          </table>
-        </div>
-  
-
-        <div class="summary-item cost-section">
-          <p class="cost-section-title">${t("sectionLabel.fiveYearProjection")}</p>
-          ${projectionTable(resultEPDGlobal.projection)}
-        </div>      
-
-        <div class="summary-item total-box">
-          <div class="total-box-row">
-            <span class="total-box-label">${t("sectionLabel.totalFirstYearAlt")}</span>
-            <span class="total-box-amount">${fmt(resultEPDGlobal.totalFirstYear.price)}</span>
+        <div class="provider-content">
+          <p class="provider-meta">
+            ${t("epdGlobal.meta")}
+          </p>
+    
+          <div class="metric-grid">
+            ${metricCard(t("sectionLabel.oneTimeSum"), fmt(resultEPDGlobal.oneTime.price), t("epdGlobal.metricLabel.oneTime.label"))}
+            ${metricCard(t("sectionLabel.yearlyCost"), fmt(resultEPDGlobal.annual.total), t("epdGlobal.metricLabel.yearlyCost"))}
+            ${metricCard(t("sectionLabel.totalFirstYear"), fmt(resultEPDGlobal.totalFirstYear.price), t("epdGlobal.metricLabel.totalFirstYear"))}
+            ${metricCard(t("sectionLabel.totalEPDsAfter"), (resultEPDGlobal.inputs.newEPD), t("epdGlobal.metricLabel.totalEPDsAfter"))}
           </div>
+          <div class="hidden">
+            <div class="${noteBoxClass}">
+              <p>${noteBoxContent}</p>
+            </div>
+          
+            <div class="summary-item cost-section">
+              <details class="cost-section">
+                <summary class="cost-section-title"><span class="cost-section-title">${t("sectionLabel.yearlyCost")}</span></summary>
+                ${costTable([
+                  [t("epdGlobal.memberShipFee"), fmt(resultEPDGlobal.annual.membershipFee)],
+                  [t("epdGlobal.regestrationFee") + " (" + `${resultEPDGlobal.inputs.newEPD}` + " × " + fmt(resultEPDGlobal.annual.regestrationFee) + ")", fmt(resultEPDGlobal.annual.regestrationFeeTotal)]
+                ])}
+              </details>
+              <table class="cost-table">
+                <tr class="cost-table-total">
+                  <td>${t("sectionLabel.yearlyCostSum")}</td>
+                  <td>${fmt(resultEPDGlobal.annual.total)}</td>
+                </tr>
+              </table>
+            </div>
+    
+
+            <div class="summary-item cost-section">
+              <p class="cost-section-title">${t("sectionLabel.fiveYearProjection")}</p>
+              ${projectionTable(resultEPDGlobal.projection)}
+            </div>      
+
+            <div class="summary-item total-box">
+              <div class="total-box-row">
+                <span class="total-box-label">${t("sectionLabel.total")}</span>
+                <span class="total-box-amount">${fmt(resultEPDGlobal.projection[result.projection.length - 1].cumulative)}</span>
+              </div>
+            </div>
         </div>
-      </div>
       </div>`;
   
     providerGrid.appendChild(costSectionGlobal);
   }
+
+  const endNote = document.createElement("div");
+  endNote.className = "end-note";
+  // endNote.innerText = t("sectionLabel.note");
+  endNote.innerHTML = ` <p>${t("sectionLabel.note")}</p>
+                        <p class="seen" style="font-weight:400; font-size:1.5vh; color:#64748b;">${t("info.desktop")}</p>`
+  wrapper.appendChild(endNote);
 
   const actionRow = document.createElement("div");
   actionRow.className = "result-actions";

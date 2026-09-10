@@ -96,5 +96,7 @@
   "q.yearlyRevenue.text": "Wie hoch war der Jahresumsatz Ihres Unternehmens im letzten Geschäftsjahr?",
   "q.yearlyRevenue.hint": "Bitte geben Sie den Jahresumsatz in Millionen Euro an. Werte unter 1 Million Euro können Sie mit Dezimalstellen angeben (z. B. 0,5 oder 0.5).",
   "q.amountEmployees.text": "Wie viele Angestellte arbeiten aktuell in Ihrem Unternehmen?",
-  "label.timestamp": "Stand: "
+  "label.timestamp": "Stand: ",
+  "sectionLabel.total": "Gesamtkosten, 5 Jahre",
+  "sectionLabel.note": "Hinweis: Der EPD-Kostenvergleich dient ausschließlich der ersten Orientierung. Die dargestellten Ergebnisse und Kostenangaben sind unverbindlich. ecosy übernimmt keine Gewähr für Vollständigkeit, Aktualität oder Richtigkeit der Angaben. Für eine belastbare Einschätzung empfehlen wir eine individuelle Prüfung des konkreten EPD-Vorhabens."
 }

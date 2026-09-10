@@ -96,5 +96,7 @@
   "q.start.text": "What do you want to do?",
   "q.yearlyRevenue.hint": "Please enter your yearly revenue in Millions Euro. Values under 1 Million Euro can be enter with a decimal points (e.g. 0,5 or 0.5).",
   "q.yearlyRevenue.text": "How high was your companies yearly revenue last business year?",
-  "label.timestamp": "Created on: "
+  "label.timestamp": "Created on: ",
+  "sectionLabel.total": "Total costs, 5 years",
+  "sectionLabel.note": "Note: The EPD cost comparison is intended solely as a preliminary guide. The results and cost figures presented are non-binding. ecosy makes no warranty as to the completeness, timeliness, or accuracy of the information. For a reliable assessment, we recommend a customized review of the specific EPD project."
 }
