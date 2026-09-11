@@ -252,7 +252,7 @@ function showQuestion() {
   const skipBtn = document.createElement("button");
   skipBtn.className = "back-button skip-button";
   skipBtn.innerText = t("buttonLabel.skip");
-  // skipBtn.disabled = questionHistory.length === 0;
+  skipBtn.disabled = questionHistory.length === 0;
   skipBtn.onclick = () => {
     answers[currentQuestion] = q.skipValue;
     questionHistory.push(currentQuestion);
@@ -612,7 +612,7 @@ function renderResult() {
   }
  
   if (resultEPDGlobal){
-    const noteBoxClass = "summary-item note-box warning-box";
+    const noteBoxClass = "summary-item note-box";
 
     const noteBoxContent = t("epdGlobal.noteBox");
 
