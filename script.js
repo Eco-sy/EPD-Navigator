@@ -612,7 +612,7 @@ function renderResult() {
   }
  
   if (resultEPDGlobal){
-    const noteBoxClass = "summary-item note-box";
+    const noteBoxClass = "summary-item note-box warning-box";
 
     const noteBoxContent = t("epdGlobal.noteBox");
 
