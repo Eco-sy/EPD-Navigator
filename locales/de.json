@@ -73,7 +73,7 @@
   "validation.validInputWarning": "Bitte geben Sie einen gültigen Wert ein",
   "epdGlobal.title": "EPD Global",
   "label.yearly": "Jährlich",
-  "epdGlobal.noteBox": "Die Kosten der Verifizierung sind in den Preisen enthalten",
+  "epdGlobal.noteBox": "Die Kosten der Verifizierung sind in den Preisen nicht enthalten",
   "epdGlobal.label": "Kosten für 'non-tool' generierte EPDs",
   "epdGlobal.meta": "Veröffentlichungsgebühren",
   "epdGlobal.metricLabel.oneTime.label": "—",
