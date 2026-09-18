@@ -60,7 +60,7 @@ function showStartScreen() {
   const div = document.createElement("div");
   div.innerHTML = `
     <h3>${t("start.title")}</h3>
-    <p style="font-weight:400; font-size:0.95rem; color:#64748b;">
+    <p style="font-weight:450; font-size:0.95rem; color:#64748b;">
       ${t("start.description")}
     </p>
     <button class="answer-button" id="start-btn">${t("start.button")}</button>
