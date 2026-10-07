@@ -17,8 +17,10 @@ let currentQuestion       = "newEPDCount"; //Auf erste Frage initialisiert
 let questionQueue         = [];
 let questionnaireFinished = false;
 let questionHistory = [];
-let leitfaden = "https://www.eco-sy.com/epd-leitfaden"
 let lang = new URLSearchParams(window.location.search).get("lang") || "de";
+const leitfaden = lang === "en"
+  ? "https://www.eco-sy.com/en/epd-leitfaden"
+  : "https://www.eco-sy.com/epd-leitfaden";
 let local = {};
 
 //---
